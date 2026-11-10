@@ -14,7 +14,8 @@ READS = sorted(["search_documents", "list_policies", "get_policy", "get_employee
 
 
 def plan(intent, requires_tools=True, action=False):
-    return policy.TurnPlan(current_intent=intent, requires_tools=requires_tools, action_requested=action)
+    return policy.TurnPlan(current_intent=intent, request_type="lookup" if requires_tools else "recall",
+                           action_requested=action)
 
 
 def test_visible_tools_change_between_two_questions():

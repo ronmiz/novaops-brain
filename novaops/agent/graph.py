@@ -1,44 +1,57 @@
 """The agent graph: one loop, two scopes (Maya, Webex).
 
-    START -> classify -> scope -> answer --(tool calls)--> tools --> answer
-                                      |  no tool calls, but the plan needed a lookup
-                                      +--> rearm (once) --> answer
-                                      +--> END
+    START --(fresh history over threshold)--> distil --+
+      |                                                v
+      +--------------------------------------------> classify -> scope
+                                                                  |
+              action requested (no write was released) -> handoff -> END
+                                                                  |
+                                               answer <-> tools (+ one rearm)
+                                                  |
+                         onboarding turn with evidence -> checklist -> END
+                                                  +-> END
 
-  classify  planner model call -> TurnPlan (intent, facts, constraints)
-  scope     plain code: intent -> visible read tools, plus write_gate.released_writes()
-  answer    the answer model, bound to ONLY this turn's tools
-  tools     executes calls; fills caller_id itself; refuses tools that were not visible
-  rearm     Lesson 10's recovery when a narrow loadout left the model without a lookup
+  distil     Lesson 10 stage 3: fold old history into named durable memory
+  classify   planner model call -> TurnPlan (intent, facts, constraints, action_requested)
+  scope      plain code: intent -> visible read tools (+ write_gate.released_writes())
+  handoff    Maya proposes, never files: a typed AccessRequestIntent, status pending
+  answer     the answer model, bound to ONLY this turn's tools
+  tools      executes calls; fills caller_id itself; refuses tools that were not visible
+  rearm      recovery when a narrow loadout left the model without a lookup
+  checklist  typed OnboardingChecklist, validated against the tool evidence
 
-State is checkpointed per thread (SQLite in run.py), so a conversation survives a
-restart of the process. Node names are the Langfuse span names a reviewer clicks
-through: classify -> scope -> answer -> tools -> answer (Lesson 11: the Langfuse
-callback is bound to the compiled graph, so every caller is traced).
+Node names are the Langfuse span names (the callback is bound to the compiled graph).
+State is checkpointed per thread, so a conversation survives a process restart.
 """
 import copy
 from typing import Annotated, TypedDict
 
-from langchain_core.messages import HumanMessage, RemoveMessage, SystemMessage, ToolMessage
+from langchain_core.messages import (AIMessage, HumanMessage, RemoveMessage, SystemMessage,
+                                     ToolMessage)
 from langchain_core.utils.function_calling import convert_to_openai_tool
+from langfuse.langchain import CallbackHandler
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
-from langfuse.langchain import CallbackHandler
 
 from .. import llm
-from . import policy, write_gate
+from . import contracts, memory, policy, write_gate
 
-KEEP_TURNS = 2   # verbatim user turns the answer model sees (Lesson 10 stage 2)
+KEEP_TURNS = 4           # verbatim user turns the answer model sees; 2 lost S1 t1's rule by t4 (#12)
+EVIDENCE_CHARS = 12_000  # tool evidence handed to the checklist / handoff extractors
 
 
 class AgentState(TypedDict, total=False):
     messages: Annotated[list, add_messages]
-    caller_id: str          # application input — never inferred by the model
-    caller_group: str       # application input
+    caller_id: str            # application input — never inferred by the model
+    caller_group: str         # application input
     plan: dict
-    scope: str              # "maya" | "webex"
-    loadout: list[str]      # tools visible this turn
+    scope: str                # "maya" | "webex"
+    loadout: list[str]        # tools visible this turn
     rearmed: bool
+    memory: dict              # durable distilled memory
+    distilled_upto: int       # messages before this index are represented by memory
+    handoff: dict | None      # AccessRequestIntent emitted THIS turn
+    checklist: dict | None    # OnboardingChecklist produced THIS turn
 
 
 def model_schema(tool) -> dict:
@@ -70,11 +83,24 @@ def window(messages: list, keep: int = KEEP_TURNS) -> list:
     return older + list(messages[turn_start:])
 
 
+def known_ids_text(messages: list) -> str:
+    """Where an employee id may legitimately come from: a tool result or the user's words."""
+    return "\n".join(str(m.content) for m in messages if isinstance(m, (ToolMessage, HumanMessage)))
+
+
+def evidence(messages: list) -> str:
+    """Everything tools returned in this conversation — the only admissible evidence."""
+    return "\n".join(str(m.content) for m in messages if isinstance(m, ToolMessage))
+
+
 def build_graph(tools: list, checkpointer=None):
     by_name = {t.name: t for t in tools}
     read_tools = sorted(n for n in by_name if n not in write_gate.WRITE_TOOLS)
     schemas = {n: model_schema(t) for n, t in by_name.items()}
     planner = llm.chat_model().with_structured_output(policy.TurnPlan)
+    distiller = llm.chat_model().with_structured_output(memory.ConversationMemory)
+    proposer = llm.chat_model().with_structured_output(contracts.AccessRequestProposal)
+    checklister = llm.chat_model().with_structured_output(contracts.ChecklistProposal)
     base_model = llm.chat_model()
     bound: dict[tuple, object] = {}
 
@@ -84,27 +110,77 @@ def build_graph(tools: list, checkpointer=None):
             bound[key] = base_model.bind_tools([schemas[n] for n in key]) if key else base_model
         return bound[key]
 
+    def memory_text(state) -> str:
+        return memory.render_memory(state["memory"]) if state.get("memory") else ""
+
+    # --- distil -------------------------------------------------------------------
+    def should_distil(state: AgentState) -> str:
+        return "distil" if memory.needs_distillation(
+            state["messages"][:-1], state.get("distilled_upto", 0), policy.render_transcript) else "classify"
+
+    async def distil(state: AgentState) -> dict:
+        upto = len(state["messages"]) - 1            # never distil the message being answered
+        fresh = policy.render_transcript(state["messages"][state.get("distilled_upto", 0):upto])
+        try:
+            new = await distiller.ainvoke(memory.distiller_messages(state.get("memory") or {}, fresh))
+        except Exception:
+            new = None
+        if not memory.memory_is_safe(state.get("memory") or {}, new):
+            return {}                                 # rejected: raw history is kept, nothing lost
+        return {"memory": new.model_dump(), "distilled_upto": upto}
+
+    # --- classify / scope ---------------------------------------------------------
     async def classify(state: AgentState) -> dict:
         try:
-            plan = await planner.ainvoke(policy.planner_messages(state["messages"]))
-        except Exception:                     # a planner failure must not stop the turn
+            plan = await planner.ainvoke(policy.planner_messages(
+                state["messages"], memory.render_memory(state.get("memory") or {}),
+                state.get("distilled_upto", 0)))
+        except Exception:                             # a planner failure must not stop the turn
             plan = None
-        plan = plan or policy.TurnPlan(current_intent="other", requires_tools=True)
+        plan = plan or policy.TurnPlan(current_intent="other", request_type="lookup")
         return {"plan": plan.model_dump()}
 
     def scope(state: AgentState) -> dict:
         has_evidence = any(isinstance(m, ToolMessage) for m in state["messages"])
         plan = policy.enforce_evidence(policy.TurnPlan(**state["plan"]), has_evidence)
         loadout = policy.select_tools(plan, read_tools) + write_gate.released_writes(approval=None)
-        return {"plan": plan.model_dump(), "loadout": loadout,
-                "scope": policy.SCOPES[plan.current_intent], "rearmed": False}
+        return {"plan": plan.model_dump(), "loadout": loadout, "rearmed": False,
+                "scope": policy.SCOPES[plan.current_intent], "handoff": None, "checklist": None}
 
+    def after_scope(state: AgentState) -> str:
+        plan = policy.TurnPlan(**state["plan"])
+        released = set(state["loadout"]) & write_gate.WRITE_TOOLS
+        return "handoff" if plan.action_requested and not released else "answer"
+
+    # --- handoff: Maya proposes, never files --------------------------------------
+    async def handoff(state: AgentState, config) -> dict:
+        context = (f"Session memory:\n{memory_text(state) or '(none)'}\n\n"
+                   f"Recent conversation:\n{policy.render_transcript(window(state['messages'], keep=4))}")
+        try:
+            proposal = await proposer.ainvoke([
+                SystemMessage("Extract the access request the user just asked to file: who it is FOR, "
+                              "which system, and a one-sentence business justification from the conversation."),
+                HumanMessage(context)])
+        except Exception:
+            proposal = None
+        if proposal is None:                          # truthful: nothing was prepared, a human must look
+            return {"handoff": None, "messages": [AIMessage(
+                "I could not work out the details of that request, so nothing has been prepared or "
+                "filed. Please restate who needs access to which system.")]}
+        intent = contracts.AccessRequestIntent(
+            **proposal.model_dump(),
+            requested_by=state["caller_id"],
+            source_thread_id=config["configurable"]["thread_id"],
+            request_id=config["configurable"].get("request_id", "unknown"))
+        return {"handoff": intent.model_dump(),
+                "messages": [AIMessage(contracts.handoff_answer(intent))]}
+
+    # --- answer / tools / rearm ---------------------------------------------------
     async def call_model(state: AgentState) -> dict:
         plan = policy.TurnPlan(**state["plan"])
-        system = policy.ANSWER_PROMPT.format(
-            caller_id=state["caller_id"], caller_group=state["caller_group"]) + policy.render_plan(plan)
-        response = await model_for(state["loadout"]).ainvoke(
-            [SystemMessage(system), *window(state["messages"])])
+        system = (policy.ANSWER_PROMPT.format(caller_id=state["caller_id"], caller_group=state["caller_group"])
+                  + policy.render_plan(plan, memory_text(state)))
+        response = await model_for(state["loadout"]).ainvoke([SystemMessage(system), *window(state["messages"])])
         return {"messages": [response]}
 
     async def run_tools(state: AgentState) -> dict:
@@ -118,6 +194,13 @@ def build_graph(tools: list, checkpointer=None):
             args = dict(call["args"])
             if call["name"] in policy.CALLER_TOOLS:
                 args["caller_id"] = state["caller_id"]     # application input, overrides the model
+            unknown = policy.unverified_employee_id(args, state["caller_id"], known_ids_text(state["messages"]))
+            if unknown:
+                results.append(ToolMessage(
+                    f"Employee id {unknown!r} has not been established in this conversation. "
+                    "Look the person up with get_employee first.",
+                    tool_call_id=call["id"], name=call["name"], status="error"))
+                continue
             try:
                 results.append(await by_name[call["name"]].ainvoke(
                     {"name": call["name"], "args": args, "id": call["id"], "type": "tool_call"}))
@@ -140,20 +223,58 @@ def build_graph(tools: list, checkpointer=None):
         used_tool = any(isinstance(m, ToolMessage) for m in current_turn(state["messages"]))
         if plan.requires_tools and not state.get("rearmed") and not used_tool:
             return "rearm"
+        if plan.current_intent == "onboarding_status" and used_tool:
+            return "checklist"
         return END
 
+    # --- checklist: typed, cited, validated ----------------------------------------
+    async def checklist(state: AgentState) -> dict:
+        ev = evidence(state["messages"])
+        prompt = [SystemMessage(
+            "Build the onboarding checklist for the joiner discussed, from the tool evidence ONLY. "
+            "One item per required system, piece of equipment, onboarding task or policy acknowledgement. "
+            "Every item cites at least one source exactly as it appears in the evidence: a document "
+            "path 'documents/<collection>/<file>.md' or a record id such as OT005 or SUB001. A blocked "
+            "item states why it is blocked."),
+            HumanMessage(f"Session memory:\n{memory_text(state) or '(none)'}\n\nTool evidence:\n{ev[-EVIDENCE_CHARS:]}")]
+        errors = ["not produced"]
+        proposal = None
+        for _ in range(2):                            # one bounded retry with the errors fed back
+            try:
+                proposal = await checklister.ainvoke(prompt)
+            except Exception as exc:
+                proposal, errors = None, [f"extraction failed: {exc}"]
+                continue
+            if proposal is None:                      # the model returned nothing parseable
+                errors = ["extraction returned nothing"]
+                continue
+            errors = contracts.checklist_errors(proposal, ev)
+            if not errors:
+                break
+            prompt = prompt + [HumanMessage("Fix these problems and return the checklist again:\n- "
+                                            + "\n- ".join(errors))]
+        if proposal is None:
+            return {"checklist": None}
+        result = contracts.OnboardingChecklist(
+            **proposal.model_dump(), status="completed" if not errors else "needs_human",
+            validation_errors=errors)
+        return {"checklist": result.model_dump()}
+
     graph = StateGraph(AgentState)
-    graph.add_node("classify", classify)
-    graph.add_node("scope", scope)
-    graph.add_node("answer", call_model)
-    graph.add_node("tools", run_tools)
-    graph.add_node("rearm", rearm)
-    graph.add_edge(START, "classify")
+    for name, fn in [("distil", distil), ("classify", classify), ("scope", scope),
+                     ("handoff", handoff), ("answer", call_model), ("tools", run_tools),
+                     ("rearm", rearm), ("checklist", checklist)]:
+        graph.add_node(name, fn)
+    graph.add_conditional_edges(START, should_distil, {"distil": "distil", "classify": "classify"})
+    graph.add_edge("distil", "classify")
     graph.add_edge("classify", "scope")
-    graph.add_edge("scope", "answer")
-    graph.add_conditional_edges("answer", route, {"tools": "tools", "rearm": "rearm", END: END})
+    graph.add_conditional_edges("scope", after_scope, {"handoff": "handoff", "answer": "answer"})
+    graph.add_edge("handoff", END)
+    graph.add_conditional_edges("answer", route,
+                                {"tools": "tools", "rearm": "rearm", "checklist": "checklist", END: END})
     graph.add_edge("tools", "answer")
     graph.add_edge("rearm", "answer")
+    graph.add_edge("checklist", END)
     # Lesson 11: bind the Langfuse callback to the compiled graph — every node, Bedrock
     # call and MCP tool call becomes a span, for every caller. No keys -> a no-op.
     return graph.compile(checkpointer=checkpointer).with_config({"callbacks": [CallbackHandler()]})

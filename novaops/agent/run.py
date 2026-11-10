@@ -24,7 +24,8 @@ from langfuse import get_client, propagate_attributes
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from .. import config
-from .graph import build_graph, current_turn
+from .contracts import citation_report, sources_in
+from .graph import build_graph, current_turn, evidence
 
 CHECKPOINT_DB = config.DB_PATH.parent / "checkpoints.db"
 STATUSES = ("completed", "blocked", "pending", "needs_human", "failed")
@@ -33,7 +34,8 @@ RECURSION_LIMIT = 25
 langfuse = get_client()   # reads LANGFUSE_PUBLIC_KEY / _SECRET_KEY / _BASE_URL; no keys -> no-op
 
 
-async def _run_turn(message: str, caller_id: str, caller_group: str, thread_id: str) -> dict:
+async def _run_turn(message: str, caller_id: str, caller_group: str, thread_id: str,
+                    request_id: str) -> dict:
     tools = await MultiServerMCPClient(
         {"novaops": {"url": config.MCP_URL, "transport": "streamable_http"}}).get_tools()
     CHECKPOINT_DB.parent.mkdir(parents=True, exist_ok=True)
@@ -41,17 +43,26 @@ async def _run_turn(message: str, caller_id: str, caller_group: str, thread_id: 
         graph = build_graph(tools, checkpointer=saver)
         state = await graph.ainvoke(
             {"messages": [HumanMessage(message)], "caller_id": caller_id, "caller_group": caller_group},
-            config={"configurable": {"thread_id": thread_id}, "recursion_limit": RECURSION_LIMIT,
-                    "run_name": "agent-turn"})
+            config={"configurable": {"thread_id": thread_id, "request_id": request_id},
+                    "recursion_limit": RECURSION_LIMIT, "run_name": "agent-turn"})
     turn = current_turn(state["messages"])
-    answer = turn[-1].content
+    answer = turn[-1].content if isinstance(turn[-1].content, str) else str(turn[-1].content)
+    turn_evidence = evidence(turn)
     return {
-        "status": "completed",
-        "answer": answer if isinstance(answer, str) else str(answer),
+        # status = where the workflow got to. A handoff waits for a human approval.
+        "status": "pending" if state.get("handoff") else "completed",
+        "answer": answer,
         "intent": state["plan"]["current_intent"],
         "scope": state["scope"],
         "loadout": state["loadout"],
         "tools_used": [m.name for m in turn if isinstance(m, ToolMessage)],
+        "sources_seen": sorted(sources_in(turn_evidence)),
+        "evidence_returned": bool(turn_evidence.replace("[]", "").strip()),
+        "citations": citation_report(answer, evidence(state["messages"])),
+        "constraints": state["plan"].get("relevant_constraints", []),
+        "memory": state.get("memory") or {},
+        "handoff": state.get("handoff"),
+        "checklist": state.get("checklist"),
     }
 
 
@@ -65,7 +76,7 @@ async def ask(message: str, caller_id: str, caller_group: str, thread_id: str | 
         with langfuse.start_as_current_observation(
                 as_type="agent", name=f"{caller_id} · {thread_id}", input=message) as root:
             try:
-                result = await _run_turn(message, caller_id, caller_group, thread_id)
+                result = await _run_turn(message, caller_id, caller_group, thread_id, request_id)
             except Exception as exc:          # a failure is reported truthfully, never hidden
                 result = {"status": "failed", "answer": f"The request failed: {exc}"}
             result.update(thread_id=thread_id, request_id=request_id,
@@ -74,6 +85,8 @@ async def ask(message: str, caller_id: str, caller_group: str, thread_id: str | 
                 "request_id": request_id, "caller_id": caller_id, "caller_group": caller_group,
                 "scope": result.get("scope"), "intent": result.get("intent"),
                 "loadout": result.get("loadout"), "tool_sequence": result.get("tools_used"),
+                "sources_seen": result.get("sources_seen"), "citations": result.get("citations"),
+                "handoff": result.get("handoff"), "checklist": result.get("checklist"),
                 "status": result["status"],
             })
             try:
@@ -92,9 +105,13 @@ def main() -> None:
     p.add_argument("--thread")
     args = p.parse_args()
     r = asyncio.run(ask(args.message, args.caller_id, args.group, args.thread))
-    for key in ("status", "thread_id", "intent", "scope", "loadout", "tools_used", "trace_id", "trace_url"):
+    for key in ("status", "thread_id", "intent", "scope", "loadout", "tools_used", "sources_seen",
+                "citations", "handoff", "trace_id", "trace_url"):
         print(f"{key:<11}{r.get(key)}")
     print(f"\n{r['answer']}\n")
+    if r.get("checklist"):
+        import json
+        print("checklist:", json.dumps(r["checklist"], indent=2))
 
 
 if __name__ == "__main__":

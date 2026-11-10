@@ -9,6 +9,7 @@ Visibility is NOT authorization. Whether a write may run is decided separately, 
 `write_gate.released_writes`, against a recorded approval. Nothing here can release a write.
 """
 import json
+import re
 from typing import Literal
 
 from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
@@ -35,7 +36,8 @@ LOADOUTS: dict[str, list[str] | None] = {
     "employee_lookup": ["get_employee", "search_documents"],
     "onboarding_status": ["get_employee", "list_onboarding_tasks", "check_asset_inventory",
                           "check_software_subscription", "search_documents", "get_policy"],
-    "equipment_request": ["get_employee", "check_asset_inventory", "search_documents", "get_policy"],
+    "equipment_request": ["get_employee", "check_asset_inventory", "list_onboarding_tasks",
+                          "search_documents", "get_policy"],
     "subscription_review": ["check_software_subscription", "search_documents", "get_policy"],
     "access_request": ["get_employee", "check_software_subscription", "list_employee_tickets",
                        "search_documents", "get_policy"],
@@ -47,29 +49,58 @@ LOADOUTS: dict[str, list[str] | None] = {
 CALLER_TOOLS = {"search_documents"}
 
 
+RequestType = Literal["lookup", "recall", "summary", "draft", "pasted_text", "action"]
+
+
 class TurnPlan(BaseModel):
-    """The planner's reading of the newest message (Lesson 10's TurnPlan)."""
+    """The planner's reading of the newest message (Lesson 10's TurnPlan).
+
+    Measured (docs/OBSTACLES.md #12): asked a yes/no "does this need a tool?", the planner
+    said no on new-topic lookups and the answer model invented facts. So the planner now
+    CLASSIFIES the request, and code derives whether evidence must be gathered."""
 
     current_intent: Intent = Field(description="Topic of the newest message.")
+    request_type: RequestType = Field(
+        default="lookup",
+        description=("lookup = needs a record or document (DEFAULT, and always for a new topic or "
+                     "'what is the state now'); recall = restate something already said or already "
+                     "returned by a tool in this conversation; summary = write up what was already "
+                     "established; draft = compose text; pasted_text = work out what a message or "
+                     "thread pasted in THIS turn says; action = asks to file or create something."))
     relevant_facts: list[str] = Field(
         default_factory=list,
         description="Values from earlier turns this answer needs (ids, dates, numbers) — the value itself.")
     relevant_constraints: list[str] = Field(
         default_factory=list, description="Rules the user stated that are still in force.")
-    requires_tools: bool = Field(
-        description="False only if every fact needed is already in this conversation.")
     action_requested: bool = Field(
         default=False,
         description=("True only if THIS message asks to create or file a record ('go ahead', "
                      "'file it'). Drafting or writing text is NOT a request to file."))
 
+    @property
+    def requires_tools(self) -> bool:
+        """Derived by code, not chosen by the model: only a lookup gathers evidence."""
+        return self.request_type == "lookup"
+
+
+def unverified_employee_id(args: dict, caller_id: str, known_text: str) -> str | None:
+    """An `employee_id` argument must be the caller's own, or appear in a tool result or the
+    user's words. Measured: the model guessed 'Rachel Stein (E002)' — the real id is E010 —
+    and reported she had no ticket (docs/OBSTACLES.md #10). Returns the offending id."""
+    emp = args.get("employee_id")
+    if emp and (not re.fullmatch(r"E\d{3}", emp) or (emp != caller_id and emp not in known_text)):
+        return emp      # a name passed as an id, or an id nobody established
+    return None
+
 
 def enforce_evidence(plan: TurnPlan, has_evidence: bool) -> TurnPlan:
     """Deterministic override of the planner: with no tool result anywhere in the
     conversation yet, a lookup is REQUIRED. Measured: on a first-turn policy question the
-    planner returned requires_tools=False and the model answered from nothing, with
-    invented citations (docs/OBSTACLES.md #5)."""
-    return plan if has_evidence or plan.requires_tools else plan.model_copy(update={"requires_tools": True})
+    planner skipped tools and the model answered from nothing, with invented citations
+    (docs/OBSTACLES.md #5)."""
+    if has_evidence or plan.requires_tools or plan.action_requested:
+        return plan
+    return plan.model_copy(update={"request_type": "lookup"})
 
 
 def select_tools(plan: TurnPlan, all_read_tools: list[str]) -> list[str]:
@@ -77,7 +108,8 @@ def select_tools(plan: TurnPlan, all_read_tools: list[str]) -> list[str]:
     if not plan.requires_tools:
         return []
     chosen = LOADOUTS.get(plan.current_intent)
-    return sorted(all_read_tools) if chosen is None else list(chosen)
+    # Only tools the server actually serves: a missing one is dropped, not a crash.
+    return sorted(all_read_tools) if chosen is None else [n for n in chosen if n in all_read_tools]
 
 
 PLANNER_PROMPT = (
@@ -95,8 +127,16 @@ PLANNER_PROMPT = (
     "- Classify the newest message only; follow topic changes.\n"
     "- relevant_facts / relevant_constraints carry what later turns need; drop what the user closed.\n"
     "- Users paste emails, threads and signatures: plan for the request inside, not the boilerplate.\n"
-    "- requires_tools is True unless the answer can be quoted from THIS conversation.\n"
-    "- action_requested only when this message asks to file or create something."
+    "- request_type decides whether evidence is gathered. Use lookup unless the user clearly asks to "
+    "recall/restate, summarise, draft, or read a message pasted in this turn. A new topic, a rule, "
+    "threshold, owner or date no tool result here states, or 'what is it now / after that' is a lookup. "
+    "A user's mention of a rule is not its content.\n"
+    "- A DIFFERENT TOPIC needs a different document or record: having looked up the laptop does not "
+    "answer a question about monitors.\n"
+    "- action_requested only when this message asks to file or create something (request_type action).\n"
+    "- You get distilled session memory plus the raw conversation since it was written. "
+    "Memory is history, not this turn. Checklists, seat counts, tickets and inventory in memory "
+    "are a SNAPSHOT: if the user asks what the state is NOW, it is a lookup."
 )
 
 ANSWER_PROMPT = (
@@ -104,15 +144,26 @@ ANSWER_PROMPT = (
     "The person asking is employee {caller_id} ({caller_group}). 'I', 'me' and 'my' mean "
     "{caller_id}: use that id directly in tool calls and never ask the user for it.\n"
     "- Answer ONLY from tool results in this conversation. If you have none for a claim, call a "
-    "tool; if no tool can answer, say what is missing. Never invent a person, a number, a "
-    "policy rule, a record or a document, and never cite a source no tool returned.\n"
-    "- Cite after every claim: documents as [documents/<collection>/<file> § <section>], "
-    "database records as [record: <id>].\n"
+    "tool; if no tool can answer, say what is missing. Never invent a person, an id, a number, a "
+    "policy rule, a record or a document.\n"
+    "- Never guess another person's employee id: look them up with get_employee first.\n"
+    "- CITE after every claim by copying the `cite` value of the tool result it came from, e.g. "
+    "[record: OT005] or [documents/policies/equipment_policy.md § Personal laptops]. Never write a "
+    "citation that no tool returned.\n"
+    "- Be specific: give the exact ids, dates, amounts and statuses the tools returned. When you "
+    "identify a person, give their name AND employee id (first names collide).\n"
+    "- A status summary for a joiner states name, employee id, start date and location, then each "
+    "item with its status and cause as the records give it.\n"
+    "- A constraint the user mentioned (e.g. a spending freeze) is a rule to apply, not evidence of "
+    "why something is blocked. State causes only as the records give them.\n"
     "- If two sources disagree, the newer or more specific one governs — say which and why.\n"
-    "- If the evidence is missing, say what is missing instead of guessing.\n"
-    "- Never say an action was taken unless a tool result shows it. You cannot file, create "
-    "or approve anything in this conversation yet.\n"
-    "- Answer the current request in at most six sentences unless asked for more."
+    "- When the user pastes a message or thread and asks what applies to them, answer from that text, "
+    "list ONLY the items that are theirs, and cite it as (forwarded thread). Do not repeat other "
+    "people's items.\n"
+    "- Never say an action was taken unless a tool result shows it.\n"
+    "- If the user explicitly asks what the manager playbook or manager's guide says and no tool "
+    "returned it, say it is available to people managers only. Do not reconstruct it from other sources.\n"
+    "- Answer the current request in at most six sentences unless asked for more (a summary may be longer)."
 )
 
 
@@ -135,17 +186,21 @@ def render_transcript(messages: list, tool_chars: int = 400) -> str:
     return "\n".join(lines)
 
 
-def planner_messages(messages: list) -> list:
-    history = render_transcript(messages[:-1]) or "(this is the first turn)"
+def planner_messages(messages: list, memory_text: str, distilled_upto: int) -> list:
+    """Bounded planner context (Lesson 10 stage 3): memory + only the fresh messages."""
+    fresh = render_transcript(messages[distilled_upto:-1]) or "(nothing new)"
     return [SystemMessage(PLANNER_PROMPT),
-            HumanMessage(f"Conversation so far:\n{history}\n\nNewest message:\n{messages[-1].content}")]
+            HumanMessage(f"Session memory:\n{memory_text}\n\nConversation since then:\n{fresh}\n\n"
+                         f"Newest message:\n{messages[-1].content}")]
 
 
-def render_plan(plan: TurnPlan) -> str:
+def render_plan(plan: TurnPlan, memory_text: str = "") -> str:
     def bullets(items):
         return "\n".join(f"  - {i}" for i in items) if items else "  - (none)"
     return ("\n\n--- CONTEXT FOR THIS TURN ---\n"
             f"Current intent: {plan.current_intent}\n"
             f"Established facts:\n{bullets(plan.relevant_facts)}\n"
-            f"Constraints still in force:\n{bullets(plan.relevant_constraints)}\n"
-            "--- END CONTEXT ---")
+            "Rules the USER stated (instructions to follow — NOT facts, and never the cause of a "
+            f"blocked item):\n{bullets(plan.relevant_constraints)}\n"
+            + (f"Session memory:\n{memory_text}\n" if memory_text else "")
+            + "--- END CONTEXT ---")

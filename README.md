@@ -8,7 +8,7 @@ operational database and governed actions. Built milestone by milestone against
 |---|---|
 | 1 · Foundation — corpus indexed, database loaded, MCP server, one model seam | ✅ built |
 | 2 · Agent loop (classify → scope → evidence → answer, write gate) | ✅ built |
-| 3 · Maya (HR & onboarding) | ⏳ |
+| 3 · Maya (HR & onboarding) | 🔶 built, measuring against S2/S9 |
 | 4 · Webex (IT operations) | ⏳ |
 | 5 · Observability (Langfuse) | 🔶 tracing bound; scoring next |
 | 10 · Submission | ⏳ |
@@ -39,10 +39,15 @@ streamable HTTP) as the tool boundary · Langfuse for tracing (Milestone 5).
 | Caller id is an application input: hidden from the model, injected by the tools node | `graph.model_schema`, `graph.build_graph.run_tools` |
 | Conversation state survives a restart (SQLite checkpointer) | [`novaops/agent/run.py`](novaops/agent/run.py) |
 | Single entry point into the agent | `run.ask()` |
+| Distilled named memory carries constraints across turns; unsafe memory rejected | [`novaops/agent/memory.py`](novaops/agent/memory.py), ADR 0005 |
+| Maya never files: an action request becomes a typed `AccessRequestIntent`, status `pending` | `graph.handoff`, [`novaops/agent/contracts.py`](novaops/agent/contracts.py) |
+| `OnboardingChecklist`: every item cited, citations must exist in tool evidence, blocked needs a reason | `graph.checklist`, `contracts.checklist_errors` |
+| Invented citations are detected | `contracts.citation_report` |
+| Golden sessions replayed and scored on the binding fields + our own checks | [`evals/golden_replay.py`](evals/golden_replay.py) |
 | Every node / Bedrock call / MCP call is a Langfuse span (callback bound to the graph) | `graph.build_graph` (last line) |
 | Trace metadata: request_id, caller id+group, scope, intent, loadout, tool sequence, terminal `status`; session = thread | `run.ask` |
 | A failure ends as `status: failed` with the reason, never as a fluent answer | `run.ask` |
-| Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py) |
+| Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py), [`tests/test_maya.py`](tests/test_maya.py) |
 
 Design decisions are recorded as ADRs in [`docs/adr/`](docs/adr/); problems hit along the way and how they were solved are in [`docs/OBSTACLES.md`](docs/OBSTACLES.md).
 
@@ -68,6 +73,7 @@ python -m pytest -q                       # no AWS needed
 python scripts/check_langfuse.py          # keys reach the Langfuse project
 python -m novaops.rag.store               # once: build the index (470 chunks)
 python evals/retrieval_eval.py            # retrieval recall + permission boundary
+python evals/golden_replay.py             # S1/S2/S9 through the agent (server must run)
 python server/server.py                   # terminal 1 — MCP on 127.0.0.1:9880
 python scripts/ask.py E010 "Can I use my personal laptop for work?"   # terminal 2: retrieval only
 python -m novaops.agent.run E010 "Can I use my personal laptop for work?"          # the agent

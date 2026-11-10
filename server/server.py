@@ -24,12 +24,18 @@ mcp = FastMCP("novaops-brain", host=config.MCP_HOST, port=config.MCP_PORT)
 POLICIES_DIR = config.DOCS_DIR / "policies"
 
 
+def cited(rows: list[dict], key: str) -> list[dict]:
+    """Every record carries its own ready-made citation. Measured: without it the model
+    rarely cited database facts in the required form (docs/OBSTACLES.md #10)."""
+    return [{"cite": f"[record: {r[key]}]", **r} for r in rows]
+
+
 @mcp.tool()
 def search_documents(query: str, caller_id: str, collections: list[str] | None = None) -> list[dict]:
     """Search NovaOps documents: policies, internal memos, IT knowledge base, vendor
     contracts, employment records, the employee handbook and the manager playbook.
     Results are already filtered to what the caller may see. Cite every hit you use by
-    its `source` and `section`. A newer or more specific document (see `doc_date`)
+    copying its `cite` value. A newer or more specific document (see `doc_date`)
     overrides an older or more general one.
 
     Args:
@@ -38,7 +44,8 @@ def search_documents(query: str, caller_id: str, collections: list[str] | None =
         collections: Optional narrowing — any of policies, internal_memos, it_kb,
             contracts, employment, handbook, manager_playbook.
     """
-    return retrieval.search(query, caller_id, collections)
+    return [{"cite": f"[{h['source']} § {h['section']}]", **h}
+            for h in retrieval.search(query, caller_id, collections)]
 
 
 @mcp.tool()
@@ -54,14 +61,16 @@ def get_policy(name: str) -> dict:
     path = POLICIES_DIR / f"{name}.md"
     if not path.is_file():
         raise ValueError(f"No policy named {name!r}. Call list_policies for valid names.")
-    return {"source": f"documents/policies/{path.name}", "text": path.read_text(encoding="utf-8")}
+    source = f"documents/policies/{path.name}"
+    return {"cite": f"[{source} § (whole document)]", "source": source,
+            "text": path.read_text(encoding="utf-8")}
 
 
 @mcp.tool()
 def get_employee(query: str) -> list[dict]:
     """Look up employees by id ('E001'), email, or (partial) name. Names collide —
     two people can share a first name; confirm which one is meant."""
-    return db.get_employee(query)
+    return cited(db.get_employee(query), "employee_id")
 
 
 @mcp.tool()
@@ -69,25 +78,27 @@ def check_software_subscription(software: str) -> list[dict]:
     """Seat usage for a SaaS subscription (seat_limit, active_seats, over_limit),
     plus contract id, annual cost and renewal date. Use when someone cannot get a
     licence. Records seat COUNTS only — not which employee holds a seat."""
-    return db.check_software_subscription(software)
+    return cited(db.check_software_subscription(software), "subscription_id")
 
 
 @mcp.tool()
 def list_onboarding_tasks(employee_id: str) -> list[dict]:
-    """An employee's onboarding checklist — the system of record. Watch for 'blocked'."""
-    return db.list_onboarding_tasks(employee_id)
+    """An employee's onboarding checklist — the system of record for joiners. Use it for
+    "what's left / what's open" and for "when will I get my laptop / access": each task
+    (equipment preparation, Okta, licences) has a status and a due date. Watch for 'blocked'."""
+    return cited(db.list_onboarding_tasks(employee_id), "task_id")
 
 
 @mcp.tool()
 def check_asset_inventory(asset_type: str = "", location: str = "") -> list[dict]:
     """Hardware on hand (laptops, monitors, docks, headsets); both filters optional."""
-    return db.check_asset_inventory(asset_type, location)
+    return cited(db.check_asset_inventory(asset_type, location), "asset_id")
 
 
 @mcp.tool()
 def list_employee_tickets(employee_id: str, status: str = "") -> list[dict]:
     """IT tickets raised by or for one employee. Check here before opening anything new."""
-    return db.list_employee_tickets(employee_id, status)
+    return cited(db.list_employee_tickets(employee_id, status), "ticket_id")
 
 
 if __name__ == "__main__":

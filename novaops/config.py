@@ -10,6 +10,10 @@ from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv())
 
+# Langfuse's default export timeout is a few seconds; a slow upload dropped a span batch
+# during a golden replay (docs/OBSTACLES.md #12). Traces are the submission, so be patient.
+os.environ.setdefault("LANGFUSE_TIMEOUT", "30")
+
 ROOT = Path(__file__).resolve().parents[1]
 
 # The supplied dataset is NOT copied into this repo (it contains restricted documents
