@@ -55,3 +55,11 @@ def test_trace_ids_land_in_their_own_rows(tmp_path, monkeypatch):
     text = (tmp_path / "SUBMISSION.md").read_text(encoding="utf-8")
     assert "| `M-I-01` | — | `abc` |" in text and "| `M-S-01` | 10 | `def` |" in text
     assert "| `M-S-01` | 1 | |" in text                     # turn 1 untouched (no 1 vs 10 mix-up)
+
+
+def test_every_submission_turn_has_an_expectation():
+    for item in run_submission.items(None):
+        for turn, _ in item["turns"]:
+            session_id, expected = run_submission.expectation(item["id"], turn)
+            assert expected.get("required_facts") or expected.get("forbidden_tools") or "should_use_tools" in expected
+    assert run_submission.expectation("W-S-01", 4)[0].startswith("S8")

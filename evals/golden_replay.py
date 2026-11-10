@@ -37,7 +37,14 @@ GOLDEN = config.DATASET_DIR.parent / "GOLDEN-DATASETS.json"
 GROUP_NAMES = {"UG_REGULAR": "Regular Employee", "UG_HR": "HR Group", "UG_IT": "IT Group"}
 # Constraint-carry checks: (session prefix, turn) -> words one of which must appear in the
 # constraints the agent carried into that turn.
-CONSTRAINT_CARRY = {("S2", 9): ["freeze"]}
+CONSTRAINT_CARRY = {
+    ("S2", 9): ["freeze"],                                  # turn-1 freeze still binds on turn 9
+    ("S4", 5): ["7,500", "7500"],                           # turn-1 threshold, four lookups later
+    ("S4", 7): ["file", "filing", "explicit", "until"],     # turn-1 "don't file until I say so"
+}
+# Closed-branch checks (spec M3 "a closed topic stops driving tool choice"): once the user
+# closes a branch on turn n, its tools must not fire on ANY later turn of the session.
+CLOSED_BRANCH = {"S3": (3, {"check_software_subscription"})}     # S3 t3: "treat it as resolved"
 
 
 def matches(text: str, expectation: str) -> bool:
@@ -77,6 +84,10 @@ def check_turn(session_id: str, turn: dict, r: dict) -> dict:
     if words:
         carried = " ".join(r.get("constraints", []) + r.get("memory", {}).get("active_constraints", []))
         checks["constraint"] = (any(w in carried.lower() for w in words), carried[:200])
+    closed = CLOSED_BRANCH.get(session_id.split("-")[0])
+    if closed and turn["n"] > closed[0]:
+        fired = sorted(set(tools) & closed[1])
+        checks["closed_branch"] = (not fired, fired)
     if r.get("status") == "failed":
         checks["status"] = (False, r.get("answer"))
     return checks

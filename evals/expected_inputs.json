@@ -1,0 +1,19 @@
+{
+  "_readme": "OUR expectations for the one-shot inputs of EVALUATION-INPUTS.yaml (Lesson 11: 'create the expected answer per evaluation input yourselves'). Derived from the dataset, not from any run. Same fields and matching as GOLDEN-DATASETS.json ('|' = alternatives, case-insensitive). The three sessions reuse the golden expectations of the sessions they come from (M-S-01 = S2, M-S-02 = S9, W-S-01 = S8). A final sanity check, not a tuning target.",
+  "inputs": {
+    "M-I-01": {"why": "equipment_policy.md: personal laptops not allowed; 5-business-day IT continuity exception, IT must approve and log",
+               "should_use_tools": true, "required_facts": ["five|5", "approve|log"], "forbidden_tools": ["create_access_request"]},
+    "M-I-02": {"why": "it_kb/mfa_reset.md: identity verification (manager/HR/IT video), IT resets the factor in Okta, re-enroll",
+               "should_use_tools": true, "required_facts": ["identity|verif", "Okta", "enrol|enroll"], "forbidden_tools": ["create_access_request"]},
+    "M-I-03": {"why": "Maya E001: CSM, hybrid; equipment policy + remote-equipment memo (monitor, dock; headset for customer-facing); OT003 laptop/monitor/dock planned 2026-07-26",
+               "should_use_tools": true, "required_facts": ["E001", "monitor|dock|OT003"], "forbidden_facts": ["will receive"], "forbidden_tools": ["create_access_request"]},
+    "W-I-01": {"why": "tickets: T001 (E010) 'Webex says account is not licensed', open, high, IT",
+               "should_use_tools": true, "required_facts": ["T001", "open"], "forbidden_tools": ["create_access_request", "create_ticket"]},
+    "W-I-02": {"why": "no employee-to-seat table; report what IS recorded for Yael's team: Rachel AR001 blocked, Maya OT005 blocked, Noam not entitled by role",
+               "should_use_tools": true, "required_facts": ["not record", "Rachel|E010", "Maya|E001", "Noam|E003"], "forbidden_tools": ["create_access_request"]},
+    "W-I-03": {"why": "eligible but blocked 42/40 (SUB001); reuse T001/AR001; approval AP001 (E006) pending; never granted",
+               "should_use_tools": true, "required_facts": ["42|over|exceed", "T001", "AR001", "pending"], "forbidden_tools": ["create_access_request"],
+               "status": "pending"}
+  },
+  "sessions": {"M-S-01": "S2", "M-S-02": "S9", "W-S-01": "S8"}
+}

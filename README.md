@@ -58,7 +58,11 @@ streamable HTTP) as the tool boundary · Langfuse for tracing (Milestone 5).
 | The judge's evidence is on the span it reads (`$.trajectory.calls` / `.state`) | `run.trajectory` |
 | Deterministic score `golden_pass` written onto each replayed turn's trace | `evals/golden_replay.py` |
 | Read a trace back as text (v2 API) | [`scripts/show_trace.py`](scripts/show_trace.py) |
-| Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py), [`tests/test_maya.py`](tests/test_maya.py), [`tests/test_webex.py`](tests/test_webex.py), [`tests/test_observability.py`](tests/test_observability.py) |
+| A closed branch must not drive later tool choice (S3); a turn-1 rule still binds on S4 t5/t7 | `golden_replay.CLOSED_BRANCH`, `CONSTRAINT_CARRY` |
+| Our own expected answers for the 27 submission turns, scored onto each trace as `expected_pass` | [`evals/expected_inputs.json`](evals/expected_inputs.json), [`evals/run_submission.py`](evals/run_submission.py) |
+| Submission run follows spec 13 (reseed per case, one thread per session, pinned clock, one trace per turn) and fills the trace index | `evals/run_submission.py` |
+| Project-level agent control: a hook that blocks weakening tests; skills for measuring and logging | [`.claude/settings.json`](.claude/settings.json), [`.claude/hooks/protect_tests.py`](.claude/hooks/protect_tests.py), [`.claude/skills/`](.claude/skills/) |
+| Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py), [`tests/test_maya.py`](tests/test_maya.py), [`tests/test_webex.py`](tests/test_webex.py), [`tests/test_observability.py`](tests/test_observability.py), [`tests/test_harness.py`](tests/test_harness.py) |
 
 ## Measured: a judge and a check that disagree (Lesson 11)
 
@@ -76,7 +80,28 @@ workflow then reads the records and files (or reuses) the approval request in th
 its own `approval-workflow` span, and returns `pending`. Our scorer counts those reads as the turn's
 tools, so it reports this turn as a miss, and we leave it visible rather than redefine the check.
 
-Design decisions are recorded as ADRs in [`docs/adr/`](docs/adr/); problems hit along the way and how they were solved are in [`docs/OBSTACLES.md`](docs/OBSTACLES.md).
+## Course stages (spec 15–16)
+
+| Stage | Status | Evidence |
+|---|---|---|
+| Lesson 11 — observability and evals (required) | ✅ | tracing bound to the graph; trace metadata; `golden_pass` / `expected_pass` scores; 3 Langfuse judges (ADR 0007) |
+| Lesson 12 — eval loop engineering | ✅ | the improvement log below: honest baseline first, one change per measured round, a gate the loop cannot cheat (`pytest` + `.claude/hooks/protect_tests.py`), a human accepted every change, before/after in `docs/OBSTACLES.md` |
+| Lesson 13 — guardrails | not part of this project (spec 13) | — |
+| Lesson 14 — packaging and deployment | ⏳ | — |
+
+### Improvement log (golden S1/S2/S9, 21 turns)
+
+| Round | Change (docs/OBSTACLES.md) | Score |
+|---|---|---|
+| baseline | first full agent | 8/21 |
+| 2–3 | id guard, `cite` on every record, request types (#10–12) | 12 → 16 |
+| 4–7 | verified recall, forced tool use, verifier bugs (#13–16) | 15 → 14 → 16 → 17 |
+| 8 (3 runs) | measured as a mean from here on | mean 15.0 |
+| 9 (3 runs) | quote citation strip, subscription tool, pasted-thread rule (#17) | mean 16.0 |
+| 10 (3 runs) | per-line quote check, threshold/date rules (#18) | mean 17.67 |
+| 11 | app-attached sources, recite on invented citation, pinned clock (#19) | 19/21 |
+
+ in [`docs/adr/`](docs/adr/); problems hit along the way and how they were solved are in [`docs/OBSTACLES.md`](docs/OBSTACLES.md).
 
 ## Permission rule (spec section 12)
 

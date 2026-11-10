@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from novaops import config  # noqa: E402,F401  (loads the shared .env)
 from langfuse import get_client  # noqa: E402
 
-NAMES = ("golden_pass", "faithfulness", "citation_quality", "no_overclaim")
+NAMES = ("golden_pass", "expected_pass", "faithfulness", "citation_quality", "no_overclaim")
 
 
 def scores_for(api, trace_id: str) -> dict:

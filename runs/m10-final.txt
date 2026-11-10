@@ -1,0 +1,32 @@
+9 items, 27 turns, clock 2026-07-01
+
+  M-I-01  t-   completed   policy_question      trace=a5be6972edf47d3b6d589ea5702e4c9b
+  M-I-02  t-   completed   policy_question      trace=391c7f4cfc26137d9381489035c75b83
+  M-I-03  t-   completed   equipment_request    trace=9ff157a7c57afa26fbdd46410b4dfe50
+  M-S-01  t1   completed   onboarding_status    trace=eafe7e58fecd475f4f32b5de7e81acb5
+  M-S-01  t2   completed   onboarding_status    trace=a316e493a50eb895c75487e4ad5c9cab
+  M-S-01  t3   completed   onboarding_status    trace=e41d686e1008477da6a5a006f6949053
+  M-S-01  t4   completed   ticket_status        trace=cbb8c027eca437fd385309788e325c06
+  M-S-01  t5   completed   equipment_request    trace=6bcee64a03ab79cb8d03bb55a936d1d1
+  M-S-01  t6   completed   equipment_request    trace=e223a6bd8498290670782610d831cdd8
+  M-S-01  t7   completed   onboarding_status    trace=eaf2994777d36ea4766ebbb20aa88c4b
+  M-S-01  t8   completed   subscription_review  trace=607d15ef5fc7c084eeb06df32ddbcff3
+  M-S-01  t9   completed   policy_question      trace=66356293d4e10d8653d0d86574b70a29
+  M-S-01  t10  pending     access_request       trace=60e9f34275144094ccdf119377cf6e92
+  M-S-01  t11  completed   onboarding_status    trace=fed2eaead41284e69c1d08299f4b4f9e
+  M-S-01  t12  completed   onboarding_status    trace=6e1ab9e71f264454738accebb3c6c72d
+  M-S-02  t1   completed   policy_question      trace=a85176e5be6aa27e7d1fac6f3911f4e5
+  M-S-02  t2   completed   policy_question      trace=b2ba7a49975a0ee14a2df789b43f2219
+  M-S-02  t3   completed   equipment_request    trace=25d22e759ac572600a58f902bb998fbc
+  M-S-02  t4   completed   policy_question      trace=c40ad65f59f5d2f0914ff1dbfeaf6599
+  M-S-02  t5   completed   equipment_request    trace=9c9ae9e72ed6acd5cbfe2c0106365ad9
+  W-I-01  t-   completed   ticket_status        trace=25e5d7ef50785aa84d0f2b8f6dbb17e2
+  W-I-02  t-   completed   subscription_review  trace=896ac032ec42da65bd739f8346f38f6f
+  W-I-03  t-   pending     access_request       trace=053f2f72187f5900ae72b731220bfc9d
+  W-S-01  t1   completed   policy_question      trace=165673723877c626e3fc18b6ddec38d2
+  W-S-01  t2   completed   employee_lookup      trace=ce4491d86522d61f7b94ff8507f38694
+  W-S-01  t3   completed   access_request       trace=5f2b853a264c20b3196128eb057a36b9
+  W-S-01  t4   pending     access_request       trace=b7a7d792eaef3ac0ec3d78bb2f2442d3
+
+27 traces · statuses ['completed', 'pending'] · saved evals\results\submission-all-20261110-2111.json
+trace ids written to SUBMISSION.md

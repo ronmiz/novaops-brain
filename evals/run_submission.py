@@ -27,14 +27,28 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(Path(__file__).parent))
 
 from novaops import config, db  # noqa: E402
 from novaops.agent.run import ask, langfuse  # noqa: E402
+import golden_replay  # noqa: E402  (same directory: the same checks the golden replay uses)
 
 INPUTS = config.DATASET_DIR.parent / "EVALUATION-INPUTS.yaml"
 TEMPLATE = config.DATASET_DIR.parent / "SUBMISSION.md"
 SUBMISSION = ROOT / "SUBMISSION.md"
 REQUIRED = ("maya", "webex")
+EXPECTED = json.loads((Path(__file__).parent / "expected_inputs.json").read_text(encoding="utf-8"))
+
+
+def expectation(item_id: str, turn: int | None) -> tuple[str, dict]:
+    """(session id for the carry checks, the turn's expectations) — ours for the one-shot
+    inputs, the golden session's for the three sessions (evals/expected_inputs.json)."""
+    if item_id in EXPECTED["inputs"]:
+        return item_id, {"n": 0, **EXPECTED["inputs"][item_id]}
+    golden_id = EXPECTED["sessions"][item_id]
+    session = next(s for s in json.loads(golden_replay.GOLDEN.read_text(encoding="utf-8"))["sessions"]
+                   if s["id"].startswith(golden_id))
+    return session["id"], next(t for t in session["turns"] if t["n"] == turn)
 
 
 def items(only: list[str] | None) -> list[dict]:
@@ -57,11 +71,22 @@ async def run_item(item: dict) -> list[dict]:
     rows = []
     for turn, message in item["turns"]:
         r = await ask(message, item["caller"]["employee_id"], item["caller"]["group"], thread)
+        session_id, expected = expectation(item["id"], turn)
+        checks = golden_replay.check_turn(session_id, expected, r)
+        if expected.get("status"):
+            checks["status"] = (r.get("status") == expected["status"], r.get("status"))
+        failed = {k: v[1] for k, v in checks.items() if not v[0]}
+        if r.get("trace_id"):
+            langfuse.create_score(trace_id=r["trace_id"], name="expected_pass", value=0.0 if failed else 1.0,
+                                  data_type="NUMERIC", comment=json.dumps(failed, ensure_ascii=False)[:500] or None)
         rows.append({"item": item["id"], "turn": turn, "thread_id": thread, "trace_id": r.get("trace_id"),
+                     "pass": not failed, "failed": failed,
                      "status": r.get("status"), "intent": r.get("intent"), "tools_used": r.get("tools_used"),
                      "access_decision": r.get("access_decision"), "answer": r.get("answer")})
-        print(f"  {item['id']:<7} t{turn or '-':<3} {r.get('status'):<11} {r.get('intent') or '-':<20} "
-              f"trace={r.get('trace_id')}")
+        print(f"  {item['id']:<7} t{turn or '-':<3} {'PASS' if not failed else 'FAIL'}  {r.get('status'):<11} "
+              f"{r.get('intent') or '-':<20} trace={r.get('trace_id')}")
+        for k, v in failed.items():
+            print(f"           x {k}: {v}")
     return rows
 
 
@@ -91,7 +116,8 @@ async def main() -> None:
     out = ROOT / "evals" / "results" / f"submission-{tag}-{datetime.now():%Y%m%d-%H%M}.json"
     out.parent.mkdir(exist_ok=True)
     out.write_text(json.dumps(rows, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"\n{len(rows)} traces · statuses {sorted({r['status'] for r in rows})} · saved {out.relative_to(ROOT)}")
+    print(f"\n{len(rows)} traces · {sum(r['pass'] for r in rows)}/{len(rows)} meet our expectations · "
+          f"statuses {sorted({r['status'] for r in rows})} · saved {out.relative_to(ROOT)}")
     if args.write_submission:
         fill_submission(rows)
         print(f"trace ids written to {SUBMISSION.relative_to(ROOT)}")

@@ -282,3 +282,14 @@ def test_a_pasted_thread_answer_keeps_only_the_callers_items():
          "Everything else (Okta groups, Datadog renewal, Webex seat) belongs to IT or Yael [forwarded thread].")
     out = contracts.only_theirs(a)
     assert "Datadog" not in out and "BambooHR" in out and out.endswith("[forwarded thread]")
+
+
+def test_a_closed_branch_must_not_drive_later_tool_choice():
+    r = {"answer": "x", "tools_used": ["check_software_subscription"], "citations": {}}
+    assert golden_replay.check_turn("S3-x", {"n": 5}, r)["closed_branch"][0] is False
+    assert "closed_branch" not in golden_replay.check_turn("S3-x", {"n": 2}, r)     # before the close
+
+
+def test_a_turn_one_rule_is_checked_where_it_must_bind():
+    r = {"answer": "x", "tools_used": [], "constraints": ["Finance sign-off above 7,500 under the Q3 freeze"]}
+    assert golden_replay.check_turn("S4-x", {"n": 5}, r)["constraint"][0] is True
