@@ -208,3 +208,9 @@ def test_approver_cli_finds_the_paused_thread_from_the_record():
     assert approve.subject_of(db.get_approval("AP001")) == ("E010", "Webex")          # via AR001
     ap = db.request_approval("access_request_intent", "E001:Webex", "E006", "x")
     assert approval.thread_for(*approve.subject_of(ap)) == "approval-E001-webex"
+
+
+def test_a_typo_in_a_name_still_finds_the_person():
+    rows = db.get_employee("rrachel stein")                     # S8 turn 2
+    assert [r["employee_id"] for r in rows] == ["E010"] and "matched_by" in rows[0]
+    assert db.get_employee("Nobody Atall") == []

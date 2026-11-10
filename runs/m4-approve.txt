@@ -1,0 +1,16 @@
+recorded: AP001 = approved by E006
+Webex access for E010: request on file (status: blocked). Access has not been granted.
+Blocked by: 42 of 40 Webex seats are in use — no free seat
+Observed:
+- Webex has 42 active seats against a 40-seat limit — over the limit [record: SUB001]
+- E010 is entitled to Webex by role [record: E010]
+- Access request AR001 is blocked: Eligible by department, but seats exceed contract limit. [record: AR001]
+- Approval AP001 (access_request) by E006 is approved [record: AP001]
+- Approval AP002 (subscription_expansion) by E011 is needed [record: AP002]
+- Ticket T001 'Webex says account is not licensed' is open [record: T001]
+Actions taken:
+- Reused existing ticket T001 — no new ticket created
+- Reused open approval AP001 for E006 — no new row
+- create_access_request released against recorded approval AP001: reused AR001 — no new row
+Next steps:
+- Free a seat or expand the subscription — expansion needs E011 (AP002)

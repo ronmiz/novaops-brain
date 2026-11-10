@@ -53,7 +53,9 @@ async def decide(approval_id: str, approver_id: str, approved: bool, reason: str
             span.update(output=decision_answer(d), metadata={"status": d.status, "decision": d.decision,
                                                              "approval_id": approval_id, "thread_id": thread})
     langfuse.flush()
-    return {"recorded": row, "resumed": True, "access_decision": d.model_dump(), "answer": decision_answer(d)}
+    url = f"{langfuse.get_trace_url(trace_id=trace_id)}" if trace_id else None
+    return {"recorded": row, "resumed": True, "access_decision": d.model_dump(), "answer": decision_answer(d),
+            "trace_url": url}
 
 
 def main() -> None:
@@ -65,9 +67,14 @@ def main() -> None:
     g.add_argument("--reject", action="store_true")
     p.add_argument("--reason", default="")
     args = p.parse_args()
-    out = asyncio.run(decide(args.approval_id, args.by, args.approve, args.reason))
+    try:
+        out = asyncio.run(decide(args.approval_id, args.by, args.approve, args.reason))
+    except (PermissionError, ValueError) as exc:      # refused by the record, reported plainly
+        raise SystemExit(f"refused: {exc}")
     print(f"recorded: {out['recorded']['approval_id']} = {out['recorded']['status']} by {out['recorded']['approver_id']}")
     print(out.get("answer") or out["note"])
+    if out.get("trace_url"):
+        print(f"\ntrace (same as the paused turn): {out['trace_url']}")
 
 
 if __name__ == "__main__":

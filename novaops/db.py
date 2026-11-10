@@ -4,6 +4,7 @@ Built from the supplied schema.sql + seed.sql. `reseed()` restores the seed stat
 the evaluation run reseeds before every independent case (spec section 13).
 The queries are Lesson 10's server/db.py, repointed at the project dataset.
 """
+import difflib
 import sqlite3
 from contextlib import closing
 
@@ -45,13 +46,21 @@ def is_manager(employee_id: str) -> bool:
 
 
 def get_employee(query: str) -> list[dict]:
-    """Every match — first names collide on purpose (two Mayas, two Saras, two Daniels)."""
-    return _rows(
+    """Every match — first names collide on purpose (two Mayas, two Saras, two Daniels).
+    No exact match -> the closest full-name spellings, flagged as such (S8: "rrachel stein")."""
+    rows = _rows(
         f"SELECT {EMPLOYEE_FIELDS} FROM employees "
         "WHERE employee_id = ? OR lower(email) = lower(?) OR lower(full_name) LIKE lower(?) "
         "ORDER BY full_name",
         (query, query, f"%{query}%"),
     )
+    if rows:
+        return rows
+    names = {r["full_name"].lower(): r["full_name"] for r in _rows("SELECT full_name FROM employees")}
+    close = difflib.get_close_matches(query.strip().lower(), list(names), n=3, cutoff=0.8)
+    return [{**r, "matched_by": f"closest spelling to {query!r}"}
+            for name in close for r in _rows(f"SELECT {EMPLOYEE_FIELDS} FROM employees WHERE full_name = ?",
+                                             (names[name],))]
 
 
 def check_software_subscription(software: str) -> list[dict]:

@@ -1,0 +1,18 @@
+
+S6-boundary-clean (E004, HR Group)
+  S6- t 1 FAIL  completed policy_question      lookup      tools=search_documents
+           ✗ required_facts: ['device|trust']
+  S6- t 2 PASS  completed employee_lookup      lookup      tools=get_employee
+  S6- t 3 PASS  completed access_request       draft       tools=-
+  S6- t 4 PASS  pending   access_request       action      tools=get_employee,check_software_subscription,list_access_requests,list_employee_tickets,request_approval,get_approval
+
+S8-boundary-heavy-noise (E004, HR Group)
+  S8- t 1 PASS  completed policy_question      lookup      tools=search_documents
+  S8- t 2 FAIL  completed employee_lookup      lookup      tools=get_employee
+           ✗ required_facts: ['E010']
+  S8- t 3 PASS  completed other                draft       tools=-
+  S8- t 4 FAIL  completed access_request       action      tools=-
+           ✗ should_use_tools: used=False
+
+TOTAL 5/8 turns pass all binding + own checks
+Saved evals\results\golden-S6-S8-20261110-1922.json

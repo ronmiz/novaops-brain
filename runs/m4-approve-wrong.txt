@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Ron\AI ENGINEER\lessons\novaops-brain\novaops\approve.py", line 74, in <module>
+    main()
+    ~~~~^^
+  File "C:\Ron\AI ENGINEER\lessons\novaops-brain\novaops\approve.py", line 68, in main
+    out = asyncio.run(decide(args.approval_id, args.by, args.approve, args.reason))
+  File "C:\Users\ronmi\AppData\Local\Programs\Python\Python314\Lib\asyncio\runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\ronmi\AppData\Local\Programs\Python\Python314\Lib\asyncio\runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\ronmi\AppData\Local\Programs\Python\Python314\Lib\asyncio\base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Ron\AI ENGINEER\lessons\novaops-brain\novaops\approve.py", line 39, in decide
+    row = db.record_approval(approval_id, approver_id, approved, reason)
+  File "C:\Ron\AI ENGINEER\lessons\novaops-brain\novaops\db.py", line 198, in record_approval
+    raise PermissionError(f"{approval_id} can only be decided by {row['approver_id']}, not {approver_id}.")
+PermissionError: AP001 can only be decided by E006, not E010.
