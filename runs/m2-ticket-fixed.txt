@@ -1,0 +1,9 @@
+status     completed
+thread_id  t-5057adfa
+intent     ticket_status
+scope      webex
+loadout    ['get_employee', 'list_employee_tickets']
+tools_used ['get_employee', 'list_employee_tickets']
+
+Your Webex login ticket (T001) is still open and assigned to IT. It was created on July 1st and categorized as a high-priority access issue regarding a Webex license.
+

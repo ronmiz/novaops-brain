@@ -7,10 +7,10 @@ operational database and governed actions. Built milestone by milestone against
 | Milestone | Status |
 |---|---|
 | 1 · Foundation — corpus indexed, database loaded, MCP server, one model seam | ✅ built |
-| 2 · Agent loop (classify → scope → evidence → answer, write gate) | ⏳ |
+| 2 · Agent loop (classify → scope → evidence → answer, write gate) | ✅ built |
 | 3 · Maya (HR & onboarding) | ⏳ |
 | 4 · Webex (IT operations) | ⏳ |
-| 5 · Observability (Langfuse) | ⏳ |
+| 5 · Observability (Langfuse) | 🔶 tracing bound; scoring next |
 | 10 · Submission | ⏳ |
 
 ## Stack
@@ -33,7 +33,16 @@ streamable HTTP) as the tool boundary · Langfuse for tracing (Milestone 5).
 | Chunking and final cut chosen by measurement (9/17 → 15/17 expected docs found) | [`docs/adr/0003-chunking-by-measurement.md`](docs/adr/0003-chunking-by-measurement.md), [`evals/retrieval_eval.py`](evals/retrieval_eval.py) |
 | Database is a file and can be reseeded | [`novaops/db.py`](novaops/db.py) |
 | Tools behind a server boundary | [`server/server.py`](server/server.py) |
-| Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py) |
+| One graph: classify → scope → model ↔ tools (+ one rearm) | [`novaops/agent/graph.py`](novaops/agent/graph.py) |
+| Scope decides visible tools; no write tool in any loadout | [`novaops/agent/policy.py`](novaops/agent/policy.py) `LOADOUTS`, `select_tools` |
+| The ONE function that can release a write — input is an approval record, never message text | [`novaops/agent/write_gate.py`](novaops/agent/write_gate.py) |
+| Caller id is an application input: hidden from the model, injected by the tools node | `graph.model_schema`, `graph.build_graph.run_tools` |
+| Conversation state survives a restart (SQLite checkpointer) | [`novaops/agent/run.py`](novaops/agent/run.py) |
+| Single entry point into the agent | `run.ask()` |
+| Every node / Bedrock call / MCP call is a Langfuse span (callback bound to the graph) | `graph.build_graph` (last line) |
+| Trace metadata: request_id, caller id+group, scope, intent, loadout, tool sequence, terminal `status`; session = thread | `run.ask` |
+| A failure ends as `status: failed` with the reason, never as a fluent answer | `run.ask` |
+| Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py) |
 
 Design decisions are recorded as ADRs in [`docs/adr/`](docs/adr/); problems hit along the way and how they were solved are in [`docs/OBSTACLES.md`](docs/OBSTACLES.md).
 
@@ -56,8 +65,11 @@ with `NOVAOPS_DATASET_DIR`. Credentials come from the shared `lessons/.env`; see
 ```bash
 python -m pip install -r requirements.txt
 python -m pytest -q                       # no AWS needed
+python scripts/check_langfuse.py          # keys reach the Langfuse project
 python -m novaops.rag.store               # once: build the index (470 chunks)
 python evals/retrieval_eval.py            # retrieval recall + permission boundary
 python server/server.py                   # terminal 1 — MCP on 127.0.0.1:9880
-python scripts/ask.py E010 "Can I use my personal laptop for work?"   # terminal 2
+python scripts/ask.py E010 "Can I use my personal laptop for work?"   # terminal 2: retrieval only
+python -m novaops.agent.run E010 "Can I use my personal laptop for work?"          # the agent
+python -m novaops.agent.run E010 "What is the status of my Webex login ticket?"
 ```

@@ -1,6 +1,13 @@
-# NovaOps company brain — Milestone 1 (foundation)
-boto3                 # Bedrock (Nova 2 Lite, Titan embeddings) + OpenSearch SigV4 credentials
-python-dotenv         # loads the shared lessons/.env
-opensearch-py         # Amazon OpenSearch Serverless client (Lesson 7)
-mcp<2                 # FastMCP server + client; pinned to 1.x like Lessons 9-10
+# NovaOps company brain
+boto3                         # Bedrock (Nova 2 Lite, Titan embeddings) + OpenSearch SigV4 credentials
+python-dotenv                 # loads the shared lessons/.env
+opensearch-py                 # Amazon OpenSearch Serverless client (Lesson 7)
+mcp<2                         # FastMCP server + client; pinned to 1.x like Lessons 9-10
+langgraph                     # the agent graph (Lesson 10 shape)
+langchain-aws                 # ChatBedrockConverse — used only via novaops/llm.py
+langchain-mcp-adapters        # MCP tools as LangChain tools
+langgraph-checkpoint-sqlite   # durable per-thread state (survives a restart)
+aiosqlite
+langchain                     # required by Langfuse's LangChain callback
+langfuse>=4.10,<5             # tracing — the submission channel (Lesson 11)
 pytest

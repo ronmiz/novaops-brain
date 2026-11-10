@@ -1,0 +1,9 @@
+status     completed
+thread_id  t-a9e76d83
+intent     policy_question
+scope      maya
+loadout    ['search_documents', 'list_policies', 'get_policy']
+tools_used ['get_policy']
+
+You cannot use your personal laptop for work, except in a very limited situation: IT may grant a five-business-day exception while your managed laptop is being repaired or replaced, but you must get IT approval and have them log the exception before using your personal machine [documents/policies/equipment_policy.md § Personal laptops].
+

@@ -17,6 +17,13 @@ def _bedrock():
     return boto3.client("bedrock-runtime", region_name=config.REGION)
 
 
+def chat_model(**kwargs):
+    """The LangChain chat model the agent graph uses — same Bedrock model, same seam."""
+    from langchain_aws import ChatBedrockConverse
+    return ChatBedrockConverse(model=config.MODEL_ID, region_name=config.REGION,
+                               temperature=0, **kwargs)
+
+
 def embed(text: str) -> list[float]:
     """Titan V2, normalized — so inner product == cosine (same as Lessons 6-7)."""
     resp = _bedrock().invoke_model(

@@ -1,0 +1,11 @@
+status     completed
+thread_id  t-546f9647
+intent     ticket_status
+scope      webex
+loadout    ['check_asset_inventory', 'check_software_subscription', 'get_employee', 'get_policy', 'list_employee_tickets', 'list_onboarding_tasks', 'list_policies', 'search_documents']
+tools_used []
+
+I can look up the status of your Webex login ticket, but I need your employee ID to proceed. Could you please provide your employee ID (e.g., E010)? This will allow me to check any tickets associated with your account. 
+
+Once I have your ID, I'll use the `list_employee_tickets` tool to find your Webex login ticket and report its current status.
+
