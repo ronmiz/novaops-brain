@@ -9,7 +9,7 @@ operational database and governed actions. Built milestone by milestone against
 | 1 · Foundation — corpus indexed, database loaded, MCP server, one model seam | ✅ built |
 | 2 · Agent loop (classify → scope → evidence → answer, write gate) | ✅ built |
 | 3 · Maya (HR & onboarding) | ✅ golden S1/S2/S9: 8/21 baseline → mean 17.67/21 over 3 runs → 19/21 |
-| 4 · Webex (IT operations) | 🔶 built + tested offline; live run next |
+| 4 · Webex (IT operations) | ✅ W-I-01/02/03 live; pause → approve in a new process → resume = one trace; S6/S8 8/8 (noise delta 0) |
 | 5 · Observability (Langfuse) | 🔶 tracing bound; scoring next |
 | 10 · Submission | ⏳ |
 
