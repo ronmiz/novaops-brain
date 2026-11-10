@@ -21,10 +21,12 @@ import uuid
 from langchain_core.messages import HumanMessage, ToolMessage
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langfuse import get_client, propagate_attributes
+from langfuse.langchain import CallbackHandler
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from .. import config
-from .contracts import attach_sources, citation_report, sources_in
+from . import approval
+from .contracts import attach_sources, citation_report, decision_answer, sources_in
 from .graph import build_graph, current_turn, evidence
 
 CHECKPOINT_DB = config.DB_PATH.parent / "checkpoints.db"
@@ -36,37 +38,60 @@ langfuse = get_client()   # reads LANGFUSE_PUBLIC_KEY / _SECRET_KEY / _BASE_URL;
 
 async def _run_turn(message: str, caller_id: str, caller_group: str, thread_id: str,
                     request_id: str) -> dict:
-    tools = await MultiServerMCPClient(
-        {"novaops": {"url": config.MCP_URL, "transport": "streamable_http"}}).get_tools()
+    tools = await load_tools()
     CHECKPOINT_DB.parent.mkdir(parents=True, exist_ok=True)
+    decision, workflow_tools = None, []
     async with AsyncSqliteSaver.from_conn_string(str(CHECKPOINT_DB)) as saver:
         graph = build_graph(tools, checkpointer=saver)
         state = await graph.ainvoke(
             {"messages": [HumanMessage(message)], "caller_id": caller_id, "caller_group": caller_group},
             config={"configurable": {"thread_id": thread_id, "request_id": request_id},
                     "recursion_limit": RECURSION_LIMIT, "run_name": "agent-turn"})
+        if state.get("handoff"):
+            # Webex consumes the handoff: file (or reuse) the approval request and pause. The
+            # pause lives on its own thread in the same SQLite file, so the conversation goes on
+            # and the approval survives a restart. Same trace: we are inside the turn's root span.
+            decision = await approval.start(approval_app(tools, saver, workflow_tools), state["handoff"],
+                                            langfuse.get_current_trace_id())
     turn = current_turn(state["messages"])
     answer = turn[-1].content if isinstance(turn[-1].content, str) else str(turn[-1].content)
     turn_evidence = evidence(turn)
     answer = attach_sources(answer, turn_evidence)
+    # Checked against tool evidence: what the MODEL wrote. The AccessDecision text below is
+    # rendered by code from the records the approval workflow read, citations included.
+    citations = citation_report(answer, evidence(state["messages"]))
+    if decision:
+        answer = f"{answer}\n\n{decision_answer(decision)}"
     return {
         # status = where the workflow got to. A handoff waits for a human approval.
-        "status": "pending" if state.get("handoff") else "completed",
+        "status": decision.status if decision else "pending" if state.get("handoff") else "completed",
         "answer": answer,
         "intent": state["plan"]["current_intent"],
         "request_type": state["plan"].get("request_type"),      # after code verification
         "answer_quote": state["plan"].get("answer_quote"),
         "scope": state["scope"],
         "loadout": state["loadout"],
-        "tools_used": [m.name for m in turn if isinstance(m, ToolMessage)],
+        # the model's tool calls, then the approval workflow's (application code, same turn)
+        "tools_used": [m.name for m in turn if isinstance(m, ToolMessage)] + workflow_tools,
         "sources_seen": sorted(sources_in(turn_evidence)),
         "evidence_returned": bool(turn_evidence.replace("[]", "").strip()),
-        "citations": citation_report(answer, evidence(state["messages"])),
+        "citations": citations,
         "constraints": state["plan"].get("relevant_constraints", []),
         "memory": state.get("memory") or {},
         "handoff": state.get("handoff"),
+        "access_decision": decision.model_dump() if decision else None,
         "checklist": state.get("checklist"),
     }
+
+
+async def load_tools() -> list:
+    return await MultiServerMCPClient(
+        {"novaops": {"url": config.MCP_URL, "transport": "streamable_http"}}).get_tools()
+
+
+def approval_app(tools: list, saver, log: list | None = None):
+    return approval.build_approval_graph(approval.mcp_caller({t.name: t for t in tools}, log), saver,
+                                         callbacks=[CallbackHandler()])
 
 
 async def ask(message: str, caller_id: str, caller_group: str, thread_id: str | None = None) -> dict:
@@ -90,6 +115,7 @@ async def ask(message: str, caller_id: str, caller_group: str, thread_id: str | 
                 "loadout": result.get("loadout"), "tool_sequence": result.get("tools_used"),
                 "sources_seen": result.get("sources_seen"), "citations": result.get("citations"),
                 "handoff": result.get("handoff"), "checklist": result.get("checklist"),
+                "access_decision": result.get("access_decision"),
                 "status": result["status"],
             })
             try:
@@ -109,7 +135,7 @@ def main() -> None:
     args = p.parse_args()
     r = asyncio.run(ask(args.message, args.caller_id, args.group, args.thread))
     for key in ("status", "thread_id", "intent", "scope", "loadout", "tools_used", "sources_seen",
-                "citations", "handoff", "trace_id", "trace_url"):
+                "citations", "handoff", "access_decision", "trace_id", "trace_url"):
         print(f"{key:<11}{r.get(key)}")
     print(f"\n{r['answer']}\n")
     if r.get("checklist"):

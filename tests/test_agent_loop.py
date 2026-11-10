@@ -10,7 +10,8 @@ from novaops.agent import graph, policy, write_gate
 
 READS = sorted(["search_documents", "list_policies", "get_policy", "get_employee",
                 "check_software_subscription", "list_onboarding_tasks",
-                "check_asset_inventory", "list_employee_tickets"])
+                "check_asset_inventory", "list_employee_tickets",
+                "list_access_requests", "check_team_system_access"])
 
 
 def plan(intent, requires_tools=True, action=False):

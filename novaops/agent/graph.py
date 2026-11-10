@@ -4,7 +4,8 @@
       |                                                v
       +--------------------------------------------> classify -> scope
                                                                   |
-              action requested (no write was released) -> handoff -> END
+   action requested, or a diagnosed access request -> handoff -> END
+   (run.py then starts the approval workflow, approval.py, on its own thread)
                                                                   |
                                                answer <-> tools (+ one rearm)
                                                   |
@@ -97,7 +98,7 @@ def evidence(messages: list) -> str:
 
 def build_graph(tools: list, checkpointer=None):
     by_name = {t.name: t for t in tools}
-    read_tools = sorted(n for n in by_name if n not in write_gate.WRITE_TOOLS)
+    read_tools = sorted(n for n in by_name if n not in write_gate.WRITE_TOOLS | policy.APP_TOOLS)
     schemas = {n: model_schema(t) for n, t in by_name.items()}
     planner = llm.chat_model().with_structured_output(policy.TurnPlan)
     distiller = llm.chat_model().with_structured_output(memory.ConversationMemory)
@@ -166,7 +167,8 @@ def build_graph(tools: list, checkpointer=None):
 
     # --- handoff: Maya proposes, never files --------------------------------------
     async def handoff(state: AgentState, config) -> dict:
-        context = (f"Session memory:\n{memory_text(state) or '(none)'}\n\n"
+        context = (f"The person asking is employee {state['caller_id']} ('I', 'me', 'my' = {state['caller_id']}).\n"
+                   f"Session memory:\n{memory_text(state) or '(none)'}\n\n"
                    f"Recent conversation:\n{policy.render_transcript(window(state['messages'], keep=4))}")
         try:
             proposal = await proposer.ainvoke([
@@ -175,17 +177,25 @@ def build_graph(tools: list, checkpointer=None):
                 HumanMessage(context)])
         except Exception:
             proposal = None
-        if proposal is None:                          # truthful: nothing was prepared, a human must look
+        if proposal is not None and policy.unverified_employee_id(
+                {"employee_id": proposal.subject_employee_id}, state["caller_id"],
+                known_ids_text(state["messages"]) + memory_text(state)):
+            proposal = None                           # a guessed subject id never reaches a request
+        if proposal is None:
             return {"handoff": None, "messages": [AIMessage(
-                "I could not work out the details of that request, so nothing has been prepared or "
-                "filed. Please restate who needs access to which system.")]}
+                "I could not establish who needs which access, so nothing has been prepared or "
+                "filed. Please name the employee (or their id) and the system.")]}
         intent = contracts.AccessRequestIntent(
             **proposal.model_dump(),
             requested_by=state["caller_id"],
             source_thread_id=config["configurable"]["thread_id"],
             request_id=config["configurable"].get("request_id", "unknown"))
-        return {"handoff": intent.model_dump(),
-                "messages": [AIMessage(contracts.handoff_answer(intent))]}
+        last = state["messages"][-1]
+        diagnosis = (f"{last.content}\n\n" if isinstance(last, AIMessage) and not last.tool_calls
+                     and isinstance(last.content, str) and last.content.strip() else "")
+        messages = ([RemoveMessage(id=last.id)] if diagnosis else []) + [
+            AIMessage(diagnosis + contracts.handoff_answer(intent))]
+        return {"handoff": intent.model_dump(), "messages": messages}
 
     # --- answer / tools / rearm ---------------------------------------------------
     async def call_model(state: AgentState) -> dict:
@@ -257,6 +267,10 @@ def build_graph(tools: list, checkpointer=None):
             return "recite"
         if plan.current_intent == "onboarding_status" and used_tool:
             return "checklist"
+        # "I need Webex access": diagnose first (tools), then hand the request to the approval
+        # workflow. A draft / recall turn never gets here: drafting is not filing (S6/S8 t3).
+        if plan.current_intent == "access_request" and plan.request_type == "lookup" and used_tool:
+            return "handoff"
         return END
 
     def recite(state: AgentState) -> dict:
@@ -308,7 +322,7 @@ def build_graph(tools: list, checkpointer=None):
     graph.add_edge("handoff", END)
     graph.add_conditional_edges("answer", route,
                                 {"tools": "tools", "rearm": "rearm", "recite": "recite",
-                                 "checklist": "checklist", END: END})
+                                 "checklist": "checklist", "handoff": "handoff", END: END})
     graph.add_edge("tools", "answer")
     graph.add_edge("rearm", "answer")
     graph.add_edge("recite", "answer")

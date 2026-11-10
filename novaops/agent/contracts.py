@@ -126,3 +126,45 @@ def citation_report(answer: str, evidence: str) -> dict:
         "unsupported": sorted([d for d in docs if d not in evidence] +
                               [r for r in records if r not in evidence]),
     }
+
+
+# --- the Webex decision ---------------------------------------------------------
+
+Decision = Literal["pending_approval", "rejected", "request_on_file", "not_eligible"]
+_GRANTED = re.compile(r"\b(?<!not been )(?<!not )(?<!never )granted\b|\baccess (is|was) (now )?(active|provisioned|enabled)\b", re.I)
+
+
+class AccessDecision(BaseModel):
+    """Spec 6.5: observed facts, actions actually taken and recommended next steps, kept
+    apart; the blocking reason; the status. Built by application code from records — a
+    model never writes it — and it never states that access was granted."""
+    subject_employee_id: str
+    system: str
+    decision: Decision
+    observed_facts: list[str]
+    actions_taken: list[str]
+    next_steps: list[str]
+    blocking_reason: str | None = None
+    status: Status
+    approval_id: str | None = None
+    access_request_id: str | None = None
+    source_thread_id: str
+    request_id: str
+
+
+def claims_granted(text: str) -> bool:
+    return bool(_GRANTED.search(text))
+
+
+def decision_answer(d: AccessDecision) -> str:
+    """Deterministic text for the AccessDecision. Asserted never to claim a grant."""
+    lines = [f"{d.system} access for {d.subject_employee_id}: {d.decision.replace('_', ' ')} (status: {d.status}). "
+             "Access has not been granted."]
+    if d.blocking_reason:
+        lines.append(f"Blocked by: {d.blocking_reason}")
+    lines += ["Observed:", *[f"- {f}" for f in d.observed_facts]]
+    lines += ["Actions taken:", *([f"- {a}" for a in d.actions_taken] or ["- none"])]
+    lines += ["Next steps:", *[f"- {s}" for s in d.next_steps]]
+    text = "\n".join(lines)
+    assert not claims_granted(text), text
+    return text

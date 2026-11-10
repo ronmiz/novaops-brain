@@ -7,8 +7,12 @@ small in-memory FAISS index: `search_documents` is the Lesson 7 OpenSearch pipel
 
     python server/server.py          # http://127.0.0.1:9880/mcp
 
-Milestone 1 ships READ tools only. Write tools (access request, approval request,
-ticket) arrive with the write gate in Milestones 2 and 4.
+Tool classes (Milestone 4):
+  read     visible to the model when its scope's loadout includes them
+  write    create_access_request — released only by the write gate, and refused HERE too
+           unless the approval it names is recorded as approved (defence in depth)
+  app      request_approval, get_approval — called by application code in the approval
+           workflow, never shown to a model (novaops/agent/policy.APP_TOOLS)
 """
 import sys
 from pathlib import Path
@@ -99,6 +103,52 @@ def check_asset_inventory(asset_type: str = "", location: str = "") -> list[dict
 def list_employee_tickets(employee_id: str, status: str = "") -> list[dict]:
     """IT tickets raised by or for one employee. Check here before opening anything new."""
     return cited(db.list_employee_tickets(employee_id, status), "ticket_id")
+
+
+@mcp.tool()
+def list_access_requests(employee_id: str) -> list[dict]:
+    """Access requests already filed for one employee, each with the approvals recorded
+    against it. Check here before proposing anything new: an existing request is REUSED,
+    never duplicated."""
+    return cited(db.list_access_requests(employee_id), "request_id")
+
+
+@mcp.tool()
+def check_team_system_access(system: str, caller_id: str) -> dict:
+    """For a MANAGER: what is recorded about their direct reports and one system (e.g.
+    'Webex') — role entitlement, access requests, onboarding tasks. NovaOps does NOT record
+    which employee holds a seat (only seat counts); this tool says so explicitly. Role
+    entitlement is not a seat.
+
+    Args:
+        system: System name, e.g. Webex.
+        caller_id: The manager asking. Supplied by the application.
+    """
+    out = db.team_system_access(caller_id, system)
+    for member in out["team"]:
+        member["cite"] = f"[record: {member['employee_id']}]"
+    if out["subscription"]:
+        out["subscription"]["cite"] = f"[record: {out['subscription']['subscription_id']}]"
+    return out
+
+
+@mcp.tool()
+def create_access_request(employee_id: str, system: str, justification: str, approval_id: str) -> dict:
+    """WRITE. File an access request against a RECORDED approval. Idempotent: an open request
+    for the same employee and system is returned instead of creating a second one."""
+    return db.create_access_request(employee_id, system, justification, approval_id)
+
+
+@mcp.tool()
+def request_approval(request_type: str, request_id: str, approver_id: str, reason: str) -> dict:
+    """APP. Persist an approval request (idempotent: an open one for the same request is reused)."""
+    return db.request_approval(request_type, request_id, approver_id, reason)
+
+
+@mcp.tool()
+def get_approval(approval_id: str) -> dict:
+    """APP. One approval row, as recorded."""
+    return db.get_approval(approval_id) or {}
 
 
 if __name__ == "__main__":

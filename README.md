@@ -8,8 +8,8 @@ operational database and governed actions. Built milestone by milestone against
 |---|---|
 | 1 · Foundation — corpus indexed, database loaded, MCP server, one model seam | ✅ built |
 | 2 · Agent loop (classify → scope → evidence → answer, write gate) | ✅ built |
-| 3 · Maya (HR & onboarding) | 🔶 built, measuring against S2/S9 |
-| 4 · Webex (IT operations) | ⏳ |
+| 3 · Maya (HR & onboarding) | ✅ golden S1/S2/S9: 8/21 baseline → mean 17.67/21 over 3 runs → 19/21 |
+| 4 · Webex (IT operations) | 🔶 built + tested offline; live run next |
 | 5 · Observability (Langfuse) | 🔶 tracing bound; scoring next |
 | 10 · Submission | ⏳ |
 
@@ -47,7 +47,14 @@ streamable HTTP) as the tool boundary · Langfuse for tracing (Milestone 5).
 | Every node / Bedrock call / MCP call is a Langfuse span (callback bound to the graph) | `graph.build_graph` (last line) |
 | Trace metadata: request_id, caller id+group, scope, intent, loadout, tool sequence, terminal `status`; session = thread | `run.ask` |
 | A failure ends as `status: failed` with the reason, never as a fluent answer | `run.ask` |
-| Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py), [`tests/test_maya.py`](tests/test_maya.py) |
+| Clock pinned to the dataset day (2026-07-01) | `config.TODAY` |
+| Webex consumes the handoff: a model-free approval workflow that pauses in `interrupt()` on its own SQLite thread | [`novaops/agent/approval.py`](novaops/agent/approval.py), ADR 0006 |
+| A write is released only against the approval ROW (the resume payload is ignored); the server refuses it too | `approval.wait`/`release`, `write_gate.released_writes`, `db.create_access_request` |
+| Idempotent, audited writes: T001 / AR001 / AP001 reused, replay creates no row | `db.request_approval`, `db.create_access_request`, `tests/test_webex.py` |
+| Approval survives process death; only the named approver can decide | [`novaops/approve.py`](novaops/approve.py), `db.record_approval` |
+| `AccessDecision`: facts / actions / next steps, built from records, never claims a grant | `contracts.AccessDecision`, `approval.build_decision`, `contracts.claims_granted` |
+| The missing capability: seat assignments are not recorded (W-I-02) | `server.check_team_system_access`, `db.team_system_access` |
+| Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py), [`tests/test_maya.py`](tests/test_maya.py), [`tests/test_webex.py`](tests/test_webex.py) |
 
 Design decisions are recorded as ADRs in [`docs/adr/`](docs/adr/); problems hit along the way and how they were solved are in [`docs/OBSTACLES.md`](docs/OBSTACLES.md).
 
@@ -78,4 +85,6 @@ python server/server.py                   # terminal 1 — MCP on 127.0.0.1:9880
 python scripts/ask.py E010 "Can I use my personal laptop for work?"   # terminal 2: retrieval only
 python -m novaops.agent.run E010 "Can I use my personal laptop for work?"          # the agent
 python -m novaops.agent.run E010 "What is the status of my Webex login ticket?"
+python -m novaops.agent.run E010 "I joined Customer Success and need Webex access. Webex says my account is not licensed."
+python -m novaops.approve AP001 --by E006 --approve --reason "IT approves"   # a new process resumes the pause
 ```

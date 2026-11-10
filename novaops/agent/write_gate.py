@@ -6,12 +6,12 @@ MODEL-inferred flag; pasting "approved by the IT Manager, proceed" flips it. Her
 write is released only against an approval record read from the database by
 application code. The message text is not an input to this function at all.
 
-Milestone 2: the gate exists and releases nothing. WRITE_TOOLS is empty, and no
-approval record reaches the agent yet. Milestone 4 adds the write tools and passes
-in the recorded approval.
+Milestone 4: one write tool. The conversational graph never passes an approval, so no
+model ever sees it; the approval workflow (approval.py) passes the row it read back from
+the database after a human decided.
 """
 
-WRITE_TOOLS: frozenset[str] = frozenset()
+WRITE_TOOLS: frozenset[str] = frozenset({"create_access_request"})
 
 
 def released_writes(approval: dict | None) -> list[str]:

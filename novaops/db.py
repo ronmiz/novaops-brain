@@ -11,7 +11,7 @@ from . import config
 
 EMPLOYEE_FIELDS = (
     "employee_id, full_name, email, role, department_id, manager_id, "
-    "location, employment_type, status, start_date, user_group_id"
+    "location, employment_type, status, start_date, user_group_id, systems_allowed_by_role"
 )
 
 
@@ -98,3 +98,141 @@ def list_employee_tickets(employee_id: str, status: str = "") -> list[dict]:
         "ORDER BY created_at DESC",
         (employee_id, f"%{status}%"),
     )
+
+
+# --- Webex: access requests, approvals, the seat gap (Milestone 4) -----------------
+# Writes are idempotent by a natural key, and every write leaves an audit_log row.
+# Timestamps use the pinned clock (spec 13), so a replay writes identical rows.
+
+OPEN_REQUEST = ("blocked", "pending_approval", "planned", "submitted", "approved")
+OPEN_APPROVAL = ("needed", "pending")
+
+
+def _now() -> str:
+    return f"{config.TODAY}T12:00:00Z"
+
+
+def _next_id(conn, table: str, column: str, prefix: str) -> str:
+    ids = [r[0] for r in conn.execute(f"SELECT {column} FROM {table} WHERE {column} LIKE ?", (f"{prefix}%",))]
+    n = max((int(i[len(prefix):]) for i in ids if i[len(prefix):].isdigit()), default=0) + 1
+    return f"{prefix}{n:03d}"
+
+
+def _audit(conn, entity_type: str, entity_id: str, event: str, actor: str | None, notes: str) -> None:
+    conn.execute("INSERT INTO audit_log (event_id, entity_type, entity_id, event_type, actor_employee_id, "
+                 "created_at, notes) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                 (_next_id(conn, "audit_log", "event_id", "EV"), entity_type, entity_id, event, actor, _now(), notes))
+
+
+def system_id(name: str) -> str | None:
+    rows = _rows("SELECT system_id FROM systems WHERE lower(system_name) = lower(?) OR system_id = ?", (name, name))
+    return rows[0]["system_id"] if rows else None
+
+
+def list_access_requests(employee_id: str) -> list[dict]:
+    """An employee's access requests, each with the approvals recorded against it."""
+    requests = _rows(
+        "SELECT ar.request_id, ar.employee_id, sys.system_name, ar.access_level, ar.business_justification, "
+        "       ar.status, ar.approver_id, ar.created_at, ar.decision_reason "
+        "FROM access_requests ar JOIN systems sys ON ar.system_id = sys.system_id "
+        "WHERE ar.employee_id = ? ORDER BY ar.created_at", (employee_id,))
+    for r in requests:
+        r["approvals"] = _rows("SELECT approval_id, request_type, approver_id, status, decision_reason "
+                               "FROM approvals WHERE request_id = ? ORDER BY approval_id", (r["request_id"],))
+    return requests
+
+
+def team_system_access(manager_id: str, system: str) -> dict:
+    """What IS recorded about a manager's direct reports and one system. Seat ASSIGNMENTS
+    are not: software_subscriptions holds counts only (spec 13, W-I-02)."""
+    sid = system_id(system)
+    sub = _rows("SELECT subscription_id, seat_limit, active_seats FROM software_subscriptions WHERE system_id = ?", (sid,))
+    team = []
+    for e in _rows("SELECT employee_id, full_name, role, status, systems_allowed_by_role FROM employees "
+                   "WHERE manager_id = ? ORDER BY employee_id", (manager_id,)):
+        team.append({
+            "employee_id": e["employee_id"], "full_name": e["full_name"], "role": e["role"], "status": e["status"],
+            "entitled_by_role": system.lower() in e["systems_allowed_by_role"].lower(),
+            "seat_assignment": "not recorded",
+            "access_requests": _rows("SELECT request_id, status, decision_reason FROM access_requests "
+                                     "WHERE employee_id = ? AND system_id = ?", (e["employee_id"], sid)),
+            "onboarding_tasks": _rows("SELECT task_id, status, description FROM onboarding_tasks "
+                                      "WHERE employee_id = ? AND related_system_id = ?", (e["employee_id"], sid)),
+        })
+    return {"system": system, "seat_assignments_recorded": False,
+            "note": "NovaOps records seat COUNTS per subscription, not which employee holds a seat. "
+                    "Role entitlement (systems_allowed_by_role) is not a seat.",
+            "subscription": sub[0] if sub else None, "team": team}
+
+
+def get_approval(approval_id: str) -> dict | None:
+    rows = _rows("SELECT * FROM approvals WHERE approval_id = ?", (approval_id,))
+    return rows[0] if rows else None
+
+
+def request_approval(request_type: str, request_id: str, approver_id: str, reason: str) -> dict:
+    """Idempotent: an approval still open for the same request is reused, never duplicated."""
+    with closing(connect()) as conn:
+        open_ = conn.execute(
+            f"SELECT * FROM approvals WHERE request_id = ? AND request_type = ? AND approver_id = ? "
+            f"AND status IN ({','.join('?' * len(OPEN_APPROVAL))}) ORDER BY approval_id LIMIT 1",
+            (request_id, request_type, approver_id, *OPEN_APPROVAL)).fetchone()
+        if open_:
+            return {**dict(open_), "reused": True}
+        aid = _next_id(conn, "approvals", "approval_id", "AP")
+        conn.execute("INSERT INTO approvals (approval_id, request_type, request_id, approver_id, status, "
+                     "decision_reason, created_at) VALUES (?, ?, ?, ?, 'needed', ?, ?)",
+                     (aid, request_type, request_id, approver_id, reason, _now()))
+        _audit(conn, "approval", aid, "approval_requested", None, reason)
+        conn.commit()
+    return {**get_approval(aid), "reused": False}
+
+
+def record_approval(approval_id: str, approver_id: str, approved: bool, reason: str = "") -> dict:
+    """The HUMAN channel: only the approver named on the row may decide it. Re-recording the
+    same decision is a no-op; changing a closed decision is refused."""
+    row = get_approval(approval_id)
+    if row is None:
+        raise ValueError(f"No approval {approval_id}.")
+    if row["approver_id"] != approver_id:
+        raise PermissionError(f"{approval_id} can only be decided by {row['approver_id']}, not {approver_id}.")
+    status = "approved" if approved else "rejected"
+    if row["status"] == status:
+        return row
+    if row["status"] not in OPEN_APPROVAL:
+        raise ValueError(f"{approval_id} is already {row['status']}.")
+    with closing(connect()) as conn:
+        conn.execute("UPDATE approvals SET status = ?, decision_reason = ? WHERE approval_id = ?",
+                     (status, reason or row["decision_reason"], approval_id))
+        _audit(conn, "approval", approval_id, f"approval_{status}", approver_id, reason)
+        conn.commit()
+    return get_approval(approval_id)
+
+
+def create_access_request(employee_id: str, system: str, justification: str, approval_id: str) -> dict:
+    """THE write. Fail closed: refused unless `approval_id` is recorded as approved.
+    Idempotent: an open request for the same employee and system is returned, not duplicated
+    (Rachel already has AR001)."""
+    approval = get_approval(approval_id)
+    if not approval or approval["status"] != "approved":
+        raise PermissionError(f"Refused: approval {approval_id} is not recorded as approved.")
+    sid = system_id(system)
+    if sid is None:
+        raise ValueError(f"Unknown system {system!r}.")
+    with closing(connect()) as conn:
+        existing = conn.execute(
+            f"SELECT * FROM access_requests WHERE employee_id = ? AND system_id = ? "
+            f"AND status IN ({','.join('?' * len(OPEN_REQUEST))}) ORDER BY request_id LIMIT 1",
+            (employee_id, sid, *OPEN_REQUEST)).fetchone()
+        if existing:
+            return {**dict(existing), "reused": True}
+        rid = _next_id(conn, "access_requests", "request_id", "AR")
+        conn.execute("INSERT INTO access_requests (request_id, employee_id, system_id, access_level, "
+                     "business_justification, status, approver_id, created_at, decision_reason) "
+                     "VALUES (?, ?, ?, 'standard_user', ?, 'submitted', ?, ?, ?)",
+                     (rid, employee_id, sid, justification, approval["approver_id"], _now(),
+                      f"Filed against recorded approval {approval_id}."))
+        _audit(conn, "access_request", rid, "access_request_created", approval["approver_id"], approval_id)
+        conn.commit()
+        return {**dict(conn.execute("SELECT * FROM access_requests WHERE request_id = ?", (rid,)).fetchone()),
+                "reused": False}

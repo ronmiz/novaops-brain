@@ -40,15 +40,18 @@ LOADOUTS: dict[str, list[str] | None] = {
     # Users call a Webex seat "equipment" too: the subscription tool must be reachable (#17).
     "equipment_request": ["get_employee", "check_asset_inventory", "list_onboarding_tasks",
                           "check_software_subscription", "search_documents", "get_policy"],
-    "subscription_review": ["check_software_subscription", "search_documents", "get_policy"],
+    "subscription_review": ["check_software_subscription", "check_team_system_access",
+                            "search_documents", "get_policy"],
     "access_request": ["get_employee", "check_software_subscription", "list_employee_tickets",
-                       "search_documents", "get_policy"],
-    "ticket_status": ["get_employee", "list_employee_tickets"],
+                       "list_access_requests", "search_documents", "get_policy"],
+    "ticket_status": ["get_employee", "list_employee_tickets", "list_access_requests"],
     "other": None,   # fail OPEN for reads: None = every read tool
 }
 
 # Tools whose `caller_id` argument is filled by the application, never by the model.
-CALLER_TOOLS = {"search_documents"}
+CALLER_TOOLS = {"search_documents", "check_team_system_access"}
+# Called by application code in the approval workflow; never visible to any model.
+APP_TOOLS = frozenset({"request_approval", "get_approval"})
 
 
 RequestType = Literal["lookup", "recall", "summary", "draft", "pasted_text", "action"]
@@ -222,7 +225,10 @@ ANSWER_PROMPT = (
     "- When the user pastes a message or thread and asks what applies to them, answer from that text, "
     "list ONLY the items that are theirs, and cite it as (forwarded thread). Do not name, list or "
     "summarise anyone else's items — not even in an 'everything else is handled by…' sentence.\n"
-    "- Never say an action was taken unless a tool result shows it.\n"
+    "- Never say an action was taken unless a tool result shows it.\n"    "- If a tool says something is NOT recorded (e.g. which employee holds a seat), say it is not "
+    "recorded and report what is. Never infer it from something else: role entitlement is not a seat.\n"
+    "- Never say access was granted or is active. Filing and approving are done by the approval "
+    "workflow, not by you.\n"
     "- If the user explicitly asks what the manager playbook or manager's guide says and no tool "
     "returned it, say it is available to people managers only. Do not reconstruct it from other sources.\n"
     "- Answer the current request in at most six sentences unless asked for more (a summary may be longer)."
