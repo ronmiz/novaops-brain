@@ -1,0 +1,23 @@
+status     completed
+thread_id  t-1f55416d
+intent     subscription_review
+scope      webex
+loadout    ['check_software_subscription', 'check_team_system_access', 'search_documents', 'get_policy']
+tools_used ['check_team_system_access']
+sources_seen[]
+citations  {'cited_documents': [], 'cited_records': ['E001', 'E003', 'E010', 'SUB001'], 'has_citation': True, 'unsupported': []}
+handoff    None
+access_decisionNone
+trace_id   ad8f36ab082cfccf3a8b784536ba9d96
+trace_url  https://cloud.langfuse.com/project/cmwaqruwh00ixad0d7uffkvlr/traces/ad8f36ab082cfccf3a8b784536ba9d96
+
+NovaOps does not record which employee holds a Webex seat; it only records seat counts per subscription. The Webex subscription (SUB001) has 42 active seats against a limit of 40, so it is over limit `cite: [record: SUB001]`.
+
+For your team members:
+
+- Maya Cohen (E001) is preboarding and entitled by role, but her Webex license request is blocked `cite: [record: E001]`.
+- Noam Sharon (E003) is active but not entitled by role, and has no access requests or onboarding tasks recorded `cite: [record: E003]`.
+- Rachel Stein (E010) is active and entitled by role, but her access request is blocked because seats exceed the contract limit `cite: [record: E010]`.
+
+No seat assignments are recorded for any of them.
+

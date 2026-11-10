@@ -1,0 +1,15 @@
+status     completed
+thread_id  t-75e301a2
+intent     ticket_status
+scope      webex
+loadout    ['get_employee', 'list_employee_tickets', 'list_access_requests']
+tools_used ['list_employee_tickets']
+sources_seen[]
+citations  {'cited_documents': [], 'cited_records': ['T001'], 'has_citation': True, 'unsupported': []}
+handoff    None
+access_decisionNone
+trace_id   7100fd295f371127b2abc81a49005f5d
+trace_url  https://cloud.langfuse.com/project/cmwaqruwh00ixad0d7uffkvlr/traces/7100fd295f371127b2abc81a49005f5d
+
+Your Webex login ticket is still open. It was created today at 09:30 and is assigned to the IT team. The ticket is for a Webex license issue, flagged as high priority with the subject "Webex says account is not licensed" [record: T001].
+

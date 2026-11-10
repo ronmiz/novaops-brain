@@ -214,3 +214,8 @@ def test_a_typo_in_a_name_still_finds_the_person():
     rows = db.get_employee("rrachel stein")                     # S8 turn 2
     assert [r["employee_id"] for r in rows] == ["E010"] and "matched_by" in rows[0]
     assert db.get_employee("Nobody Atall") == []
+
+
+def test_a_seat_question_read_as_a_people_question_still_sees_the_gap_tool():
+    assert "check_team_system_access" in policy.LOADOUTS["employee_lookup"]          # W-I-02 (#22)
+    assert "check_team_system_access" in policy.LOADOUTS["subscription_review"]

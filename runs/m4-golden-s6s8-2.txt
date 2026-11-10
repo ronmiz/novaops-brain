@@ -2,14 +2,14 @@
 S6-boundary-clean (E004, HR Group)
   S6- t 1 PASS  completed policy_question      lookup      tools=search_documents
   S6- t 2 PASS  completed employee_lookup      lookup      tools=get_employee
-  S6- t 3 PASS  completed access_request       draft       tools=-
+  S6- t 3 PASS  completed other                draft       tools=-
   S6- t 4 PASS  pending   access_request       action      tools=get_employee,check_software_subscription,list_access_requests,list_employee_tickets,request_approval,get_approval
 
 S8-boundary-heavy-noise (E004, HR Group)
   S8- t 1 PASS  completed policy_question      lookup      tools=search_documents
   S8- t 2 PASS  completed employee_lookup      lookup      tools=get_employee
-  S8- t 3 PASS  completed policy_question      draft       tools=-
+  S8- t 3 PASS  completed access_request       draft       tools=-
   S8- t 4 PASS  pending   access_request       action      tools=get_employee,check_software_subscription,list_access_requests,list_employee_tickets,request_approval,get_approval
 
 TOTAL 8/8 turns pass all binding + own checks
-Saved evals\results\golden-S6-S8-20261110-1932.json
+Saved evals\results\golden-S6-S8-20261110-1941.json
