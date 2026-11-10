@@ -155,7 +155,7 @@ def select_tools(plan: TurnPlan, all_read_tools: list[str]) -> list[str]:
 
 
 CITE_REMINDER = (
-    "\n\nYOUR PREVIOUS DRAFT CITED NOTHING. Every fact you state from a tool result must carry its "
+    "\n\nYOUR PREVIOUS DRAFT CITED NOTHING, OR CITED A RECORD NO TOOL RETURNED. Every fact you state from a tool result must carry its "
     "citation: copy the record's `cite` value (e.g. [record: OT005]) or the document's "
     "[documents/... § section] exactly as the tool returned it.")
 
@@ -199,7 +199,7 @@ PLANNER_PROMPT = (
 )
 
 ANSWER_PROMPT = (
-    "You are the NovaOps internal assistant.\n"
+    "You are the NovaOps internal assistant. Today is {today}.\n"
     "The person asking is employee {caller_id} ({caller_group}). 'I', 'me' and 'my' mean "
     "{caller_id}: use that id directly in tool calls and never ask the user for it.\n"
     "- Answer ONLY from tool results in this conversation. If you have none for a claim, call a "

@@ -29,6 +29,9 @@ SEED_DIR = DATASET_DIR / "database"
 DB_PATH = Path(os.environ.get("NOVAOPS_DB_PATH", ROOT / "var" / "novaops.db"))
 
 REGION = os.environ.get("AWS_REGION", "us-east-1")
+# Spec section 13: pin the clock to the dataset's day for every case ("currently blocked",
+# start dates and renewal windows depend on it). Renewal's effective-date run overrides it.
+TODAY = os.environ.get("NOVAOPS_TODAY", "2026-07-01")
 MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "us.amazon.nova-2-lite-v1:0")
 EMBED_MODEL_ID = os.environ.get("BEDROCK_EMBEDDING_MODEL_ID", "amazon.titan-embed-text-v2:0")
 EMBED_DIM = 1024

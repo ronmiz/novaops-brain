@@ -38,7 +38,7 @@ def test_first_turn_always_gathers_evidence():
 
 
 def test_answer_prompt_binds_my_to_the_caller():
-    text = policy.ANSWER_PROMPT.format(caller_id="E010", caller_group="Regular Employee")
+    text = policy.ANSWER_PROMPT.format(caller_id="E010", caller_group="Regular Employee", today="2026-07-01")
     assert "'my' mean E010" in text and "never ask" in text
 
 

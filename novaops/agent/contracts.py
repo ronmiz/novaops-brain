@@ -95,6 +95,18 @@ def sources_in(text: str) -> set[str]:
     return set(_DOC.findall(text))
 
 
+def attach_sources(answer: str, turn_evidence: str) -> str:
+    """Last resort after one rewrite (#19): the application, not the model, attaches the
+    sources an uncited answer rests on — the record ids it names that a tool returned this
+    turn, else the documents this turn's tools returned. Nothing is attached that no tool
+    returned, and an answer that already cites is left alone."""
+    if citation_report(answer, turn_evidence)["has_citation"]:
+        return answer
+    named = sorted({i for i in _ID.findall(answer) if i in turn_evidence})
+    cites = [f"[record: {i}]" for i in named] or [f"[{d}]" for d in sorted(sources_in(turn_evidence))[:3]]
+    return f"{answer}\n\nSources: {' '.join(cites)}" if cites else answer
+
+
 def citation_report(answer: str, evidence: str) -> dict:
     """Which documents/records the answer cites, and whether any did not come from a tool.
     A citation is any [bracket] holding a document path or a record id — the form may vary

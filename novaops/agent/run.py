@@ -24,7 +24,7 @@ from langfuse import get_client, propagate_attributes
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from .. import config
-from .contracts import citation_report, sources_in
+from .contracts import attach_sources, citation_report, sources_in
 from .graph import build_graph, current_turn, evidence
 
 CHECKPOINT_DB = config.DB_PATH.parent / "checkpoints.db"
@@ -48,6 +48,7 @@ async def _run_turn(message: str, caller_id: str, caller_group: str, thread_id: 
     turn = current_turn(state["messages"])
     answer = turn[-1].content if isinstance(turn[-1].content, str) else str(turn[-1].content)
     turn_evidence = evidence(turn)
+    answer = attach_sources(answer, turn_evidence)
     return {
         # status = where the workflow got to. A handoff waits for a human approval.
         "status": "pending" if state.get("handoff") else "completed",

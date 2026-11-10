@@ -34,7 +34,7 @@ from langfuse.langchain import CallbackHandler
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 
-from .. import llm
+from .. import config, llm
 from . import contracts, memory, policy, write_gate
 
 KEEP_TURNS = 4           # verbatim user turns the answer model sees; 2 lost S1 t1's rule by t4 (#12)
@@ -190,7 +190,8 @@ def build_graph(tools: list, checkpointer=None):
     # --- answer / tools / rearm ---------------------------------------------------
     async def call_model(state: AgentState) -> dict:
         plan = policy.TurnPlan(**state["plan"])
-        system = (policy.ANSWER_PROMPT.format(caller_id=state["caller_id"], caller_group=state["caller_group"])
+        system = (policy.ANSWER_PROMPT.format(caller_id=state["caller_id"], caller_group=state["caller_group"],
+                                              today=config.TODAY)
                   + policy.render_plan(plan, memory_text(state))
                   + (policy.CITE_REMINDER if state.get("recite") else ""))
         # A lookup turn gathers evidence before it may answer: until a tool has run this turn,
@@ -246,11 +247,13 @@ def build_graph(tools: list, checkpointer=None):
         if not used_tool and not state.get("rearmed") and contracts.citation_report(
                 str(last.content), evidence(state["messages"]))["unsupported"]:
             return "rearm"
-        # Tools returned evidence but the answer cites none of it: rewrite once, told to cite (#17).
+        # Tools returned evidence but the answer cites none of it, or cites a record no tool
+        # returned: rewrite once, told to cite (#17, #19).
         turn_evidence = "".join(str(m.content) for m in current_turn(state["messages"])
                                 if isinstance(m, ToolMessage)).replace("[]", "").strip()
-        if used_tool and turn_evidence and not state.get("rearmed") and not contracts.citation_report(
-                str(last.content), evidence(state["messages"]))["has_citation"]:
+        rep = contracts.citation_report(str(last.content), evidence(state["messages"]))
+        if used_tool and turn_evidence and not state.get("rearmed") and (
+                not rep["has_citation"] or rep["unsupported"]):
             return "recite"
         if plan.current_intent == "onboarding_status" and used_tool:
             return "checklist"

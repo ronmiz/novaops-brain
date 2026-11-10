@@ -1,0 +1,33 @@
+
+S1-quick-policy (E010, Regular Employee)
+  S1- t 1 PASS  completed policy_question      lookup      tools=get_policy
+  S1- t 2 FAIL  completed policy_question      lookup      tools=get_policy
+           ✗ should_use_tools: used=True
+  S1- t 3 PASS  completed policy_question      recall      tools=-
+  S1- t 4 PASS  completed policy_question      draft       tools=-
+
+S2-onboarding-maya (E004, HR Group)
+  S2- t 1 PASS  completed onboarding_status    lookup      tools=get_employee,list_onboarding_tasks
+  S2- t 2 PASS  completed onboarding_status    lookup      tools=get_employee,list_onboarding_tasks
+  S2- t 3 PASS  completed onboarding_status    lookup      tools=list_onboarding_tasks
+  S2- t 4 FAIL  completed ticket_status        lookup      tools=get_employee,list_employee_tickets
+           ✗ citations: no citation
+  S2- t 5 PASS  completed onboarding_status    lookup      tools=check_asset_inventory
+  S2- t 6 PASS  completed onboarding_status    lookup      tools=check_asset_inventory,check_asset_inventory
+  S2- t 7 PASS  completed onboarding_status    recall      tools=-
+  S2- t 8 FAIL  completed subscription_review  lookup      tools=check_software_subscription
+           ✗ required_facts: ['42|over|exceed']
+  S2- t 9 PASS  completed policy_question      lookup      tools=get_policy,list_policies,get_policy
+  S2- t10 PASS  pending   access_request       action      tools=-
+  S2- t11 PASS  completed onboarding_status    lookup      tools=list_onboarding_tasks
+  S2- t12 PASS  completed onboarding_status    summary     tools=-
+
+S9-maya-own-account (E001, Regular Employee)
+  S9- t 1 PASS  completed policy_question      lookup      tools=search_documents,get_policy,list_policies,search_documents
+  S9- t 2 PASS  completed onboarding_status    pasted_text tools=-
+  S9- t 3 PASS  completed equipment_request    lookup      tools=list_onboarding_tasks
+  S9- t 4 PASS  completed policy_question      lookup      tools=get_policy,list_policies,search_documents
+  S9- t 5 PASS  completed equipment_request    lookup      tools=list_onboarding_tasks
+
+TOTAL 18/21 turns pass all binding + own checks
+Saved evals\results\golden-S1-S2-S9-20261110-1831.json

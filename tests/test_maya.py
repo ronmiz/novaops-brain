@@ -247,3 +247,24 @@ def test_quote_of_several_excerpts_is_checked_line_by_line():
     bad = _recall("Maya Cohen location=Israel\nMaya Cohen start_date=2026-09-01")
     assert policy.verify_request_type(ok, "remind me", memory_text).request_type == "recall"
     assert policy.verify_request_type(bad, "remind me", memory_text).request_type == "lookup"
+
+
+# --- round 10: last-resort sources, pinned clock (docs/OBSTACLES.md #19) -------------
+
+def test_application_attaches_the_records_an_uncited_answer_names():
+    ev = '[{"ticket_id": "T001", "cite": "[record: T001]"}] {"employee_id": "E010"}'
+    out = contracts.attach_sources("Rachel's ticket (T001) is open; see also T999.", ev)
+    assert out.endswith("Sources: [record: T001]")          # T999 never came back from a tool
+    assert contracts.attach_sources("Open [record: T001].", ev) == "Open [record: T001]."
+
+
+def test_uncited_answer_without_ids_gets_this_turns_documents():
+    ev = '{"source": "documents/handbook/making-a-career.md", "text": "..."}'
+    assert "[documents/handbook/making-a-career.md]" in contracts.attach_sources("Day 60: meaningful work.", ev)
+    assert contracts.attach_sources("Nothing here.", "") == "Nothing here."
+
+
+def test_clock_is_pinned_to_the_dataset_day():
+    from novaops import config
+    assert config.TODAY == "2026-07-01"
+    assert "2026-07-01" in policy.ANSWER_PROMPT.format(caller_id="E010", caller_group="x", today=config.TODAY)
