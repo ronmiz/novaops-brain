@@ -183,3 +183,59 @@ def test_citation_forms_are_recognised(answer, cited):
 
 def test_vague_bracket_is_not_a_citation():
     assert not contracts.citation_report("x [cite: employee record]", "")["has_citation"]
+
+
+# --- run 4: verify the planner's no-lookup claims (docs/OBSTACLES.md #13) ------------
+
+GROUNDING = ("user: She starts 2026-08-01, she's hybrid based in Israel\n"
+             'tool: {"text": "Owner: IT ... IT must approve and log the exception"}')
+
+
+def _recall(quote):
+    return policy.TurnPlan(current_intent="other", request_type="recall", answer_quote=quote)
+
+
+def test_recall_with_a_real_quote_stands():
+    assert policy.verify_request_type(_recall("hybrid based in Israel"),
+                                      "remind me where she is based", GROUNDING).request_type == "recall"
+
+
+@pytest.mark.parametrize("quote, message", [
+    ("", "which team owns it?"),                                        # no quote
+    ("Finance approval above USD 7,500", "does a seat need Finance?"),  # quote not in the conversation
+    ("Owner: IT", "who owns it right now?"),                            # asks for the current state
+])
+def test_unverified_recall_becomes_a_lookup(quote, message):
+    assert policy.verify_request_type(_recall(quote), message, GROUNDING).request_type == "lookup"
+
+
+def test_pasted_text_needs_something_pasted():
+    plan = policy.TurnPlan(current_intent="other", request_type="pasted_text")
+    assert policy.verify_request_type(plan, "what is mine?", "").request_type == "lookup"
+    assert policy.verify_request_type(plan, "what is mine?\n> a\n> b\n> c", "").request_type == "pasted_text"
+
+
+# --- run 7: verification bugs (docs/OBSTACLES.md #16) --------------------------------
+
+def test_quote_spanning_a_json_line_break_matches():
+    tool_json = r'{"text": "Personal laptops are not allowed for employees, with one narrow exception: a\nfive-business-day IT continuity exception"}'
+    plan = _recall("narrow exception: a five-business-day IT continuity exception")
+    assert policy.verify_request_type(plan, "does IT need to sign it off?", tool_json).request_type == "recall"
+
+
+def test_quote_from_session_memory_is_accepted():
+    memory_text = "Established facts:\n  - Maya Cohen starts 2026-08-01, hybrid, based in Israel"
+    plan = _recall("starts 2026-08-01, hybrid, based in Israel")
+    assert policy.verify_request_type(plan, "remind me where she is based", memory_text).request_type == "recall"
+
+
+# --- runs 8a-8c: mean of three (docs/OBSTACLES.md #17) --------------------------------
+
+def test_quote_with_a_copied_citation_still_matches():
+    tool_json = '{"text": "IT must approve and log the exception before the employee uses a personal machine"}'
+    plan = _recall("IT must approve and log the exception​​[documents/policies/equipment_policy.md § (whole document)]")
+    assert policy.verify_request_type(plan, "does IT need to sign it off?", tool_json).request_type == "recall"
+
+
+def test_a_webex_seat_asked_as_equipment_can_reach_the_subscription():
+    assert "check_software_subscription" in policy.LOADOUTS["equipment_request"]

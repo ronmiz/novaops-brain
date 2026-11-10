@@ -1,0 +1,774 @@
+[
+  {
+    "session": "S1-quick-policy",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy"
+    ],
+    "sources_seen": [
+      "documents/policies/equipment_policy.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "NovaOps's equipment policy states that personal laptops are not allowed for employees, except for a five-business-day IT continuity exception when a managed laptop is being repaired or replaced and the employee has no working device. IT must approve and log the exception before the employee uses a personal machine, even for those five days. All equipment remains NovaOps property and must be returned through IT at offboarding or role change​​[documents/policies/equipment_policy.md § (whole document)].",
+    "trace_id": "58f44f7db425cbab407bc72b67c3c3cb"
+  },
+  {
+    "session": "S1-quick-policy",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": false,
+    "failed": {
+      "should_use_tools": "used=True"
+    },
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "All equipment remains NovaOps property and must be returned through IT at offboarding or role change​​[documents/policies/equipment_policy.md § (whole document)]",
+    "tools_used": [
+      "get_policy"
+    ],
+    "sources_seen": [
+      "documents/policies/equipment_policy.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "IT must approve and log the exception before the employee uses a personal machine, even for those five days. The policy states: \"IT must approve and log the exception before the employee uses a personal machine, even for those five days\"​​[documents/policies/equipment_policy.md § Personal laptops].",
+    "trace_id": "cd6bf7127c5f632645e9543f21becdf7"
+  },
+  {
+    "session": "S1-quick-policy",
+    "turn": 3,
+    "kind": "reasoning",
+    "pass": false,
+    "failed": {
+      "should_use_tools": "used=True"
+    },
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy"
+    ],
+    "sources_seen": [
+      "documents/policies/equipment_policy.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The equipment policy is owned by IT, effective June 1, 2026​​[documents/policies/equipment_policy.md § (whole document)].",
+    "trace_id": "b0d49e349db91d90903405e731ce4ef8"
+  },
+  {
+    "session": "S1-quick-policy",
+    "turn": 4,
+    "kind": "summary",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "draft",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "1. Personal laptops are not allowed except for a five-business-day IT continuity exception when a managed laptop is being repaired or replaced and the employee has no working device​​[documents/policies/equipment_policy.md § (whole document)].\n2. IT must approve and log the exception before the employee uses a personal machine, even for those five days​​[documents/policies/equipment_policy.md § Personal laptops].",
+    "trace_id": "40fc9c2711d01cbbe79aca5015448722"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 1,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_employee",
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "E001",
+      "employee_name": "Maya Cohen",
+      "start_date": null,
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "system",
+          "status": "blocked",
+          "citations": [
+            "OT005"
+          ],
+          "blocked_reason": "Blocked pending IT approval"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Maya Cohen (E001) starts 2026-08-01 in Israel. Her onboarding tasks are:\n\n- HR: Offer letter and work eligibility (completed) [record: OT001]\n- IT: Okta profile (pending, due 2026-07-25) [record: OT002]\n- IT: Hardware prep (planned, due 2026-07-26) [record: OT003]\n- IT: Salesforce access (planned, due 2026-07-28) [record: OT004]\n- IT: Webex license (blocked, due 2026-07-28) [record: OT005]\n- HR: BambooHR profile (planned, due 2026-07-28) [record: OT006]\n\nThe Webex license is blocked by the Q3 SaaS freeze.",
+    "trace_id": "160113bf5f83edcf26e6c6146fa75d4e"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 2,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_employee",
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "E001",
+      "employee_name": "Maya Cohen",
+      "start_date": "2026-08-01",
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "OT002",
+            "S007"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "OT003",
+            "S015"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "OT004",
+            "S002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "system",
+          "status": "blocked",
+          "citations": [
+            "OT005",
+            "S001"
+          ],
+          "blocked_reason": "Blocked awaiting IT approval"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "OT006",
+            "S008"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Maya Cohen's offer letter (already signed and collected) does not specify day-one needs; the onboarding tasks show she needs an Okta profile, a laptop, a Salesforce profile, and a Webex license (blocked by the Q3 SaaS freeze) [record: OT001][record: OT002][record: OT003][record: OT004][record: OT005].",
+    "trace_id": "489422780af223339eb00f0f8192917a"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "E001",
+      "employee_name": "Maya Cohen",
+      "start_date": "2026-08-01",
+      "items": [
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "[record: OT002]",
+            "[record: OT002]",
+            "[record: OT002]",
+            "[record: OT002]",
+            "[record: OT002]",
+            "[record: OT002]"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "[record: OT003]",
+            "[record: OT003]",
+            "[record: OT003]",
+            "[record: OT003]",
+            "[record: OT003]",
+            "[record: OT003]"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "[record: OT004]",
+            "[record: OT004]",
+            "[record: OT004]",
+            "[record: OT004]",
+            "[record: OT004]",
+            "[record: OT004]"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "system",
+          "status": "blocked",
+          "citations": [
+            "[record: OT005]",
+            "[record: OT005]",
+            "[record: OT005]",
+            "[record: OT005]",
+            "[record: OT005]",
+            "[record: OT005]"
+          ],
+          "blocked_reason": "Q3 SaaS freeze applies"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "[record: OT006]",
+            "[record: OT006]",
+            "[record: OT006]",
+            "[record: OT006]",
+            "[record: OT006]",
+            "[record: OT006]"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Maya Cohen's current onboarding checklist is:\n\n- HR: Collect signed offer letter and work eligibility confirmation (completed, due 2026-07-10) [record: OT001]\n- IT: Create Okta profile and baseline groups (pending, due 2026-07-25) [record: OT002]\n- IT: Prepare laptop, monitor, dock, and MDM enrollment (planned, due 2026-07-26) [record: OT003]\n- Access: Request Salesforce Customer Success profile (planned, due 2026-07-28) [record: OT004]\n- Access: Request Webex standard user license (blocked, due 2026-07-28) [record: OT005]\n- HR: Add employee self-service profile in BambooHR (planned, due 2026-07-28) [record: OT006]\n\nThe Webex license is blocked by the Q3 SaaS freeze.",
+    "trace_id": "ef4d93d3e8c9d88d5241a964e01dcaa6"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 4,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "ticket_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_employee_tickets",
+      "get_employee",
+      "list_employee_tickets"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Rachel Stein's Webex login ticket (T001) is still open and assigned to IT. It was created on 2026-07-01 and is marked high priority for a Webex license issue [record: T001].",
+    "trace_id": "df65d7f100b558737cf5fee591617e48"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "check_asset_inventory"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "E001",
+      "employee_name": "Maya Cohen",
+      "start_date": "2026-08-01",
+      "items": [
+        {
+          "item": "Okta profile",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "[record: OT002]",
+            "[record: OT002]"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Laptop",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "[record: OT003]",
+            "[record: A005]"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Salesforce profile",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "[record: OT004]"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Webex license",
+          "category": "system",
+          "status": "blocked",
+          "citations": [
+            "[record: OT005]",
+            "[record: T001]"
+          ],
+          "blocked_reason": "Q3 SaaS freeze applies"
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Yes, a MacBook Pro 14 (asset ID A005) is available in Israel and reserved for Maya Cohen's onboarding [record: A005].",
+    "trace_id": "85703f870ef62e0f286528637729a284"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 6,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "check_asset_inventory",
+      "check_asset_inventory"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Maya Cohen will get a Dell U2723QE monitor (asset ID A006) from the remote equipment pool in Israel [record: A006]. No headsets are currently available in the Israel inventory.",
+    "trace_id": "5d123b09854a1701a59513249439344f"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 7,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "employee_lookup",
+    "request_type": "recall",
+    "answer_quote": "employee_id: E001\nstart_date: 2026-08-01\nlocation: Israel",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Maya Cohen's location is Israel and her start date is 2026-08-01 [established facts].",
+    "trace_id": "4697050871ab2802c26ed6b78a28e7bb"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 8,
+    "kind": "lookup",
+    "pass": false,
+    "failed": {
+      "required_facts": [
+        "42|over|exceed"
+      ]
+    },
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "check_asset_inventory"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "No Webex licenses are available in the Israel inventory [tool: check_asset_inventory].",
+    "trace_id": "ec32eeabcb559f6040df7c576bbd3d9c"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 9,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "list_policies",
+      "get_policy"
+    ],
+    "sources_seen": [
+      "documents/policies/saas_procurement_policy.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Adding a Webex seat needs Finance approval because it is a SaaS expansion above the USD 7,500 threshold set by the Q3 2026 SaaS renewal freeze memo [documents/policies/saas_procurement_policy.md § Approval threshold].",
+    "trace_id": "bf8f8b2cb9cc21d79ca1c100cc2dbe1a"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 10,
+    "kind": "action",
+    "pass": true,
+    "failed": {},
+    "status": "pending",
+    "intent": "access_request",
+    "request_type": "action",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": {
+      "subject_employee_id": "E001",
+      "subject_name": "Maya Cohen",
+      "system": "Webex",
+      "justification": "Webex license required for Maya's day-one access as part of her onboarding but blocked by Q3 SaaS freeze requiring Finance approval.",
+      "requested_by": "E004",
+      "source_thread_id": "S2-ec316a",
+      "request_id": "req-57a48995bbec",
+      "status": "pending_approval"
+    },
+    "checklist": null,
+    "answer": "I've prepared a Webex access request for Maya Cohen (E001) and handed it to IT operations. Its status is pending approval: nothing has been filed, and access has not been granted. Justification: Webex license required for Maya's day-one access as part of her onboarding but blocked by Q3 SaaS freeze requiring Finance approval.",
+    "trace_id": "d4b80c2c4239ec1c8f1e295134dbb11e"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 11,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "Okta profile pending (due 2026-07-25)\n  - Hardware prep planned (due 2026-07-26)\n  - Salesforce access planned (due 2026-07-28)\n  - Webex license blocked (due 2026-07-28)\n  - Rachel Stein ticket T001 open for Webex license issue",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "E001",
+      "employee_name": "Maya Cohen",
+      "start_date": "2026-08-01",
+      "items": [
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "[record: OT002]",
+            "lc_f89f1064-8814-46c4-85a4-428e99a7f38b",
+            "lc_5d77b54f-8147-4320-92e0-d6233806e5d3",
+            "lc_800862c9-ccc0-4194-bf7d-beb57244a2ae"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "[record: OT003]",
+            "lc_e0485586-728a-4ad9-a27b-d663ababd2cf",
+            "lc_82fb3bb5-3635-428c-8656-38e829f1909f",
+            "lc_083bc3e9-959f-4202-b271-346dbaa89b02"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "[record: OT004]",
+            "lc_e7c27bf0-ad52-46f8-b987-9599a5d02875",
+            "lc_e25ec134-b638-43e1-9dbf-89e0f79c98f6",
+            "lc_bb1db9b9-208a-4e9d-ad2d-90b24a6986cd"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "system",
+          "status": "blocked",
+          "citations": [
+            "[record: OT005]",
+            "lc_4567ce60-8e41-4658-b94c-d1c3af2b9b3d",
+            "lc_e823be34-32d8-458f-982c-fad728f9407d",
+            "lc_20967e84-62fa-4cef-a054-44206bd0ab24"
+          ],
+          "blocked_reason": "Blocked by Q3 SaaS freeze per SaaS Procurement Policy"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "[record: OT006]",
+            "lc_726a72ab-4ad7-4b3d-8768-565c2716a6e9",
+            "lc_fe4ea137-8776-414b-b728-6e22a9a1a32f",
+            "lc_1216b26d-4a0c-49da-866b-ccfaeea91d1d",
+            "lc_47446b2f-53f5-4cd8-b373-b69a6fb21fb4"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "[record: OT001]",
+            "lc_e2d70925-b26d-4dc8-ae85-909d56aeb656",
+            "lc_27bab72c-40b8-4a9f-8979-a904777a5de1",
+            "lc_2f38d0b7-e4fa-4210-b520-00f8e244d474"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Maya Cohen's open onboarding tasks are:\n\n- Okta profile (pending, due 2026-07-25) [record: OT002]\n- Hardware prep (planned, due 2026-07-26) [record: OT003]\n- Salesforce access (planned, due 2026-07-28) [record: OT004]\n- Webex license (blocked, due 2026-07-28) [record: OT005]\n- BambooHR self-service profile (planned, due 2026-07-28) [record: OT006]",
+    "trace_id": "cb0616e960b2a8780353a47b17dd1a1d"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 12,
+    "kind": "summary",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "summary",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Here is the full status summary for Maya Cohen (E001) to send to Yael:\n\n**Maya Cohen (E001)**\n- **Start date:** 2026-08-01\n- **Location:** Israel\n\n**Open tasks:**\n- **Okta profile:** Pending (due 2026-07-25) [record: OT002]\n- **Hardware prep:** Planned (due 2026-07-26) [record: OT003]\n- **Salesforce access:** Planned (due 2026-07-28) [record: OT004]\n- **Webex license:** Blocked (due 2026-07-28) [record: OT005]\n- **BambooHR self-service profile:** Planned (due 2026-07-28) [record: OT006]\n\n**Notes:** \n- Webex license blocked by Q3 SaaS freeze; requires Finance approval. Request prepared and handed to IT operations (pending approval).",
+    "trace_id": "0ab10bc73d0703adab1cb53a9adc8e32"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/making-a-career.md",
+      "documents/handbook/titles-for-QA.md",
+      "documents/handbook/titles-for-ops.md",
+      "documents/handbook/titles-for-programmers.md",
+      "documents/handbook/titles-for-support.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "To get promoted as a CSM (Customer Success Manager) at NovaOps, focus on the following steps and evidence based on the promotion guidelines:\n\n### Promotion Process Overview\n- **Timing**: Promotions occur twice a year, with proposals due in March for April 1 effective date, and in September for October 1 effective date [documents/handbook/making-a-career.md § Promotion Process].\n- **Eligibility**: Generally need at least six months in current role, sustained performance, and evidence of operating at the next level [documents/handbook/making-a-career.md § Promotion Process].\n- **Packet Requirements**: Manager-written packet with recent work evidence, peer input, and mapping to the next title level. It must be understandable to a department leader unfamiliar with the day-to-day work [documents/handbook/making-a-career.md § Promotion Packet Contents].\n\n### CSM-Specific Promotion Path and Evidence\nFor a CSM advancing within the support structure, focus on the following levels and evidence as outlined in the **Titles for Support** handbook [documents/handbook/titles-for-support.md § Levels]:\n\n#### From S2 to S3 (Senior Support Specialist / Customer Success Manager)\n- **Key Responsibilities**: Handle complex accounts, coach teammates, manage difficult conversations, and turn customer feedback into useful internal signals [documents/handbook/titles-for-support.md § Levels].\n- **Promotion Evidence**: Show complex account ownership, difficult customer conversations, useful coaching, and stronger cross-functional judgment [documents/handbook/titles-for-support.md § Promotion Evidence]. Examples include:\n  - Guiding a customer through a troubled launch, coordinating a SupportDesk case, opening a precise Jira issue for an automation defect, updating Salesforce with renewal risk, and keeping the customer informed without overpromising [documents/handbook/titles-for-support.md § Levels].\n  - Leading difficult customer conversations with a clear agenda, evidence, and next update time.\n  - Coaching S1 and S2 teammates on case framing, customer tone, and escalation quality.\n  - Deciding when a case needs Jira, Salesforce attention, or can be resolved in SupportDesk.\n  - Translating messy customer frustration into specific Product or Engineering questions.\n  - Proposing safe workarounds and naming their limits.\n  - Keeping Sales informed when a case affects a renewal or expansion conversation.\n  - Helping Product distinguish one loud customer preference from a broader product problem.\n  - Writing internal summaries that leaders can use without attending every call [documents/handbook/titles-for-support.md § Levels].\n\n#### From S3 to S4\n- **Key Responsibilities**: Segment-level quality improvement, process ownership, and leverage beyond individual accounts [documents/handbook/titles-for-support.md § Promotion Evidence].\n- **Promotion Evidence**: Show segment-level quality improvement, process ownership, and leverage beyond the employee's own accounts [documents/handbook/titles-for-support.md § Promotion Evidence]. Examples include:\n  - Improving support quality or customer trust across a customer segment.\n  - Owning and improving a support process that impacts multiple accounts.\n  - Influencing product or engineering decisions based on customer feedback.\n\n#### From S4 to S5\n- **Key Responsibilities**: Function-level strategy, durable escalation systems, and measurable improvement in customer trust, retention, or support quality [documents/handbook/titles-for-support.md § Promotion Evidence].\n- **Promotion Evidence**: Show function-level strategy, durable escalation systems, and measurable improvement in customer trust, retention, or support quality [documents/handbook/titles-for-support.md § Promotion Evidence]. Examples include:\n  - Developing and implementing a strategy to improve overall customer trust or retention.\n  - Creating durable systems for escalation that benefit the entire support function.\n  - Demonstrating measurable improvements in support quality, customer satisfaction, or retention rates.\n\n### General Tips for a Strong Promotion Packet\n- **Concrete Evidence**: Use specific examples from recent work, such as shipped product improvements, reduced incidents, better release quality, customer outcomes, measurable process improvements, durable documentation, mentoring impact, decisions that prevented waste, or repeated judgment in ambiguous situations [documents/handbook/making-a-career.md § Promotion Process].\n- **Avoid Non-Evidence**: Do not rely on hours worked, availability, being well liked, attending meetings, having the loudest opinion, writing unused plans, closing easy tickets in bulk, or owning a crisis you helped create [documents/handbook/making-a-career.md § Promotion Process].\n- **Peer Input**: Include specific, recent, and connected peer feedback. Avoid generic praise; instead, use examples like “Changed the release checklist so QA, Support, and Engineering now catch billing-risk defects before launch” [documents/handbook/making-a-career.md § Promotion Process].\n- **Calibration**: Be aware that packets go through calibration with People Operations, department leaders, and Finance to ensure fairness and consistency [documents/handbook/making-a-career.md § Calibration].\n\nBy",
+    "trace_id": "2d78e589497eb39c5a725cd4dea74987"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": false,
+    "failed": {
+      "forbidden_facts": [
+        "Okta baseline groups"
+      ]
+    },
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "pasted_text",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Based on the forwarded thread, the only two tasks for you (Maya Cohen) to complete are:\n\n1. **Sign the equipment responsibility form** [forwarded thread].\n2. **Finish your BambooHR self-service profile once the invite lands** [forwarded thread].\n\nEverything else mentioned in the thread (Okta baseline groups, Webex seat, Salesforce profile) is being handled by IT (Amir Haddad) or by Sara Ben-David (People Operations Lead) [forwarded thread].",
+    "trace_id": "1064f5722005295127309c7adb80c0e1"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_employee",
+      "list_onboarding_tasks",
+      "check_asset_inventory",
+      "get_policy"
+    ],
+    "sources_seen": [
+      "documents/policies/equipment_policy.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "### Software Licenses and Equipment for Your Onboarding\n\nBased on your onboarding tasks and the equipment policy, here's what you need to know about getting your software licenses sorted:\n\n#### Current Status of Your Onboarding Tasks\n- **Okta profile**: Created but baseline groups are still pending (IT task, due July 25) [record: OT002].\n- **Laptop**: A MacBook Pro 14 is reserved for you in Israel and will be prepared by IT (due July 26) [record: OT003][record: A005].\n- **Salesforce profile**: Planned (IT task, due July 28) [record: OT004].\n- **Webex license**: Blocked (IT task, due July 28). This is likely due to a seat allocation issue as mentioned in Sara's email [forwarded thread][record: OT005].\n- **BambooHR self-service profile**: Planned (HR task, due July 28) [record: OT006].\n\n#### What You Need to Do\n1. **Sign the equipment responsibility form**: This is required before IT can issue your equipment [forwarded thread].\n2. **Complete your BambooHR self-service profile**: Once you receive the invite, finish setting up your profile [forwarded thread][record: OT006].\n\n#### Software Licenses\n- **Salesforce**: Your Customer Success profile is planned and will be set up by IT. You don't need to take any action here other than waiting for the IT task to complete [record: OT004].\n- **Webex**: The license is currently blocked due to a seat allocation issue. IT is working on this, and you should follow up with them if you haven't already [record: OT005][forwarded thread].\n\n#### Equipment Policy Summary\n- **Laptop**: You'll receive a managed MacBook Pro 14. Personal laptops are not allowed except for a brief IT-approved continuity exception [documents/policies/equipment_policy.md § Personal laptops].\n- **Headset**: As a Customer Success Manager, you may receive a headset for calls [documents/policies/equipment_policy.md § Standard issue].\n- **Care and Return**: Equipment remains NovaOps property. You're expected to take reasonable care of it. Accidental damage is covered, but loss or damage from negligence may be charged back [documents/policies/equipment_policy.md § Care and return].\n\n#### Next Steps\n- **Sign the equipment responsibility form** as soon as possible.\n- **Complete your BambooHR self-service profile** once you receive the invite.\n- **Follow up with IT** about the Webex license block if you haven't already.\n\nYour laptop and Salesforce profile are being prepared by IT and should be ready by their due dates. If you encounter any issues or need further assistance, reach out to IT or your manager.",
+    "trace_id": "a9d5ac9c99616a85c9226ece790d26e2"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 4,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "search_documents"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The manager playbook is available to people managers only, so I cannot provide its contents. If you need guidance on giving feedback in someone's first 90 days, please ask your manager or refer to the manager playbook directly.",
+    "trace_id": "723e0cb308d48f47cd5d998bba452352"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Yes, you are scheduled to receive your laptop before your start date on August 1, 2026. The IT task to prepare your laptop, monitor, dock, and MDM enrollment is planned and due on **July 26, 2026** [record: OT003]. \n\nThis means your laptop will be ready and available for you before your first day.",
+    "trace_id": "fb68c6d2ac78bf31cea5151d6905a02e"
+  }
+]

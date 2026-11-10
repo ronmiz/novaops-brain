@@ -36,8 +36,9 @@ LOADOUTS: dict[str, list[str] | None] = {
     "employee_lookup": ["get_employee", "search_documents"],
     "onboarding_status": ["get_employee", "list_onboarding_tasks", "check_asset_inventory",
                           "check_software_subscription", "search_documents", "get_policy"],
+    # Users call a Webex seat "equipment" too: the subscription tool must be reachable (#17).
     "equipment_request": ["get_employee", "check_asset_inventory", "list_onboarding_tasks",
-                          "search_documents", "get_policy"],
+                          "check_software_subscription", "search_documents", "get_policy"],
     "subscription_review": ["check_software_subscription", "search_documents", "get_policy"],
     "access_request": ["get_employee", "check_software_subscription", "list_employee_tickets",
                        "search_documents", "get_policy"],
@@ -67,6 +68,10 @@ class TurnPlan(BaseModel):
                      "returned by a tool in this conversation; summary = write up what was already "
                      "established; draft = compose text; pasted_text = work out what a message or "
                      "thread pasted in THIS turn says; action = asks to file or create something."))
+    answer_quote: str = Field(
+        default="",
+        description=("For recall ONLY: a short verbatim quote from this conversation — a user message or "
+                     "a tool result, never an assistant answer — that contains the answer. Code checks it.")) 
     relevant_facts: list[str] = Field(
         default_factory=list,
         description="Values from earlier turns this answer needs (ids, dates, numbers) — the value itself.")
@@ -93,6 +98,38 @@ def unverified_employee_id(args: dict, caller_id: str, known_text: str) -> str |
     return None
 
 
+FRESHNESS = re.compile(r"\b(right now|now|currently|still|after that|at the moment|today|latest)\b", re.I)
+
+
+_BRACKET = re.compile(r"\[[^\]]*\]")
+
+
+def _norm(text: str) -> str:
+    """Compare words, not formatting. Tool results arrive as JSON text, where a line break is
+    the two characters backslash-n and a dash may be \\u2014; unescape those first, or no quote
+    spanning a wrapped line can ever match (docs/OBSTACLES.md #16)."""
+    text = re.sub(r"\\u[0-9a-fA-F]{4}", " ", text.replace("\\n", " ").replace("\\t", " "))
+    return re.sub(r"\W+", " ", text).lower().strip()
+
+
+def verify_request_type(plan: TurnPlan, newest_message: str, grounding_text: str) -> TurnPlan:
+    """Make the planner's no-lookup claims CHECKABLE (docs/OBSTACLES.md #13). A model's label
+    can always be wrong, so code verifies it:
+      recall       needs a verbatim quote that really exists in the user's messages or tool
+                   results, and the question must not ask for the current state;
+      pasted_text  the message must actually contain pasted text (several lines).
+    Anything that fails verification becomes a lookup. summary / draft / action stand."""
+    kind = plan.request_type
+    if kind == "recall":
+        # A citation the planner copied along with the words is not part of the quote (#17).
+        quote = _norm(_BRACKET.sub(" ", plan.answer_quote))
+        if FRESHNESS.search(newest_message) or len(quote) < 6 or quote not in _norm(grounding_text):
+            kind = "lookup"
+    elif kind == "pasted_text" and newest_message.count("\n") < 3:
+        kind = "lookup"
+    return plan if kind == plan.request_type else plan.model_copy(update={"request_type": kind})
+
+
 def enforce_evidence(plan: TurnPlan, has_evidence: bool) -> TurnPlan:
     """Deterministic override of the planner: with no tool result anywhere in the
     conversation yet, a lookup is REQUIRED. Measured: on a first-turn policy question the
@@ -112,6 +149,12 @@ def select_tools(plan: TurnPlan, all_read_tools: list[str]) -> list[str]:
     return sorted(all_read_tools) if chosen is None else [n for n in chosen if n in all_read_tools]
 
 
+CITE_REMINDER = (
+    "\n\nYOUR PREVIOUS DRAFT CITED NOTHING. Every fact you state from a tool result must carry its "
+    "citation: copy the record's `cite` value (e.g. [record: OT005]) or the document's "
+    "[documents/... § section] exactly as the tool returned it.")
+
+
 PLANNER_PROMPT = (
     "Classify the NEWEST message of a NovaOps internal-assistant session.\n"
     "Intent = its topic:\n"
@@ -127,6 +170,16 @@ PLANNER_PROMPT = (
     "- Classify the newest message only; follow topic changes.\n"
     "- relevant_facts / relevant_constraints carry what later turns need; drop what the user closed.\n"
     "- Users paste emails, threads and signatures: plan for the request inside, not the boilerplate.\n"
+    "- request_type examples (illustrative wording):\n"
+    "    lookup      'Is the VPN article still current?' / 'Does a contractor need MFA?' / 'What is open now?'\n"
+    "    recall      'Remind me what date I mentioned.' / 'Who owns the policy you just read?' / "
+    "'So does that need sign-off?' (answered by a policy already returned above)\n"
+    "    summary     'Write up where this stands for my manager.'\n"
+    "    draft       'Turn that into two lines I can paste.' / 'Draft one sentence explaining why.'\n"
+    "    pasted_text a forwarded email or thread pasted into this message, asking what it means or what applies\n"
+    "    action      'Go ahead and file it.'\n"
+    "- For recall you MUST give answer_quote: a short verbatim quote from a user message, a tool "
+    "result or the session memory that contains the answer. If you cannot quote it, it is a lookup.\n"
     "- request_type decides whether evidence is gathered. Use lookup unless the user clearly asks to "
     "recall/restate, summarise, draft, or read a message pasted in this turn. A new topic, a rule, "
     "threshold, owner or date no tool result here states, or 'what is it now / after that' is a lookup. "
@@ -158,8 +211,8 @@ ANSWER_PROMPT = (
     "why something is blocked. State causes only as the records give them.\n"
     "- If two sources disagree, the newer or more specific one governs — say which and why.\n"
     "- When the user pastes a message or thread and asks what applies to them, answer from that text, "
-    "list ONLY the items that are theirs, and cite it as (forwarded thread). Do not repeat other "
-    "people's items.\n"
+    "list ONLY the items that are theirs, and cite it as (forwarded thread). Do not name, list or "
+    "summarise anyone else's items — not even in an 'everything else is handled by…' sentence.\n"
     "- Never say an action was taken unless a tool result shows it.\n"
     "- If the user explicitly asks what the manager playbook or manager's guide says and no tool "
     "returned it, say it is available to people managers only. Do not reconstruct it from other sources.\n"

@@ -109,3 +109,35 @@ def test_caller_id_is_injected_and_overrides_the_model(tools_node):
 def test_tool_outside_the_loadout_is_refused(tools_node):
     msg = run_tools(tools_node, {"query": "promotion"}, ["get_employee"])
     assert msg.status == "error" and "not available" in msg.content
+
+
+def test_lookup_turn_forces_a_tool_call_until_one_has_run(monkeypatch):
+    """Bedrock toolChoice=any on a lookup turn's first model call (docs/OBSTACLES.md #14)."""
+    from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+    calls = []
+
+    class Recorder:
+        def __init__(self, choice=None):
+            self.choice = choice
+
+        def with_structured_output(self, *_):
+            return self
+
+        def bind_tools(self, tools, tool_choice=None):
+            return Recorder(tool_choice)
+
+        async def ainvoke(self, _msgs):
+            calls.append(self.choice)
+            return AIMessage("ok")
+
+    monkeypatch.setattr("novaops.llm.chat_model", lambda **_: Recorder())
+    answer = graph.build_graph([search_documents]).nodes["answer"].bound.afunc
+    base = {"caller_id": "E001", "caller_group": "Regular Employee", "loadout": ["search_documents"],
+            "plan": policy.TurnPlan(current_intent="policy_question").model_dump()}
+    asyncio.run(answer({**base, "messages": [HumanMessage("q")]}))
+    asyncio.run(answer({**base, "messages": [HumanMessage("q"), AIMessage("", tool_calls=[
+        {"name": "search_documents", "args": {}, "id": "c", "type": "tool_call"}]),
+        ToolMessage("r", tool_call_id="c", name="search_documents")]}))
+    recall = {**base, "plan": policy.TurnPlan(current_intent="other", request_type="recall").model_dump()}
+    asyncio.run(answer({**recall, "messages": [HumanMessage("q")]}))
+    assert calls == ["any", None, None]      # forced before evidence; free after it; never on recall

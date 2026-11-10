@@ -102,13 +102,15 @@ async def replay(session: dict) -> list[dict]:
         failed = {k: v[1] for k, v in checks.items() if not v[0]}
         rows.append({"session": session["id"], "turn": turn["n"], "kind": turn.get("kind"),
                      "pass": not failed, "failed": failed, "status": r.get("status"),
-                     "intent": r.get("intent"), "tools_used": r.get("tools_used"),
+                     "intent": r.get("intent"), "request_type": r.get("request_type"),
+                     "answer_quote": r.get("answer_quote"), "tools_used": r.get("tools_used"),
                      "sources_seen": r.get("sources_seen"), "handoff": r.get("handoff"),
                      "checklist": r.get("checklist"), "answer": r.get("answer"),
                      "trace_id": r.get("trace_id")})
         mark = "PASS" if not failed else "FAIL"
         print(f"  {session['id'][:3]} t{turn['n']:>2} {mark}  {r.get('status'):<9} "
-              f"{r.get('intent') or '-':<20} tools={','.join(r.get('tools_used') or []) or '-'}")
+              f"{r.get('intent') or '-':<20} {r.get('request_type') or '-':<11} "
+              f"tools={','.join(r.get('tools_used') or []) or '-'}")
         for k, v in failed.items():
             print(f"           ✗ {k}: {v}")
     return rows

@@ -18,6 +18,7 @@
   answer     the answer model, bound to ONLY this turn's tools
   tools      executes calls; fills caller_id itself; refuses tools that were not visible
   rearm      recovery when a narrow loadout left the model without a lookup
+  recite     one rewrite when tools returned evidence but the answer cited none of it
   checklist  typed OnboardingChecklist, validated against the tool evidence
 
 Node names are the Langfuse span names (the callback is bound to the compiled graph).
@@ -48,6 +49,7 @@ class AgentState(TypedDict, total=False):
     scope: str                # "maya" | "webex"
     loadout: list[str]        # tools visible this turn
     rearmed: bool
+    recite: bool              # this answer is a retry because the first draft cited nothing
     memory: dict              # durable distilled memory
     distilled_upto: int       # messages before this index are represented by memory
     handoff: dict | None      # AccessRequestIntent emitted THIS turn
@@ -104,10 +106,15 @@ def build_graph(tools: list, checkpointer=None):
     base_model = llm.chat_model()
     bound: dict[tuple, object] = {}
 
-    def model_for(names: list[str]):
-        key = tuple(sorted(names))
+    def model_for(names: list[str], force_tool: bool = False):
+        """force_tool binds with Bedrock toolChoice=any: the model CANNOT answer without
+        calling a tool. Measured: even with tools visible and a lookup required, Nova often
+        answered from memory and invented content (docs/OBSTACLES.md #14)."""
+        key = (tuple(sorted(names)), force_tool and bool(names))
         if key not in bound:
-            bound[key] = base_model.bind_tools([schemas[n] for n in key]) if key else base_model
+            tools_ = [schemas[n] for n in key[0]]
+            bound[key] = (base_model.bind_tools(tools_, tool_choice="any") if key[1]
+                          else base_model.bind_tools(tools_) if tools_ else base_model)
         return bound[key]
 
     def memory_text(state) -> str:
@@ -142,9 +149,14 @@ def build_graph(tools: list, checkpointer=None):
 
     def scope(state: AgentState) -> dict:
         has_evidence = any(isinstance(m, ToolMessage) for m in state["messages"])
-        plan = policy.enforce_evidence(policy.TurnPlan(**state["plan"]), has_evidence)
+        # Grounding a recall may quote: the user's words, tool results, and the durable memory
+        # (built from the conversation and safety-checked) — never the assistant's own answers.
+        grounding = known_ids_text(state["messages"]) + "\n" + memory_text(state)
+        plan = policy.verify_request_type(policy.TurnPlan(**state["plan"]),
+                                          str(state["messages"][-1].content), grounding)
+        plan = policy.enforce_evidence(plan, has_evidence)
         loadout = policy.select_tools(plan, read_tools) + write_gate.released_writes(approval=None)
-        return {"plan": plan.model_dump(), "loadout": loadout, "rearmed": False,
+        return {"plan": plan.model_dump(), "loadout": loadout, "rearmed": False, "recite": False,
                 "scope": policy.SCOPES[plan.current_intent], "handoff": None, "checklist": None}
 
     def after_scope(state: AgentState) -> str:
@@ -179,8 +191,14 @@ def build_graph(tools: list, checkpointer=None):
     async def call_model(state: AgentState) -> dict:
         plan = policy.TurnPlan(**state["plan"])
         system = (policy.ANSWER_PROMPT.format(caller_id=state["caller_id"], caller_group=state["caller_group"])
-                  + policy.render_plan(plan, memory_text(state)))
-        response = await model_for(state["loadout"]).ainvoke([SystemMessage(system), *window(state["messages"])])
+                  + policy.render_plan(plan, memory_text(state))
+                  + (policy.CITE_REMINDER if state.get("recite") else ""))
+        # A lookup turn gathers evidence before it may answer: until a tool has run this turn,
+        # the model is bound so that it must call one.
+        used_tool = any(isinstance(m, ToolMessage) for m in current_turn(state["messages"]))
+        force = plan.requires_tools and not used_tool
+        response = await model_for(state["loadout"], force).ainvoke(
+            [SystemMessage(system), *window(state["messages"])])
         return {"messages": [response]}
 
     async def run_tools(state: AgentState) -> dict:
@@ -223,9 +241,24 @@ def build_graph(tools: list, checkpointer=None):
         used_tool = any(isinstance(m, ToolMessage) for m in current_turn(state["messages"]))
         if plan.requires_tools and not state.get("rearmed") and not used_tool:
             return "rearm"
+        # Safety net: an answer written without a lookup that cites something no tool ever
+        # returned is invented — send it back once, with the read tools (#13).
+        if not used_tool and not state.get("rearmed") and contracts.citation_report(
+                str(last.content), evidence(state["messages"]))["unsupported"]:
+            return "rearm"
+        # Tools returned evidence but the answer cites none of it: rewrite once, told to cite (#17).
+        turn_evidence = "".join(str(m.content) for m in current_turn(state["messages"])
+                                if isinstance(m, ToolMessage)).replace("[]", "").strip()
+        if used_tool and turn_evidence and not state.get("rearmed") and not contracts.citation_report(
+                str(last.content), evidence(state["messages"]))["has_citation"]:
+            return "recite"
         if plan.current_intent == "onboarding_status" and used_tool:
             return "checklist"
         return END
+
+    def recite(state: AgentState) -> dict:
+        """Drop the uncited draft and answer again with the citation reminder; same loadout."""
+        return {"rearmed": True, "recite": True, "messages": [RemoveMessage(id=state["messages"][-1].id)]}
 
     # --- checklist: typed, cited, validated ----------------------------------------
     async def checklist(state: AgentState) -> dict:
@@ -263,7 +296,7 @@ def build_graph(tools: list, checkpointer=None):
     graph = StateGraph(AgentState)
     for name, fn in [("distil", distil), ("classify", classify), ("scope", scope),
                      ("handoff", handoff), ("answer", call_model), ("tools", run_tools),
-                     ("rearm", rearm), ("checklist", checklist)]:
+                     ("rearm", rearm), ("recite", recite), ("checklist", checklist)]:
         graph.add_node(name, fn)
     graph.add_conditional_edges(START, should_distil, {"distil": "distil", "classify": "classify"})
     graph.add_edge("distil", "classify")
@@ -271,9 +304,11 @@ def build_graph(tools: list, checkpointer=None):
     graph.add_conditional_edges("scope", after_scope, {"handoff": "handoff", "answer": "answer"})
     graph.add_edge("handoff", END)
     graph.add_conditional_edges("answer", route,
-                                {"tools": "tools", "rearm": "rearm", "checklist": "checklist", END: END})
+                                {"tools": "tools", "rearm": "rearm", "recite": "recite",
+                                 "checklist": "checklist", END: END})
     graph.add_edge("tools", "answer")
     graph.add_edge("rearm", "answer")
+    graph.add_edge("recite", "answer")
     graph.add_edge("checklist", END)
     # Lesson 11: bind the Langfuse callback to the compiled graph — every node, Bedrock
     # call and MCP tool call becomes a span, for every caller. No keys -> a no-op.

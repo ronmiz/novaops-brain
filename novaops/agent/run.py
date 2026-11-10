@@ -53,6 +53,8 @@ async def _run_turn(message: str, caller_id: str, caller_group: str, thread_id: 
         "status": "pending" if state.get("handoff") else "completed",
         "answer": answer,
         "intent": state["plan"]["current_intent"],
+        "request_type": state["plan"].get("request_type"),      # after code verification
+        "answer_quote": state["plan"].get("answer_quote"),
         "scope": state["scope"],
         "loadout": state["loadout"],
         "tools_used": [m.name for m in turn if isinstance(m, ToolMessage)],

@@ -1,0 +1,38 @@
+
+S1-quick-policy (E010, Regular Employee)
+  S1- t 1 PASS  completed policy_question      tools=get_policy
+  S1- t 2 PASS  completed policy_question      tools=-
+  S1- t 3 FAIL  completed policy_question      tools=get_policy
+           ✗ should_use_tools: used=True
+  S1- t 4 PASS  completed policy_question      tools=-
+
+S2-onboarding-maya (E004, HR Group)
+  S2- t 1 PASS  completed employee_lookup      tools=get_employee
+  S2- t 2 PASS  completed onboarding_status    tools=get_employee,list_onboarding_tasks
+  S2- t 3 FAIL  completed onboarding_status    tools=-
+           ✗ should_use_tools: used=False
+  S2- t 4 PASS  completed ticket_status        tools=get_employee,list_employee_tickets
+  S2- t 5 PASS  completed onboarding_status    tools=check_asset_inventory
+  S2- t 6 FAIL  completed equipment_request    tools=-
+           ✗ should_use_tools: used=False
+  S2- t 7 PASS  completed onboarding_status    tools=-
+  S2- t 8 PASS  completed onboarding_status    tools=check_software_subscription
+  S2- t 9 FAIL  completed onboarding_status    tools=-
+           ✗ required_facts: ['7,500|7500']
+           ✗ should_use_tools: used=False
+  S2- t10 PASS  pending   access_request       tools=-
+  S2- t11 FAIL  completed onboarding_status    tools=-
+           ✗ should_use_tools: used=False
+  S2- t12 PASS  completed onboarding_status    tools=-
+
+S9-maya-own-account (E001, Regular Employee)
+  S9- t 1 PASS  completed policy_question      tools=list_policies,search_documents
+  S9- t 2 PASS  completed onboarding_status    tools=-
+  S9- t 3 PASS  completed equipment_request    tools=get_employee,list_onboarding_tasks,check_asset_inventory
+  S9- t 4 FAIL  completed policy_question      tools=-
+           ✗ should_use_tools: used=False
+           ✗ citations: {'unsupported': ['documents/policies/feedback_policy.md']}
+  S9- t 5 PASS  completed equipment_request    tools=check_asset_inventory,list_onboarding_tasks
+
+TOTAL 15/21 turns pass all binding + own checks
+Saved evals\results\golden-S1-S2-S9-20261110-1654.json
