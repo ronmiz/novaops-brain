@@ -239,3 +239,11 @@ def test_quote_with_a_copied_citation_still_matches():
 
 def test_a_webex_seat_asked_as_equipment_can_reach_the_subscription():
     assert "check_software_subscription" in policy.LOADOUTS["equipment_request"]
+
+
+def test_quote_of_several_excerpts_is_checked_line_by_line():
+    memory_text = "Established facts:\n  - Maya Cohen location=Israel\n  - Maya Cohen start_date=2026-08-01"
+    ok = _recall("Maya Cohen location=Israel\nMaya Cohen start_date=2026-08-01")
+    bad = _recall("Maya Cohen location=Israel\nMaya Cohen start_date=2026-09-01")
+    assert policy.verify_request_type(ok, "remind me", memory_text).request_type == "recall"
+    assert policy.verify_request_type(bad, "remind me", memory_text).request_type == "lookup"

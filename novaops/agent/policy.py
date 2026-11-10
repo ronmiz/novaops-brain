@@ -32,7 +32,8 @@ SCOPES: dict[str, str] = {
 # READ tools visible per intent. A little wider than strictly needed, so a near-miss
 # classification can still recover. No write tool may ever appear in this table.
 LOADOUTS: dict[str, list[str] | None] = {
-    "policy_question": ["search_documents", "list_policies", "get_policy"],
+    # A threshold question needs the amount it is compared with (S2 t9: 7,500 vs 18,400) (#18).
+    "policy_question": ["search_documents", "list_policies", "get_policy", "check_software_subscription"],
     "employee_lookup": ["get_employee", "search_documents"],
     "onboarding_status": ["get_employee", "list_onboarding_tasks", "check_asset_inventory",
                           "check_software_subscription", "search_documents", "get_policy"],
@@ -122,8 +123,12 @@ def verify_request_type(plan: TurnPlan, newest_message: str, grounding_text: str
     kind = plan.request_type
     if kind == "recall":
         # A citation the planner copied along with the words is not part of the quote (#17).
-        quote = _norm(_BRACKET.sub(" ", plan.answer_quote))
-        if FRESHNESS.search(newest_message) or len(quote) < 6 or quote not in _norm(grounding_text):
+        # Several facts arrive as one excerpt per line; each line must be verbatim (#18).
+        excerpts = [_norm(line) for line in _BRACKET.sub(" ", plan.answer_quote).splitlines()]
+        excerpts = [e for e in excerpts if e]
+        ground = _norm(grounding_text)
+        if (FRESHNESS.search(newest_message) or sum(map(len, excerpts)) < 6
+                or not all(e in ground for e in excerpts)):
             kind = "lookup"
     elif kind == "pasted_text" and newest_message.count("\n") < 3:
         kind = "lookup"
@@ -179,7 +184,8 @@ PLANNER_PROMPT = (
     "    pasted_text a forwarded email or thread pasted into this message, asking what it means or what applies\n"
     "    action      'Go ahead and file it.'\n"
     "- For recall you MUST give answer_quote: a short verbatim quote from a user message, a tool "
-    "result or the session memory that contains the answer. If you cannot quote it, it is a lookup.\n"
+    "result or the session memory that contains the answer — copied character for character, never "
+    "reworded. Several facts: one exact excerpt per line. If you cannot quote it, it is a lookup.\n"
     "- request_type decides whether evidence is gathered. Use lookup unless the user clearly asks to "
     "recall/restate, summarise, draft, or read a message pasted in this turn. A new topic, a rule, "
     "threshold, owner or date no tool result here states, or 'what is it now / after that' is a lookup. "
@@ -203,6 +209,9 @@ ANSWER_PROMPT = (
     "- CITE after every claim by copying the `cite` value of the tool result it came from, e.g. "
     "[record: OT005] or [documents/policies/equipment_policy.md § Personal laptops]. Never write a "
     "citation that no tool returned.\n"
+    "- Whether an approval is needed: state the threshold the governing source gives, with its "
+    "number, and compare it to the amount in the records.\n"
+    "- Dates as the source states them: when something takes effect, not only the month it is proposed.\n"
     "- Be specific: give the exact ids, dates, amounts and statuses the tools returned. When you "
     "identify a person, give their name AND employee id (first names collide).\n"
     "- A status summary for a joiner states name, employee id, start date and location, then each "
