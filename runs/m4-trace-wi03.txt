@@ -1,0 +1,93 @@
+trace 426d98b6c18e4a3512cb892f9d656f3d — 59 observations
+
+- E010 · t-ccfba8bb  [AGENT]  17:20:08
+    ls_integration: langgraph
+    thread_id: approval-E010-webex
+    status: pending
+    access_decision: {"subject_employee_id": "E010", "system": "Webex", "decision": "pending_approval", "observed_facts": ["Webex has 42 active seats against a 40-seat limit \u2014 
+    handoff: {"subject_employee_id": "E010", "subject_name": "Rachel Stein", "system": "Webex", "justification": "Customer onboarding calls require Webex.", "requested_by": 
+    citations: {'cited_documents': [], 'cited_records': ['AR001', 'SUB001', 'T001'], 'has_citation': True, 'unsupported': []}
+    sources_seen: []
+    tool_sequence: ["get_employee", "check_software_subscription", "list_access_requests", "list_employee_tickets", "get_employee", "check_software_subscription", "list_access_req
+    loadout: ['get_employee', 'check_software_subscription', 'list_employee_tickets', 'list_access_requests', 'search_documents', 'get_policy']
+    intent: access_request
+    caller_group: Regular Employee
+    caller_id: E010
+    request_id: req-6fbf8307a244
+    scope: webex
+    resourceAttributes.service.name: unknown_service:python.exe
+    resourceAttributes.service.instance.id: 3716dae0-2d07-4820-aeab-52bf6f264099
+    resourceAttributes.telemetry.sdk.version: 1.45.2
+    resourceAttributes.telemetry.sdk.name: opentelemetry
+    resourceAttributes.telemetry.sdk.language: python
+  - agent-turn  [AGENT]  17:20:10
+    - __start__  [CHAIN]  17:20:10
+      - should_distil  [CHAIN]  17:20:10
+    - classify  [CHAIN]  17:20:10
+      - RunnableSequence  [CHAIN]  17:20:10
+        - ChatBedrockConverse  [GENERATION]  17:20:10
+        - _RepairingPydanticToolsParser  [CHAIN]  17:20:11
+    - scope  [CHAIN]  17:20:11
+      - after_scope  [CHAIN]  17:20:11
+    - answer  [CHAIN]  17:20:11
+      - ChatBedrockConverse  [GENERATION]  17:20:11
+      - route  [CHAIN]  17:20:13
+    - tools  [CHAIN]  17:20:13
+      - get_employee  [TOOL]  17:20:13
+    - answer  [CHAIN]  17:20:13
+      - ChatBedrockConverse  [GENERATION]  17:20:13
+      - route  [CHAIN]  17:20:14
+    - tools  [CHAIN]  17:20:14
+      - check_software_subscription  [TOOL]  17:20:14
+    - answer  [CHAIN]  17:20:14
+      - ChatBedrockConverse  [GENERATION]  17:20:14
+      - route  [CHAIN]  17:20:14
+    - tools  [CHAIN]  17:20:14
+      - list_access_requests  [TOOL]  17:20:14
+    - answer  [CHAIN]  17:20:14
+      - ChatBedrockConverse  [GENERATION]  17:20:14
+      - route  [CHAIN]  17:20:15
+    - tools  [CHAIN]  17:20:15
+      - list_employee_tickets  [TOOL]  17:20:15
+    - answer  [CHAIN]  17:20:15
+      - ChatBedrockConverse  [GENERATION]  17:20:15
+      - route  [CHAIN]  17:20:17
+    - recite  [CHAIN]  17:20:17
+    - answer  [CHAIN]  17:20:17
+      - ChatBedrockConverse  [GENERATION]  17:20:17
+      - route  [CHAIN]  17:20:18
+    - handoff  [CHAIN]  17:20:18
+      - RunnableSequence  [CHAIN]  17:20:18
+        - ChatBedrockConverse  [GENERATION]  17:20:18
+        - _RepairingPydanticToolsParser  [CHAIN]  17:20:19
+  - LangGraph  [CHAIN]  17:20:19
+    - gather  [CHAIN]  17:20:19
+      - get_employee  [TOOL]  17:20:19
+      - check_software_subscription  [TOOL]  17:20:19
+      - list_access_requests  [TOOL]  17:20:19
+      - list_employee_tickets  [TOOL]  17:20:20
+      - request_approval  [TOOL]  17:20:20
+      - <unknown>  [CHAIN]  17:20:20
+    - wait  [CHAIN]  17:20:20
+      - get_approval  [TOOL]  17:20:20
+- approval-resume · AP001  [AGENT]  17:20:46
+    ls_integration: langgraph
+    thread_id: approval-E010-webex
+    approval_id: AP001
+    decision: request_on_file
+    status: blocked
+    scope.attributes.public_key: pk-lf-cda10bf0-eb8c-495f-87b1-b4618e7eb234
+    scope.version: 4.18.0
+    scope.name: langfuse-sdk
+    resourceAttributes.service.name: unknown_service:python.exe
+    resourceAttributes.service.instance.id: 8e03de60-d94c-4d5f-9f8a-f4dfed914377
+    resourceAttributes.telemetry.sdk.version: 1.45.2
+    resourceAttributes.telemetry.sdk.name: opentelemetry
+    resourceAttributes.telemetry.sdk.language: python
+  - LangGraph  [CHAIN]  17:20:47
+    - wait  [CHAIN]  17:20:47
+      - get_approval  [TOOL]  17:20:47
+      - after_wait  [CHAIN]  17:20:47
+    - release  [CHAIN]  17:20:47
+      - create_access_request  [TOOL]  17:20:47
+    - decide  [CHAIN]  17:20:47

@@ -112,19 +112,25 @@ def build_approval_graph(call: Call, checkpointer=None, callbacks: list | None =
             "justification": intent["justification"], "approval_id": approval["approval_id"]})
         return {"written": written}
 
+    def after_gather(state: ApprovalState) -> str:
+        return "wait" if state.get("approval") else "decide"
+
+    def decide(state: ApprovalState) -> dict:
+        return {}            # a named step in the trace; build_decision() renders the object
+
     graph = StateGraph(ApprovalState)
     graph.add_node("gather", gather)
     graph.add_node("wait", wait)
     graph.add_node("release", release)
-    graph.add_node("decide", lambda state: {})      # a named step in the trace; the object is built below
+    graph.add_node("decide", decide)
     graph.add_edge(START, "gather")
-    graph.add_conditional_edges("gather", lambda s: "wait" if s.get("approval") else "decide",
-                                {"wait": "wait", "decide": "decide"})
+    graph.add_conditional_edges("gather", after_gather, {"wait": "wait", "decide": "decide"})
     graph.add_conditional_edges("wait", after_wait, {"release": "release", "wait": "wait", "decide": "decide"})
     graph.add_edge("release", "decide")
     graph.add_edge("decide", END)
     app = graph.compile(checkpointer=checkpointer)
-    return app.with_config({"callbacks": callbacks}) if callbacks else app
+    # The span name a reader looks for in the trace, under the turn and under the resume.
+    return app.with_config({"run_name": "approval-workflow", **({"callbacks": callbacks} if callbacks else {})})
 
 
 def build_decision(values: dict) -> contracts.AccessDecision:
