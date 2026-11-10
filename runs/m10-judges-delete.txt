@@ -1,0 +1,6 @@
+[deleted] evaluation-rules  faithfulness
+[deleted] evaluators        faithfulness
+[deleted] evaluation-rules  citation_quality
+[deleted] evaluators        citation_quality
+[deleted] evaluation-rules  no_overclaim
+[deleted] evaluators        no_overclaim

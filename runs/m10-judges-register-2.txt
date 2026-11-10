@@ -1,0 +1,10 @@
+[model  ] Bedrock-Nova-Lite-2 / us.amazon.nova-2-lite-v1:0
+
+[created] evaluator faithfulness
+[created] rule      faithfulness (judging new turns)
+[created] evaluator citation_quality
+[created] rule      citation_quality (judging new turns)
+[created] evaluator no_overclaim
+[created] rule      no_overclaim (judging new turns)
+
+Rules judge only turns created AFTER they exist.

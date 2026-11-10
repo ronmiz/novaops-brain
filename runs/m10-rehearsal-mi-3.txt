@@ -1,0 +1,7 @@
+3 items, 3 turns, clock 2026-07-01
+
+  M-I-01  t-   completed   policy_question      trace=683fa6e6fdc3e9dd9e1a8a3498a3046b
+  M-I-02  t-   completed   policy_question      trace=620fed1fac1a2bdcaee5405d22b4862e
+  M-I-03  t-   completed   equipment_request    trace=e220e42f7a7d8e0cdcd22d8497be95d1
+
+3 traces · statuses ['completed'] · saved evals\results\submission-M-I-01-M-I-02-M-I-03-20261110-2047.json

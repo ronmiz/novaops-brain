@@ -1,0 +1,5 @@
+turn               golden_pass      faithfulness  citation_quality      no_overclaim
+M-I-01 t-                    -               1.0               1.0               1.0
+M-I-02 t-                    -               0.9               1.0               1.0
+    faithfulness: The answer accurately cites three documents to support all four main steps (ticket creation, identity verification, factor reset, and re-enrollment). It correctly notes the additional device trust requirement from Okta Device Change, and the policy’s identity verification rule — all directly evidenc
+M-I-03 t-                    -               1.0               1.0               1.0

@@ -1,0 +1,43 @@
+[
+  {
+    "item": "M-I-01",
+    "turn": null,
+    "thread_id": "M-I-01-a94dbf",
+    "trace_id": "683fa6e6fdc3e9dd9e1a8a3498a3046b",
+    "status": "completed",
+    "intent": "policy_question",
+    "tools_used": [
+      "get_policy"
+    ],
+    "access_decision": null,
+    "answer": "You may not use a personal laptop for work, except for a five-business-day IT continuity exception when your managed laptop is being repaired or replaced and you have no working device. IT must approve and log the exception before you use a personal machine, even for those five days. All other employees must use the managed laptop provided by NovaOps [documents/policies/equipment_policy.md § Personal laptops]."
+  },
+  {
+    "item": "M-I-02",
+    "turn": null,
+    "thread_id": "M-I-02-c35e89",
+    "trace_id": "620fed1fac1a2bdcaee5405d22b4862e",
+    "status": "completed",
+    "intent": "policy_question",
+    "tools_used": [
+      "search_documents"
+    ],
+    "access_decision": null,
+    "answer": "To reset MFA after replacing your phone, follow these steps from the IT knowledge base:\n\n1. **Open a ticket** with the required fields: your employee ID, email, system (Okta), business impact, error text, and any safe screenshots. [documents/it_kb/mfa_reset.md § (whole document)]\n\n2. **Verify identity** through a manager, HR, or IT video check to confirm it's you and there are no suspicious login attempts. [documents/it_kb/mfa_reset.md § (whole document)]\n\n3. **Reset the MFA factor** in Okta Helpdesk — IT will handle this part after identity verification. [documents/it_kb/mfa_reset.md § (whole document)]\n\n4. **Re-enroll immediately** with your new device once the reset is complete. [documents/it_kb/mfa_reset.md § (whole document)]\n\nThe [Okta Device Change KB](documents/it_kb/okta_device_change.md § (whole document)) also notes that if your new device isn't company-managed or approved BYOD, IT may need to check MDM enrollment and reset device trust before you can sign back into SSO apps.\n\nThe [Security and MFA Policy](documents/policies/security_and_mfa_policy.md § (whole document)) requires MFA on all accounts through Okta with no exceptions, and new devices always require identity verification even if you've already set up MFA elsewhere."
+  },
+  {
+    "item": "M-I-03",
+    "turn": null,
+    "thread_id": "M-I-03-32a974",
+    "trace_id": "e220e42f7a7d8e0cdcd22d8497be95d1",
+    "status": "completed",
+    "intent": "equipment_request",
+    "tools_used": [
+      "get_employee",
+      "list_onboarding_tasks",
+      "check_asset_inventory"
+    ],
+    "access_decision": null,
+    "answer": "Maya Cohen (E001) is eligible for remote work equipment. Her onboarding tasks show a laptop preparation is planned for July 26, and an available MacBook Pro 14 is reserved for her in Israel [record: OT003][record: A005]."
+  }
+]
