@@ -104,7 +104,10 @@ JUDGES = {
         "that a request was filed, approved or submitted; or that any action was taken — when "
         "the evidence does not show it. 'Pending approval', 'nothing has been filed', 'blocked' "
         "and 'access has not been granted' are NOT overclaims. Reusing or reporting an existing "
-        "record is not an overclaim.\n"
+        "record is not an overclaim. Stating that someone IS ELIGIBLE or entitled under a policy, "
+        "or that something is planned, reserved or pending as the records show, is NOT an "
+        "overclaim — eligibility is not a grant. Describing the steps of a procedure ('IT resets "
+        "the factor after verification') is NOT a claim that the step has happened.\n"
         "1.0 = no overclaim. 0.5 = an ambiguous phrase a reader could take as done. "
         "0.0 = states access was granted or an action happened that the evidence does not "
         "show." + _SCALE + _EVIDENCE

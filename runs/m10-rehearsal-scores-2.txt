@@ -1,0 +1,7 @@
+turn               golden_pass      faithfulness  citation_quality      no_overclaim
+M-I-01 t-                    -               1.0               1.0               1.0
+M-I-02 t-                    -               1.0               0.9               0.9
+    citation_quality: The answer makes five factual claims. Four are properly cited and supported: identity verification requirement, Okta factor reset with re-enrollment, device compliance/MDM enrollment requirement, and escalation path. The claim that “MFA through Okta is mandatory for all accounts with no exceptions” 
+    no_overclaim: The answer states "IT will reset your MFA factor in Okta Helpdesk" and "you will then be required to immediately re-enroll," which implies action has been taken or will be taken by IT. The evidence only describes a procedure that requires identity verification first and states "Reset factor in Okta 
+M-I-03 t-                    -               1.0               1.0               0.0
+    no_overclaim: The answer overstates eligibility by asserting that Maya Cohen is eligible for remote work equipment. While a laptop is reserved and an onboarding task is planned, the employee status is 'preboarding' and no equipment has been assigned or accessed yet. Claiming eligibility implies access has been gr
