@@ -1,0 +1,5 @@
+turn           golden_pass      faithfulness  citation_quality      no_overclaim
+S1-t1                  1.0               1.0               1.0               1.0
+S1-t2                  0.0               1.0               1.0               1.0
+S1-t3                  1.0               1.0               1.0               1.0
+S1-t4                  1.0               1.0               1.0               1.0

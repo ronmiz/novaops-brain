@@ -60,6 +60,13 @@ streamable HTTP) as the tool boundary · Langfuse for tracing (Milestone 5).
 | Read a trace back as text (v2 API) | [`scripts/show_trace.py`](scripts/show_trace.py) |
 | Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py), [`tests/test_maya.py`](tests/test_maya.py), [`tests/test_webex.py`](tests/test_webex.py), [`tests/test_observability.py`](tests/test_observability.py) |
 
+## Measured: a judge and a check that disagree (Lesson 11)
+
+`runs/m5-scores-s1.txt`, S1 turn 2: `golden_pass = 0`, all three judges `1.0`. Both are right:
+the answer was faithful, well cited and claimed nothing — but it re-fetched a policy it already
+had (`should_use_tools: false` is binding). The judges score the *answer*; the deterministic
+check scores the *process*. Neither alone would show both.
+
 Design decisions are recorded as ADRs in [`docs/adr/`](docs/adr/); problems hit along the way and how they were solved are in [`docs/OBSTACLES.md`](docs/OBSTACLES.md).
 
 ## Permission rule (spec section 12)

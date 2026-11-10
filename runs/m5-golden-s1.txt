@@ -1,0 +1,10 @@
+
+S1-quick-policy (E010, Regular Employee)
+  S1- t 1 PASS  completed policy_question      lookup      tools=get_policy
+  S1- t 2 FAIL  completed policy_question      lookup      tools=get_policy
+           ✗ should_use_tools: used=True
+  S1- t 3 PASS  completed policy_question      recall      tools=-
+  S1- t 4 PASS  completed policy_question      draft       tools=-
+
+TOTAL 3/4 turns pass all binding + own checks
+Saved evals\results\golden-S1-20261110-2019.json

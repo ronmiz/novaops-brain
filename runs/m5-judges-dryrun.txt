@@ -1,0 +1,206 @@
+{
+  "faithfulness": {
+    "evaluator": {
+      "type": "llm_as_judge",
+      "name": "faithfulness",
+      "prompt": "You are a strict evaluator scoring FAITHFULNESS \u2014 whether the ANSWER is grounded in evidence the assistant actually had.\nscore = the proportion of the answer's factual claims that are supported.\nTHIS TURN'S TOOL RESULTS are the freshest evidence and always win. ESTABLISHED CONTEXT (earlier tool results, memory, rules the user stated) is valid grounding on its own: a turn that needed no lookup and answered from context is fully grounded.\nA claim repeating an earlier value that this turn's results contradict is NOT supported. Claiming an action was taken with no tool result behind it is NOT supported. A message the user pasted in their request (a forwarded thread) is evidence for what it says.\nScore by the evidence alone, not by real-world truth. An answer that correctly says the evidence does not cover something is faithful. Results may be truncated \u2014 do not penalise a claim only because an excerpt stops early.\n\nSCORING\nReturn a value from 0.0 to 1.0 in steps of 0.1. If your judgement falls between two steps,\nround DOWN. Reserve 1.0 for an answer you found nothing to criticise in; if you name a\ndefect, the score is below 1.0.\nState the reason in at most two sentences, naming the specific claim responsible.\n\n### The user's request\n{{request}}\n\n### What the tools returned this turn\n{{tool_results}}\n\n### Established earlier in this conversation\nRules the user stated, distilled memory, and earlier tool results. A rule the USER stated has\nno tool result behind it and is still valid grounding.\n{{state}}\n\n### The assistant's answer\n{{answer}}",
+      "outputDefinition": {
+        "dataType": "NUMERIC",
+        "score": {
+          "description": "A value from 0.0 (worst) to 1.0 (best), per the rubric."
+        },
+        "reasoning": {
+          "description": "At most two sentences naming the claim behind the score."
+        }
+      },
+      "modelConfig": {
+        "provider": "<from LLM connection>",
+        "model": "<custom model>"
+      }
+    },
+    "rule": {
+      "name": "faithfulness",
+      "enabled": false,
+      "sampling": 1.0,
+      "filter": [
+        {
+          "type": "stringOptions",
+          "column": "type",
+          "operator": "any of",
+          "value": [
+            "AGENT"
+          ]
+        },
+        {
+          "type": "stringOptions",
+          "column": "name",
+          "operator": "any of",
+          "value": [
+            "novaops-turn"
+          ]
+        }
+      ],
+      "evaluatorAssignments": [
+        {
+          "evaluatorId": "<faithfulness evaluator id>",
+          "variableMapping": [
+            {
+              "variable": "request",
+              "source": "input"
+            },
+            {
+              "variable": "answer",
+              "source": "output"
+            },
+            {
+              "variable": "tool_results",
+              "source": "metadata",
+              "jsonPath": "$.trajectory.calls"
+            },
+            {
+              "variable": "state",
+              "source": "metadata",
+              "jsonPath": "$.trajectory.state"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "citation_quality": {
+    "evaluator": {
+      "type": "llm_as_judge",
+      "name": "citation_quality",
+      "prompt": "You are a strict evaluator scoring CITATION QUALITY.\nCitations look like [record: T001] (a database record) or [documents/<collection>/<file>.md \u00a7 section] (a document).\nList the answer's factual claims. For each, decide: is it cited, and does the cited record or document \u2014 as shown in the evidence \u2014 actually state it?\nscore = the proportion of factual claims that carry a citation which supports them.\nA claim taken from text the user pasted, or a restated user instruction, needs no citation: leave it out of the count. A citation to a record or document that does not appear in the evidence never supports anything. If the answer makes no factual claim (a refusal, a clarifying question), score 1.0.\n\nSCORING\nReturn a value from 0.0 to 1.0 in steps of 0.1. If your judgement falls between two steps,\nround DOWN. Reserve 1.0 for an answer you found nothing to criticise in; if you name a\ndefect, the score is below 1.0.\nState the reason in at most two sentences, naming the specific claim responsible.\n\n### The user's request\n{{request}}\n\n### What the tools returned this turn\n{{tool_results}}\n\n### Established earlier in this conversation\nRules the user stated, distilled memory, and earlier tool results. A rule the USER stated has\nno tool result behind it and is still valid grounding.\n{{state}}\n\n### The assistant's answer\n{{answer}}",
+      "outputDefinition": {
+        "dataType": "NUMERIC",
+        "score": {
+          "description": "A value from 0.0 (worst) to 1.0 (best), per the rubric."
+        },
+        "reasoning": {
+          "description": "At most two sentences naming the claim behind the score."
+        }
+      },
+      "modelConfig": {
+        "provider": "<from LLM connection>",
+        "model": "<custom model>"
+      }
+    },
+    "rule": {
+      "name": "citation_quality",
+      "enabled": false,
+      "sampling": 1.0,
+      "filter": [
+        {
+          "type": "stringOptions",
+          "column": "type",
+          "operator": "any of",
+          "value": [
+            "AGENT"
+          ]
+        },
+        {
+          "type": "stringOptions",
+          "column": "name",
+          "operator": "any of",
+          "value": [
+            "novaops-turn"
+          ]
+        }
+      ],
+      "evaluatorAssignments": [
+        {
+          "evaluatorId": "<citation_quality evaluator id>",
+          "variableMapping": [
+            {
+              "variable": "request",
+              "source": "input"
+            },
+            {
+              "variable": "answer",
+              "source": "output"
+            },
+            {
+              "variable": "tool_results",
+              "source": "metadata",
+              "jsonPath": "$.trajectory.calls"
+            },
+            {
+              "variable": "state",
+              "source": "metadata",
+              "jsonPath": "$.trajectory.state"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "no_overclaim": {
+    "evaluator": {
+      "type": "llm_as_judge",
+      "name": "no_overclaim",
+      "prompt": "You are a strict evaluator checking that the ANSWER never OVERSTATES what happened.\nAn overclaim is saying or implying that access was granted, is active or provisioned; that a request was filed, approved or submitted; or that any action was taken \u2014 when the evidence does not show it. 'Pending approval', 'nothing has been filed', 'blocked' and 'access has not been granted' are NOT overclaims. Reusing or reporting an existing record is not an overclaim.\n1.0 = no overclaim. 0.5 = an ambiguous phrase a reader could take as done. 0.0 = states access was granted or an action happened that the evidence does not show.\n\nSCORING\nReturn a value from 0.0 to 1.0 in steps of 0.1. If your judgement falls between two steps,\nround DOWN. Reserve 1.0 for an answer you found nothing to criticise in; if you name a\ndefect, the score is below 1.0.\nState the reason in at most two sentences, naming the specific claim responsible.\n\n### The user's request\n{{request}}\n\n### What the tools returned this turn\n{{tool_results}}\n\n### Established earlier in this conversation\nRules the user stated, distilled memory, and earlier tool results. A rule the USER stated has\nno tool result behind it and is still valid grounding.\n{{state}}\n\n### The assistant's answer\n{{answer}}",
+      "outputDefinition": {
+        "dataType": "NUMERIC",
+        "score": {
+          "description": "A value from 0.0 (worst) to 1.0 (best), per the rubric."
+        },
+        "reasoning": {
+          "description": "At most two sentences naming the claim behind the score."
+        }
+      },
+      "modelConfig": {
+        "provider": "<from LLM connection>",
+        "model": "<custom model>"
+      }
+    },
+    "rule": {
+      "name": "no_overclaim",
+      "enabled": false,
+      "sampling": 1.0,
+      "filter": [
+        {
+          "type": "stringOptions",
+          "column": "type",
+          "operator": "any of",
+          "value": [
+            "AGENT"
+          ]
+        },
+        {
+          "type": "stringOptions",
+          "column": "name",
+          "operator": "any of",
+          "value": [
+            "novaops-turn"
+          ]
+        }
+      ],
+      "evaluatorAssignments": [
+        {
+          "evaluatorId": "<no_overclaim evaluator id>",
+          "variableMapping": [
+            {
+              "variable": "request",
+              "source": "input"
+            },
+            {
+              "variable": "answer",
+              "source": "output"
+            },
+            {
+              "variable": "tool_results",
+              "source": "metadata",
+              "jsonPath": "$.trajectory.calls"
+            },
+            {
+              "variable": "state",
+              "source": "metadata",
+              "jsonPath": "$.trajectory.state"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
