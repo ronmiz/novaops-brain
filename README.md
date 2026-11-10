@@ -10,7 +10,7 @@ operational database and governed actions. Built milestone by milestone against
 | 2 · Agent loop (classify → scope → evidence → answer, write gate) | ✅ built |
 | 3 · Maya (HR & onboarding) | ✅ golden S1/S2/S9: 8/21 baseline → mean 17.67/21 over 3 runs → 19/21 |
 | 4 · Webex (IT operations) | ✅ W-I-01/02/03 live; pause → approve in a new process → resume = one trace; S6/S8 8/8 (noise delta 0) |
-| 5 · Observability (Langfuse) | 🔶 tracing bound; scoring next |
+| 5 · Observability (Langfuse) | 🔶 tracing + judges registered + deterministic scores; measuring next |
 | 10 · Submission | ⏳ |
 
 ## Stack
@@ -54,7 +54,11 @@ streamable HTTP) as the tool boundary · Langfuse for tracing (Milestone 5).
 | Approval survives process death; only the named approver can decide | [`novaops/approve.py`](novaops/approve.py), `db.record_approval` |
 | `AccessDecision`: facts / actions / next steps, built from records, never claims a grant | `contracts.AccessDecision`, `approval.build_decision`, `contracts.claims_granted` |
 | The missing capability: seat assignments are not recorded (W-I-02) | `server.check_team_system_access`, `db.team_system_access` |
-| Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py), [`tests/test_maya.py`](tests/test_maya.py), [`tests/test_webex.py`](tests/test_webex.py) |
+| LLM judges registered in Langfuse (faithfulness, citation_quality, no_overclaim), one per turn on the `novaops-turn` span | [`evals/register_judges.py`](evals/register_judges.py), ADR 0007 |
+| The judge's evidence is on the span it reads (`$.trajectory.calls` / `.state`) | `run.trajectory` |
+| Deterministic score `golden_pass` written onto each replayed turn's trace | `evals/golden_replay.py` |
+| Read a trace back as text (v2 API) | [`scripts/show_trace.py`](scripts/show_trace.py) |
+| Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py), [`tests/test_maya.py`](tests/test_maya.py), [`tests/test_webex.py`](tests/test_webex.py), [`tests/test_observability.py`](tests/test_observability.py) |
 
 Design decisions are recorded as ADRs in [`docs/adr/`](docs/adr/); problems hit along the way and how they were solved are in [`docs/OBSTACLES.md`](docs/OBSTACLES.md).
 

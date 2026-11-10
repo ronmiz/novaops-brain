@@ -4,7 +4,7 @@ all call `ask()`. There is no second path into the workflow (spec 6.6).
 Tracing (Lesson 11): graph.py binds the Langfuse callback, so every node, model call and
 tool call is a span. THIS file adds what only the caller knows: who is asking, which
 conversation this is, and how the turn ended. Every turn is one trace:
-    root span "<caller> · <thread>" (input = message, output = answer)
+    root span "novaops-turn" (input = message, output = answer) — the span the LLM judges read
     metadata  request_id, caller_id, caller_group, scope, intent, loadout, tool_sequence, status
     session   = thread_id (a multi-turn conversation reads as one session in Langfuse)
     user      = caller_id
@@ -28,10 +28,14 @@ from .. import config
 from . import approval
 from .contracts import attach_sources, citation_report, decision_answer, sources_in
 from .graph import build_graph, current_turn, evidence
+from .memory import render_memory
 
 CHECKPOINT_DB = config.DB_PATH.parent / "checkpoints.db"
 STATUSES = ("completed", "blocked", "pending", "needs_human", "failed")
 RECURSION_LIMIT = 25
+# One fixed name for the span a judge reads (and the trace name). Caller and thread are the
+# trace's user and session, so nothing is lost; the evaluation rules filter on this name.
+TURN_SPAN = "novaops-turn"
 
 langfuse = get_client()   # reads LANGFUSE_PUBLIC_KEY / _SECRET_KEY / _BASE_URL; no keys -> no-op
 
@@ -80,8 +84,29 @@ async def _run_turn(message: str, caller_id: str, caller_group: str, thread_id: 
         "memory": state.get("memory") or {},
         "handoff": state.get("handoff"),
         "access_decision": decision.model_dump() if decision else None,
+        "trajectory": trajectory(turn, state, decision),
         "checklist": state.get("checklist"),
     }
+
+
+CALL_CHARS, EARLIER_CHARS = 1500, 3000
+
+
+def trajectory(turn: list, state: dict, decision) -> dict:
+    """The evidence an LLM judge needs, copied onto the turn's root span (Lesson 11, ex. 4):
+    a Langfuse evaluation rule reads ONE observation, and the tool observations sit beside
+    the root span, not inside it. `calls` = what tools returned THIS turn; `state` = what
+    earlier turns established (memory, user rules, earlier tool results). Truncated copies."""
+    calls = [{"tool": m.name, "result": str(m.content)[:CALL_CHARS]} for m in turn if isinstance(m, ToolMessage)]
+    if decision:
+        calls.append({"tool": "approval_workflow (application code)",
+                      "result": {"observed": decision.observed_facts, "actions": decision.actions_taken,
+                                 "status": decision.status}})
+    earlier = evidence(state["messages"][:len(state["messages"]) - len(turn)])
+    return {"calls": calls,
+            "state": {"user_rules": state["plan"].get("relevant_constraints", []),
+                      "memory": render_memory(state.get("memory") or {}),
+                      "earlier_tool_results": earlier[-EARLIER_CHARS:]}}
 
 
 async def load_tools() -> list:
@@ -102,7 +127,7 @@ async def ask(message: str, caller_id: str, caller_group: str, thread_id: str | 
     with propagate_attributes(session_id=thread_id, user_id=caller_id, tags=["novaops-brain"],
                               metadata={"request_id": request_id, "caller_group": caller_group}):
         with langfuse.start_as_current_observation(
-                as_type="agent", name=f"{caller_id} · {thread_id}", input=message) as root:
+                as_type="agent", name=TURN_SPAN, input=message) as root:
             try:
                 result = await _run_turn(message, caller_id, caller_group, thread_id, request_id)
             except Exception as exc:          # a failure is reported truthfully, never hidden
@@ -116,6 +141,7 @@ async def ask(message: str, caller_id: str, caller_group: str, thread_id: str | 
                 "sources_seen": result.get("sources_seen"), "citations": result.get("citations"),
                 "handoff": result.get("handoff"), "checklist": result.get("checklist"),
                 "access_decision": result.get("access_decision"),
+                "trajectory": result.get("trajectory"),
                 "status": result["status"],
             })
             try:

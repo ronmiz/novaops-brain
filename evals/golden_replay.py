@@ -31,7 +31,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from novaops import config, db  # noqa: E402
 from novaops.agent import write_gate  # noqa: E402
-from novaops.agent.run import ask  # noqa: E402
+from novaops.agent.run import ask, langfuse  # noqa: E402
 
 GOLDEN = config.DATASET_DIR.parent / "GOLDEN-DATASETS.json"
 GROUP_NAMES = {"UG_REGULAR": "Regular Employee", "UG_HR": "HR Group", "UG_IT": "IT Group"}
@@ -107,6 +107,11 @@ async def replay(session: dict) -> list[dict]:
                      "sources_seen": r.get("sources_seen"), "handoff": r.get("handoff"),
                      "checklist": r.get("checklist"), "answer": r.get("answer"),
                      "trace_id": r.get("trace_id")})
+        if r.get("trace_id"):
+            # Deterministic checks first (spec 14), written onto the turn's trace beside the
+            # LLM judges' scores — a reader sees both, and where they disagree.
+            langfuse.create_score(trace_id=r["trace_id"], name="golden_pass", value=0.0 if failed else 1.0,
+                                  data_type="NUMERIC", comment=json.dumps(failed, ensure_ascii=False)[:500] or None)
         mark = "PASS" if not failed else "FAIL"
         print(f"  {session['id'][:3]} t{turn['n']:>2} {mark}  {r.get('status'):<9} "
               f"{r.get('intent') or '-':<20} {r.get('request_type') or '-':<11} "
@@ -128,6 +133,7 @@ async def main() -> None:
         caller_id, group = caller_of(s)
         print(f"\n{s['id']} ({caller_id}, {group})")
         rows += await replay(s)
+    langfuse.flush()
     passed = sum(r["pass"] for r in rows)
     print(f"\nTOTAL {passed}/{len(rows)} turns pass all binding + own checks")
     out = Path(__file__).parent / "results" / f"golden-{'-'.join(wanted)}-{datetime.now():%Y%m%d-%H%M}.json"
