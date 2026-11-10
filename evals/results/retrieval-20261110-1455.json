@@ -1,0 +1,278 @@
+{
+  "recall": [
+    {
+      "case": "SIMPLE_002",
+      "query": "reset MFA after replacing phone",
+      "expected": 2,
+      "in_candidates": 2,
+      "ranked": [
+        "0.80 documents/it_kb/okta_device_change.md \u00a7 First-line Troubleshooting",
+        "0.70 documents/policies/security_and_mfa_policy.md \u00a7 Authentication",
+        "0.60 documents/employment/priya_raman_contractor_statement_of_work.md \u00a7 Special Notes",
+        "0.50 documents/handbook/managing-work-devices.md \u00a7 Lifecycle and Setup",
+        "0.40 documents/it_kb/mfa_reset.md \u00a7 First-line Troubleshooting",
+        "0.40 documents/policies/remote_work_policy.md \u00a7 Working securely from home",
+        "0.30 documents/it_kb/mfa_reset.md \u00a7 Symptoms",
+        "0.30 documents/it_kb/password_reset.md \u00a7 First-line Troubleshooting",
+        "0.30 documents/policies/security_and_mfa_policy.md \u00a7 Precedence",
+        "0.30 documents/it_kb/password_reset.md \u00a7 Symptoms",
+        "0.30 documents/policies/security_and_mfa_policy.md \u00a7 Contractor access",
+        "0.20 documents/it_kb/mfa_reset.md \u00a7 Escalation",
+        "0.20 documents/policies/security_and_mfa_policy.md \u00a7 Incident reporting",
+        "0.20 documents/it_kb/password_reset.md \u00a7 Escalation",
+        "0.10 documents/it_kb/mfa_reset.md \u00a7 Header",
+        "0.10 documents/it_kb/mfa_reset.md \u00a7 Required Ticket Fields",
+        "0.10 documents/policies/security_and_mfa_policy.md \u00a7 Header",
+        "0.10 documents/it_kb/password_reset.md \u00a7 Header",
+        "0.10 documents/it_kb/password_reset.md \u00a7 Required Ticket Fields",
+        "0.00 documents/contracts/mobile_provider_support_agreement.md \u00a7 Renewal Notes"
+      ],
+      "configs": {
+        "A baseline  >=0.6 max5": {
+          "found": 1,
+          "hits": 3,
+          "missing": [
+            "documents/it_kb/mfa_reset.md"
+          ]
+        },
+        "B diverse   >=0.6 max5 1/doc": {
+          "found": 1,
+          "hits": 3,
+          "missing": [
+            "documents/it_kb/mfa_reset.md"
+          ]
+        },
+        "C wider     >=0.5 max8 2/doc": {
+          "found": 1,
+          "hits": 4,
+          "missing": [
+            "documents/it_kb/mfa_reset.md"
+          ]
+        }
+      }
+    },
+    {
+      "case": "SIMPLE_004",
+      "query": "Webex support SLA",
+      "expected": 2,
+      "in_candidates": 1,
+      "ranked": [
+        "1.00 documents/contracts/webex_vendor_agreement.md \u00a7 Support SLA",
+        "1.00 documents/contracts/webex_vendor_agreement.md \u00a7 Header",
+        "0.00 documents/it_kb/webex_license_assignment.md \u00a7 Escalation",
+        "0.00 documents/it_kb/webex_license_assignment.md \u00a7 First-line Troubleshooting",
+        "0.00 documents/contracts/webex_vendor_agreement.md \u00a7 Operational Summary",
+        "0.00 documents/contracts/webex_vendor_agreement.md \u00a7 Webex Seat Limit Exception",
+        "0.00 documents/internal_memos/webex_license_cleanup_memo.md \u00a7 Header",
+        "0.00 documents/contracts/zoominfo_data_subscription.md \u00a7 Support SLA",
+        "0.00 documents/contracts/miro_collaboration_agreement.md \u00a7 Support SLA",
+        "0.00 documents/contracts/figma_design_license.md \u00a7 Support SLA",
+        "0.00 documents/handbook/titles-for-support.md \u00a7 Tools and Records",
+        "0.00 documents/contracts/datadog_observability_agreement.md \u00a7 Support SLA",
+        "0.00 documents/contracts/webex_vendor_agreement.md \u00a7 Renewal Notes",
+        "0.00 documents/contracts/supportdesk_service_agreement.md \u00a7 Support SLA",
+        "0.00 documents/contracts/notion_workspace_agreement.md \u00a7 Support SLA",
+        "0.00 documents/contracts/okta_identity_service_agreement.md \u00a7 Support SLA",
+        "0.00 documents/contracts/mailguard_security_agreement.md \u00a7 Support SLA",
+        "0.00 documents/it_kb/webex_license_assignment.md \u00a7 Required Ticket Fields",
+        "0.00 documents/contracts/salesforce_subscription_agreement.md \u00a7 Support SLA",
+        "0.00 documents/employment/rachel_stein_customer_success_access_profile.md \u00a7 Current Issue"
+      ],
+      "configs": {
+        "A baseline  >=0.6 max5": {
+          "found": 1,
+          "hits": 2,
+          "missing": [
+            "documents/it_kb/webex_login_issue.md"
+          ]
+        },
+        "B diverse   >=0.6 max5 1/doc": {
+          "found": 1,
+          "hits": 1,
+          "missing": [
+            "documents/it_kb/webex_login_issue.md"
+          ]
+        },
+        "C wider     >=0.5 max8 2/doc": {
+          "found": 1,
+          "hits": 2,
+          "missing": [
+            "documents/it_kb/webex_login_issue.md"
+          ]
+        }
+      }
+    },
+    {
+      "case": "SIMPLE_006",
+      "query": "contractor GitHub access",
+      "expected": 3,
+      "in_candidates": 3,
+      "ranked": [
+        "0.95 documents/policies/security_and_mfa_policy.md \u00a7 Contractor access",
+        "0.90 documents/contracts/github_enterprise_license.md \u00a7 Contractor Access Clause",
+        "0.90 documents/handbook/titles-for-programmers.md \u00a7 Contractor Distinctions",
+        "0.85 documents/employment/contractor_access_addendum.md \u00a7 Header",
+        "0.85 documents/handbook/titles-for-programmers.md \u00a7 GitHub, Jira, And AWS Responsibilities",
+        "0.85 documents/handbook/our-internal-systems.md \u00a7 Department Rules",
+        "0.85 documents/handbook/our-internal-systems.md \u00a7 Access Requests",
+        "0.75 documents/employment/priya_raman_contractor_statement_of_work.md \u00a7 Approval Rules",
+        "0.75 documents/contracts/github_enterprise_license.md \u00a7 Header",
+        "0.70 documents/it_kb/github_access_for_contractors.md \u00a7 First-line Troubleshooting",
+        "0.70 documents/employment/alex_kim_contractor_statement_of_work.md \u00a7 Current Access State",
+        "0.70 documents/employment/alex_kim_contractor_statement_of_work.md \u00a7 Special Notes",
+        "0.70 documents/employment/priya_raman_contractor_statement_of_work.md \u00a7 Scope",
+        "0.70 documents/contracts/github_enterprise_license.md \u00a7 Renewal Notes",
+        "0.50 documents/contracts/github_enterprise_license.md \u00a7 Operational Summary",
+        "0.30 documents/it_kb/github_access_for_contractors.md \u00a7 Escalation",
+        "0.20 documents/it_kb/github_access_for_contractors.md \u00a7 Required Ticket Fields",
+        "0.10 documents/it_kb/github_access_for_contractors.md \u00a7 Header",
+        "0.10 documents/it_kb/github_access_for_contractors.md \u00a7 Symptoms",
+        "0.10 documents/contracts/github_enterprise_license.md \u00a7 Support SLA"
+      ],
+      "configs": {
+        "A baseline  >=0.6 max5": {
+          "found": 2,
+          "hits": 5,
+          "missing": [
+            "documents/it_kb/github_access_for_contractors.md"
+          ]
+        },
+        "B diverse   >=0.6 max5 1/doc": {
+          "found": 2,
+          "hits": 5,
+          "missing": [
+            "documents/it_kb/github_access_for_contractors.md"
+          ]
+        },
+        "C wider     >=0.5 max8 2/doc": {
+          "found": 2,
+          "hits": 8,
+          "missing": [
+            "documents/it_kb/github_access_for_contractors.md"
+          ]
+        }
+      }
+    },
+    {
+      "case": "WF_WEBEX_001",
+      "query": "Webex access no license seat limit",
+      "expected": 5,
+      "in_candidates": 5,
+      "ranked": [
+        "0.95 documents/employment/rachel_stein_customer_success_access_profile.md \u00a7 Current Issue",
+        "0.95 documents/contracts/webex_vendor_agreement.md \u00a7 Header",
+        "0.90 documents/it_kb/webex_license_assignment.md \u00a7 First-line Troubleshooting",
+        "0.90 documents/it_kb/webex_login_issue.md \u00a7 First-line Troubleshooting",
+        "0.85 documents/policies/saas_procurement_policy.md \u00a7 Seat-limited software",
+        "0.85 documents/contracts/webex_vendor_agreement.md \u00a7 Operational Summary",
+        "0.80 documents/internal_memos/webex_license_cleanup_memo.md \u00a7 Header",
+        "0.80 documents/policies/access_management_policy.md \u00a7 Limits beyond eligibility",
+        "0.75 documents/handbook/our-internal-systems.md \u00a7 Access Requests",
+        "0.75 documents/employment/yael_romano_manager_approval_profile.md \u00a7 Webex Note",
+        "0.70 documents/contracts/webex_vendor_agreement.md \u00a7 Webex Seat Limit Exception",
+        "0.70 documents/policies/onboarding_policy.md \u00a7 Blocked access stays blocked",
+        "0.70 documents/contracts/webex_vendor_agreement.md \u00a7 Renewal Notes",
+        "0.65 documents/employment/ben_walker_offer_letter.md \u00a7 Access Notes",
+        "0.60 documents/it_kb/webex_license_assignment.md \u00a7 Escalation",
+        "0.60 documents/it_kb/webex_login_issue.md \u00a7 Escalation",
+        "0.40 documents/it_kb/webex_license_assignment.md \u00a7 Header",
+        "0.35 documents/it_kb/webex_license_assignment.md \u00a7 Symptoms",
+        "0.30 documents/it_kb/webex_license_assignment.md \u00a7 Required Ticket Fields",
+        "0.30 documents/it_kb/webex_login_issue.md \u00a7 Required Ticket Fields"
+      ],
+      "configs": {
+        "A baseline  >=0.6 max5": {
+          "found": 3,
+          "hits": 5,
+          "missing": [
+            "documents/internal_memos/webex_license_cleanup_memo.md",
+            "documents/policies/access_management_policy.md"
+          ]
+        },
+        "B diverse   >=0.6 max5 1/doc": {
+          "found": 3,
+          "hits": 5,
+          "missing": [
+            "documents/internal_memos/webex_license_cleanup_memo.md",
+            "documents/policies/access_management_policy.md"
+          ]
+        },
+        "C wider     >=0.5 max8 2/doc": {
+          "found": 5,
+          "hits": 8,
+          "missing": []
+        }
+      }
+    },
+    {
+      "case": "WF_ONBOARD_001",
+      "query": "Maya Cohen onboarding equipment systems",
+      "expected": 5,
+      "in_candidates": 4,
+      "ranked": [
+        "0.95 documents/employment/maya_cohen_offer_letter.md \u00a7 Header",
+        "0.95 documents/handbook/getting-started.md \u00a7 Before Your First Day",
+        "0.90 documents/handbook/our-rituals.md \u00a7 People Operations and Onboarding Rituals",
+        "0.80 documents/employment/yael_romano_manager_approval_profile.md \u00a7 Approval Scope",
+        "0.70 documents/employment/maya_cohen_onboarding_summary.md \u00a7 Header",
+        "0.70 documents/policies/equipment_policy.md \u00a7 Standard issue",
+        "0.70 documents/handbook/managing-work-devices.md \u00a7 Lifecycle and Setup",
+        "0.60 documents/employment/equipment_responsibility_form.md \u00a7 Header",
+        "0.60 documents/handbook/managing-work-devices.md \u00a7 Company-Owned Equipment",
+        "0.60 documents/policies/onboarding_policy.md \u00a7 Who does what",
+        "0.50 documents/policies/equipment_policy.md \u00a7 Purpose",
+        "0.50 documents/handbook/getting-started.md \u00a7 First 60 to 90 Days",
+        "0.40 documents/employment/sara_cohen_hr_onboarding_delegation.md \u00a7 Delegated Responsibilities",
+        "0.40 documents/employment/ben_walker_preboarding_summary.md \u00a7 Header",
+        "0.40 documents/policies/onboarding_policy.md \u00a7 Checklist discipline",
+        "0.30 documents/policies/onboarding_policy.md \u00a7 Header",
+        "0.20 documents/employment/sara_cohen_hr_onboarding_delegation.md \u00a7 Header",
+        "0.20 documents/employment/sara_cohen_hr_onboarding_delegation.md \u00a7 Common Confusion",
+        "0.10 documents/policies/offboarding_policy.md \u00a7 Equipment return",
+        "0.10 documents/it_kb/slack_onboarding.md \u00a7 Header"
+      ],
+      "configs": {
+        "A baseline  >=0.6 max5": {
+          "found": 2,
+          "hits": 5,
+          "missing": [
+            "documents/it_kb/laptop_provisioning.md",
+            "documents/policies/equipment_policy.md",
+            "documents/policies/onboarding_policy.md"
+          ]
+        },
+        "B diverse   >=0.6 max5 1/doc": {
+          "found": 2,
+          "hits": 5,
+          "missing": [
+            "documents/it_kb/laptop_provisioning.md",
+            "documents/policies/equipment_policy.md",
+            "documents/policies/onboarding_policy.md"
+          ]
+        },
+        "C wider     >=0.5 max8 2/doc": {
+          "found": 3,
+          "hits": 8,
+          "missing": [
+            "documents/it_kb/laptop_provisioning.md",
+            "documents/policies/onboarding_policy.md"
+          ]
+        }
+      }
+    }
+  ],
+  "permissions": [
+    {
+      "caller": "E001",
+      "manager": false,
+      "manager_playbook_chunks": 0,
+      "ok": true
+    },
+    {
+      "caller": "E018",
+      "manager": true,
+      "manager_playbook_chunks": 3,
+      "ok": true
+    }
+  ]
+}

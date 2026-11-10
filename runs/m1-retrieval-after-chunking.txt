@@ -1,0 +1,19 @@
+k-NN candidates (top 20): 16/17 expected documents
+
+configuration                      found  avg hits   per case
+A baseline  >=0.6 max5             12/17      3.8   2/2 1/2 3/3 4/5 2/5
+B diverse   >=0.6 max5 1/doc       12/17      3.8   2/2 1/2 3/3 4/5 2/5
+C wider     >=0.5 max8 2/doc       15/17      5.6   2/2 1/2 3/3 5/5 4/5
+
+Still missing under C:
+  SIMPLE_002      -
+  SIMPLE_004      webex_login_issue.md
+  SIMPLE_006      -
+  WF_WEBEX_001    -
+  WF_ONBOARD_001  laptop_provisioning.md
+
+Permission boundary (S9 turn 1):
+  E001 manager=False: 0 manager_playbook chunks -> OK
+  E018 manager=True: 3 manager_playbook chunks -> OK
+
+Saved evals\results\retrieval-20261110-1509.json

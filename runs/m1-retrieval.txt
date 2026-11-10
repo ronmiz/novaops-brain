@@ -1,0 +1,13 @@
+case             expected  in k-NN  in final  missing after rerank
+SIMPLE_002              2        2         1  mfa_reset.md
+SIMPLE_004              2        1         1  webex_login_issue.md
+SIMPLE_006              3        3         2  github_access_for_contractors.md
+WF_WEBEX_001            5        5         3  webex_license_cleanup_memo.md, access_management_policy.md
+WF_ONBOARD_001          5        4         1  maya_cohen_onboarding_summary.md, laptop_provisioning.md, equipment_policy.md, onboarding_policy.md
+TOTAL                  17       15         8
+
+Permission boundary (S9 turn 1):
+  E001 manager=False: 0 manager_playbook chunks -> OK
+  E018 manager=True: 3 manager_playbook chunks -> OK
+
+Saved evals\results\retrieval-2026-11-10.json

@@ -1,0 +1,25 @@
+
+Retrieved for E010:
+  0.90  documents/policies/equipment_policy.md § Personal laptops
+  0.85  documents/handbook/managing-work-devices.md § Security, Admin Rights, and Software
+  0.80  documents/policies/acceptable_use_policy.md § Prohibited storage
+  0.75  documents/policies/equipment_policy.md § Standard issue
+  0.70  documents/handbook/managing-work-devices.md § Company-Owned Equipment
+
+Answer:
+According to NovaOps policies, using a personal laptop for work is generally not permitted [documents/policies/equipment_policy.md § Personal laptops]. There is, however, a narrow exception: if a managed laptop is being repaired or replaced and the employee has no working device, a personal laptop may be used for up to five business days [documents/policies/equipment_policy.md § Personal laptops]. 
+
+Before utilizing a personal laptop under this exception, IT must approve and log the exception [documents/policies/equipment_policy.md § Personal laptops]. Even with approval, several security protocols must be followed:
+
+1. **MFA and Security Measures**: Use Okta MFA and ensure disk encryption is enabled. Install updates within five business days unless IT announces a shorter security deadline [documents/handbook/managing-work-devices.md § Security, Admin Rights, and Software].
+  
+2. **Prohibited Activities**: Do not disable endpoint protection, share your laptop account, or allow family members to use the device [documents/handbook/managing-work-devices.md § Security, Admin Rights, and Software]. 
+
+3. **Access Restrictions**: Restricted systems such as Salesforce, GitHub, BambooHR, and AWS must not be accessed from unmanaged personal devices unless IT grants a specific exception [documents/handbook/managing-work-devices.md § Security, Admin Rights, and Software].
+
+4. **Data Storage**: Do not store source code, customer data, or employment records in personal accounts, including personal email, personal cloud drives, or personal note-taking apps [documents/policies/acceptable_use_policy.md § Prohibited storage]. 
+
+5. **Software Installation**: Software installs should come from IT-approved catalogs, managed app stores, or approved vendor sites. Any new paid tools, AI plugins, backup utilities, screen recorders, database clients, and page-reading extensions require approval before adding company data [documents/handbook/managing-work-devices.md § Security, Admin Rights, and Software].
+
+In summary, personal laptops can only be used for work under specific, IT-approved circumstances and must adhere strictly to security and data handling policies [documents/policies/equipment_policy.md § Personal laptops][documents/handbook/managing-work-devices.md § Security, Admin Rights, and Software][documents/policies/acceptable_use_policy.md § Prohibited storage].
+

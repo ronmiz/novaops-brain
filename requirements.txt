@@ -1,0 +1,6 @@
+# NovaOps company brain — Milestone 1 (foundation)
+boto3                 # Bedrock (Nova 2 Lite, Titan embeddings) + OpenSearch SigV4 credentials
+python-dotenv         # loads the shared lessons/.env
+opensearch-py         # Amazon OpenSearch Serverless client (Lesson 7)
+mcp<2                 # FastMCP server + client; pinned to 1.x like Lessons 9-10
+pytest

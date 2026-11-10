@@ -1,0 +1,12 @@
+# secrets — the real .env lives in lessons/.env, never here
+.env
+.env.*
+!.env.example
+# runtime state
+var/
+*.db
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/

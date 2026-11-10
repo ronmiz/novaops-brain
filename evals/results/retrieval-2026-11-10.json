@@ -1,0 +1,101 @@
+{
+  "recall": [
+    {
+      "case": "SIMPLE_002",
+      "query": "reset MFA after replacing phone",
+      "expected": 2,
+      "in_candidates": 2,
+      "in_final": 1,
+      "missing_final": [
+        "documents/it_kb/mfa_reset.md"
+      ],
+      "final": [
+        "0.80 documents/it_kb/okta_device_change.md \u00a7 First-line Troubleshooting",
+        "0.70 documents/policies/security_and_mfa_policy.md \u00a7 Authentication",
+        "0.60 documents/employment/priya_raman_contractor_statement_of_work.md \u00a7 Special Notes"
+      ]
+    },
+    {
+      "case": "SIMPLE_004",
+      "query": "Webex support SLA",
+      "expected": 2,
+      "in_candidates": 1,
+      "in_final": 1,
+      "missing_final": [
+        "documents/it_kb/webex_login_issue.md"
+      ],
+      "final": [
+        "1.00 documents/contracts/webex_vendor_agreement.md \u00a7 Support SLA",
+        "1.00 documents/contracts/webex_vendor_agreement.md \u00a7 Header"
+      ]
+    },
+    {
+      "case": "SIMPLE_006",
+      "query": "contractor GitHub access",
+      "expected": 3,
+      "in_candidates": 3,
+      "in_final": 2,
+      "missing_final": [
+        "documents/it_kb/github_access_for_contractors.md"
+      ],
+      "final": [
+        "0.95 documents/policies/security_and_mfa_policy.md \u00a7 Contractor access",
+        "0.90 documents/contracts/github_enterprise_license.md \u00a7 Contractor Access Clause",
+        "0.90 documents/handbook/titles-for-programmers.md \u00a7 Contractor Distinctions",
+        "0.85 documents/employment/contractor_access_addendum.md \u00a7 Header",
+        "0.85 documents/handbook/titles-for-programmers.md \u00a7 GitHub, Jira, And AWS Responsibilities"
+      ]
+    },
+    {
+      "case": "WF_WEBEX_001",
+      "query": "Webex access no license seat limit",
+      "expected": 5,
+      "in_candidates": 5,
+      "in_final": 3,
+      "missing_final": [
+        "documents/internal_memos/webex_license_cleanup_memo.md",
+        "documents/policies/access_management_policy.md"
+      ],
+      "final": [
+        "0.95 documents/employment/rachel_stein_customer_success_access_profile.md \u00a7 Current Issue",
+        "0.95 documents/contracts/webex_vendor_agreement.md \u00a7 Header",
+        "0.90 documents/it_kb/webex_license_assignment.md \u00a7 First-line Troubleshooting",
+        "0.90 documents/it_kb/webex_login_issue.md \u00a7 First-line Troubleshooting",
+        "0.85 documents/policies/saas_procurement_policy.md \u00a7 Seat-limited software"
+      ]
+    },
+    {
+      "case": "WF_ONBOARD_001",
+      "query": "Maya Cohen onboarding equipment systems",
+      "expected": 5,
+      "in_candidates": 4,
+      "in_final": 2,
+      "missing_final": [
+        "documents/it_kb/laptop_provisioning.md",
+        "documents/policies/equipment_policy.md",
+        "documents/policies/onboarding_policy.md"
+      ],
+      "final": [
+        "0.95 documents/employment/maya_cohen_offer_letter.md \u00a7 Header",
+        "0.95 documents/handbook/getting-started.md \u00a7 Before Your First Day",
+        "0.90 documents/handbook/our-rituals.md \u00a7 People Operations and Onboarding Rituals",
+        "0.80 documents/employment/yael_romano_manager_approval_profile.md \u00a7 Approval Scope",
+        "0.70 documents/employment/maya_cohen_onboarding_summary.md \u00a7 Header"
+      ]
+    }
+  ],
+  "permissions": [
+    {
+      "caller": "E001",
+      "manager": false,
+      "manager_playbook_chunks": 0,
+      "ok": true
+    },
+    {
+      "caller": "E018",
+      "manager": true,
+      "manager_playbook_chunks": 3,
+      "ok": true
+    }
+  ]
+}
