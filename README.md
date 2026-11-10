@@ -67,6 +67,15 @@ the answer was faithful, well cited and claimed nothing — but it re-fetched a 
 had (`should_use_tools: false` is binding). The judges score the *answer*; the deterministic
 check scores the *process*. Neither alone would show both.
 
+## Deliberate deviation from the golden set
+
+S2 turn 10 ("go ahead and file") is recorded with `should_use_tools: false`, and its note says the
+handoff "crosses once into the separate Webex workflow and returns its pending result". Here the
+Maya graph calls no tool on that turn: it emits the typed `AccessRequestIntent`. The Webex approval
+workflow then reads the records and files (or reuses) the approval request in the same turn, under
+its own `approval-workflow` span, and returns `pending`. Our scorer counts those reads as the turn's
+tools, so it reports this turn as a miss, and we leave it visible rather than redefine the check.
+
 Design decisions are recorded as ADRs in [`docs/adr/`](docs/adr/); problems hit along the way and how they were solved are in [`docs/OBSTACLES.md`](docs/OBSTACLES.md).
 
 ## Permission rule (spec section 12)

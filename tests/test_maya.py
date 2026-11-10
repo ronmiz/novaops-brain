@@ -274,3 +274,11 @@ def test_an_eligibility_question_can_see_the_joiners_onboarding_tasks():
     # M-I-03 "Is Maya Cohen eligible for remote work equipment?" read as an employee lookup (#23)
     assert "list_onboarding_tasks" in policy.LOADOUTS["employee_lookup"]
     assert "Eligibility is not delivery" in policy.ANSWER_PROMPT
+
+
+def test_a_pasted_thread_answer_keeps_only_the_callers_items():
+    a = ("Your two items:\n1. Sign the equipment responsibility form [forwarded thread]\n"
+         "2. Finish your BambooHR profile [forwarded thread]\n\n"
+         "Everything else (Okta groups, Datadog renewal, Webex seat) belongs to IT or Yael [forwarded thread].")
+    out = contracts.only_theirs(a)
+    assert "Datadog" not in out and "BambooHR" in out and out.endswith("[forwarded thread]")

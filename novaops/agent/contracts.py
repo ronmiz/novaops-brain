@@ -168,3 +168,13 @@ def decision_answer(d: AccessDecision) -> str:
     text = "\n".join(lines)
     assert not claims_granted(text), text
     return text
+
+
+_OTHERS = re.compile(r"\n\s*(everything else|all other|the rest|other items|anything else|the remaining)\b[^\n]*", re.I)
+
+
+def only_theirs(answer: str) -> str:
+    """Pasted-thread turns (S9 t2): the caller asked what is THEIRS. A closing line about who
+    owns everything else leaks other people's items (forbidden facts) — measured four times
+    despite the prompt rule, so code removes it (docs/OBSTACLES.md #25)."""
+    return _OTHERS.sub("", answer).rstrip()

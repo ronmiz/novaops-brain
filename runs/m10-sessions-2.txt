@@ -1,0 +1,21 @@
+2 items, 17 turns, clock 2026-07-01
+
+  M-S-01  t1   completed   onboarding_status    trace=3c4132d40e755b6a7c4aa153b136db25
+  M-S-01  t2   completed   onboarding_status    trace=176495b9e917d82f5f62c42c9909aa12
+  M-S-01  t3   completed   onboarding_status    trace=8ed7d0aeeda276a3376f6f4b552f91ba
+  M-S-01  t4   completed   ticket_status        trace=35e8daffd891d7f294f0cf46d1e42374
+  M-S-01  t5   completed   equipment_request    trace=1723af7d31f1b4ab4864b84e0a51d974
+  M-S-01  t6   completed   equipment_request    trace=d76ec39e09c08f369d4a42d014c8b985
+  M-S-01  t7   completed   onboarding_status    trace=5300bf84011e39bdc04d9b2a2e8fda48
+  M-S-01  t8   completed   onboarding_status    trace=286f81acd01eff422348d7da24fdabeb
+  M-S-01  t9   completed   policy_question      trace=20ecdbb7097997e4e041e0a17e84001a
+  M-S-01  t10  pending     access_request       trace=666a8fbe7d121b7b08ca1a14c69b90b8
+  M-S-01  t11  completed   onboarding_status    trace=cf48705685169a54452429f344a3482c
+  M-S-01  t12  completed   onboarding_status    trace=30858909fcb1ff285f2160ab8ee018d0
+  M-S-02  t1   completed   policy_question      trace=ac9e4c7dd576d5082721b6078ef8c6ec
+  M-S-02  t2   completed   other                trace=fdf05371c016696eea4bbf0410c8ab95
+  M-S-02  t3   completed   equipment_request    trace=295a4cd2de69a031ffc75d7d4946cf0c
+  M-S-02  t4   completed   policy_question      trace=548f37cebfc8c7d516386bc4ab30fb4f
+  M-S-02  t5   completed   equipment_request    trace=10d0839a504169e3755d65689e3d3063
+
+17 traces · statuses ['completed', 'pending'] · saved evals\results\submission-M-S-01-M-S-02-20261110-2104.json

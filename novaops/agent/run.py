@@ -26,7 +26,7 @@ from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from .. import config
 from . import approval
-from .contracts import attach_sources, citation_report, decision_answer, sources_in
+from .contracts import attach_sources, citation_report, decision_answer, only_theirs, sources_in
 from .graph import build_graph, current_turn, evidence
 from .memory import render_memory
 
@@ -60,6 +60,8 @@ async def _run_turn(message: str, caller_id: str, caller_group: str, thread_id: 
     turn = current_turn(state["messages"])
     answer = turn[-1].content if isinstance(turn[-1].content, str) else str(turn[-1].content)
     turn_evidence = evidence(turn)
+    if state["plan"].get("request_type") == "pasted_text":
+        answer = only_theirs(answer)
     answer = attach_sources(answer, turn_evidence)
     # Checked against tool evidence: what the MODEL wrote. The AccessDecision text below is
     # rendered by code from the records the approval workflow read, citations included.
