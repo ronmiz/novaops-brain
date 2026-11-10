@@ -35,7 +35,8 @@ LOADOUTS: dict[str, list[str] | None] = {
     # A threshold question needs the amount it is compared with (S2 t9: 7,500 vs 18,400) (#18).
     "policy_question": ["search_documents", "list_policies", "get_policy", "check_software_subscription"],
     # "Which of my team has a Webex seat?" is often read as a people question (W-I-02, #22).
-    "employee_lookup": ["get_employee", "check_team_system_access", "search_documents"],
+    "employee_lookup": ["get_employee", "check_team_system_access", "list_onboarding_tasks",
+                        "search_documents"],
     "onboarding_status": ["get_employee", "list_onboarding_tasks", "check_asset_inventory",
                           "check_software_subscription", "search_documents", "get_policy"],
     # Users call a Webex seat "equipment" too: the subscription tool must be reachable (#17).
@@ -170,7 +171,7 @@ PLANNER_PROMPT = (
     "  policy_question · what a policy, handbook, memo or IT article says; how-to questions\n"
     "  employee_lookup · who someone is (record, role, manager, status)\n"
     "  onboarding_status · a joiner's checklist, required systems, start-date paperwork\n"
-    "  equipment_request · hardware (laptops, monitors, docks, headsets)\n"
+    "  equipment_request · hardware (laptops, monitors, docks, headsets), incl. who is eligible for it\n"
     "  subscription_review · a SaaS subscription's seats (including who holds one), cost, renewal\n"
     "  access_request · getting a person access to a system\n"
     "  ticket_status · existing IT tickets\n"
@@ -227,6 +228,8 @@ ANSWER_PROMPT = (
     "list ONLY the items that are theirs, and cite it as (forwarded thread). Do not name, list or "
     "summarise anyone else's items — not even in an 'everything else is handled by…' sentence.\n"
     "- Never say an action was taken unless a tool result shows it.\n"
+    "- Eligibility is not delivery: say what the policy allows and what the records show as planned "
+    "or pending (for a joiner, check the onboarding tasks). Never promise someone WILL receive something.\n"
     "- Asked for steps or a process: give the steps themselves from the source, not a description "
     "of the document that contains them.\n"    "- If a tool says something is NOT recorded (e.g. which employee holds a seat), say it is not "
     "recorded and report what is. Never infer it from something else: role entitlement is not a seat.\n"

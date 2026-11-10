@@ -1,0 +1,101 @@
+"""Run EVALUATION-INPUTS.yaml through the agent the way spec section 13 says, and index the traces.
+
+    python evals/run_submission.py --only M-I-01 --only M-I-02 --only M-I-03   # a rehearsal
+    python evals/run_submission.py --write-submission                          # THE run: 27 traces
+
+Rules from spec 13, enforced here rather than remembered:
+  - reseed the database before each independent case or session (cases touch the same rows);
+  - a session is ONE thread on ONE database, turns in order; an input is a NEW thread;
+  - the clock is pinned (config.TODAY = 2026-07-01, read by the agent);
+  - one trace per turn (run.ask opens one root span per turn).
+
+Required workflows only (maya, webex). Results go to evals/results/submission-<stamp>.json;
+`--write-submission` copies the template next to the repo root if needed and fills its trace-id
+column. Register the LLM judges first (evals/register_judges.py) — they only judge new turns.
+Needs the MCP server running.
+"""
+import argparse
+import asyncio
+import json
+import re
+import sys
+import uuid
+from datetime import datetime
+from pathlib import Path
+
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from novaops import config, db  # noqa: E402
+from novaops.agent.run import ask, langfuse  # noqa: E402
+
+INPUTS = config.DATASET_DIR.parent / "EVALUATION-INPUTS.yaml"
+TEMPLATE = config.DATASET_DIR.parent / "SUBMISSION.md"
+SUBMISSION = ROOT / "SUBMISSION.md"
+REQUIRED = ("maya", "webex")
+
+
+def items(only: list[str] | None) -> list[dict]:
+    """Every required input and session, in file order, as (id, caller, [(turn, message)])."""
+    out = []
+    for wf in yaml.safe_load(INPUTS.read_text(encoding="utf-8"))["workflows"]:
+        if wf["id"] not in REQUIRED:
+            continue
+        for case in wf.get("inputs") or []:
+            out.append({"id": case["id"], "caller": case["caller"], "turns": [(None, case["message"])]})
+        for case in wf.get("sessions") or []:
+            out.append({"id": case["id"], "caller": case["caller"],
+                        "turns": [(t["n"], t["message"]) for t in case["turns"]]})
+    return [i for i in out if not only or i["id"] in only]
+
+
+async def run_item(item: dict) -> list[dict]:
+    db.reseed()                                          # independent case or session: fresh rows
+    thread = f"{item['id']}-{uuid.uuid4().hex[:6]}"      # one thread for every turn of this item
+    rows = []
+    for turn, message in item["turns"]:
+        r = await ask(message, item["caller"]["employee_id"], item["caller"]["group"], thread)
+        rows.append({"item": item["id"], "turn": turn, "thread_id": thread, "trace_id": r.get("trace_id"),
+                     "status": r.get("status"), "intent": r.get("intent"), "tools_used": r.get("tools_used"),
+                     "access_decision": r.get("access_decision"), "answer": r.get("answer")})
+        print(f"  {item['id']:<7} t{turn or '-':<3} {r.get('status'):<11} {r.get('intent') or '-':<20} "
+              f"trace={r.get('trace_id')}")
+    return rows
+
+
+def fill_submission(rows: list[dict]) -> None:
+    text = (SUBMISSION if SUBMISSION.exists() else TEMPLATE).read_text(encoding="utf-8")
+    for r in rows:
+        turn = "—" if r["turn"] is None else str(r["turn"])
+        row = re.compile(rf"^\| `{re.escape(r['item'])}` \| {re.escape(turn)} \|[^\n]*$", re.M)
+        text, n = row.subn(f"| `{r['item']}` | {turn} | `{r['trace_id']}` |", text)
+        if n != 1:
+            print(f"  ! no unique row for {r['item']} turn {turn} in SUBMISSION.md")
+    SUBMISSION.write_text(text, encoding="utf-8")
+
+
+async def main() -> None:
+    p = argparse.ArgumentParser()
+    p.add_argument("--only", action="append", help="item id, e.g. M-I-01 (repeatable)")
+    p.add_argument("--write-submission", action="store_true", help="fill the trace ids into SUBMISSION.md")
+    args = p.parse_args()
+    todo = items(args.only)
+    print(f"{len(todo)} items, {sum(len(i['turns']) for i in todo)} turns, clock {config.TODAY}\n")
+    rows = []
+    for item in todo:
+        rows += await run_item(item)
+    langfuse.flush()
+    tag = "all" if not args.only else "-".join(args.only)
+    out = ROOT / "evals" / "results" / f"submission-{tag}-{datetime.now():%Y%m%d-%H%M}.json"
+    out.parent.mkdir(exist_ok=True)
+    out.write_text(json.dumps(rows, indent=2, ensure_ascii=False), encoding="utf-8")
+    print(f"\n{len(rows)} traces · statuses {sorted({r['status'] for r in rows})} · saved {out.relative_to(ROOT)}")
+    if args.write_submission:
+        fill_submission(rows)
+        print(f"trace ids written to {SUBMISSION.relative_to(ROOT)}")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

@@ -1,0 +1,42 @@
+[
+  {
+    "item": "M-I-01",
+    "turn": null,
+    "thread_id": "M-I-01-649a85",
+    "trace_id": "c85dede0259979502ab24ee68c91bfc8",
+    "status": "completed",
+    "intent": "policy_question",
+    "tools_used": [
+      "get_policy"
+    ],
+    "access_decision": null,
+    "answer": "You cannot use a personal laptop for work except in a five-business-day IT continuity exception when your managed laptop is being repaired or replaced and you have no working device. IT must approve and log the exception before you use a personal machine, even for those five days. Otherwise, full-time employees receive a managed laptop, and personal laptops are not allowed [documents/policies/equipment_policy.md § Personal laptops]."
+  },
+  {
+    "item": "M-I-02",
+    "turn": null,
+    "thread_id": "M-I-02-4507d4",
+    "trace_id": "11bc798482bedcb650b13d58d469a8c1",
+    "status": "completed",
+    "intent": "policy_question",
+    "tools_used": [
+      "search_documents"
+    ],
+    "access_decision": null,
+    "answer": "To reset MFA after replacing your phone, follow these steps based on the current IT knowledge base and security policy:\n\n1. **Verify Identity**: First-line troubleshooting requires identity verification by your manager, HR, or IT via video check. This ensures no suspicious login attempts are occurring [cite: [documents/it_kb/mfa_reset.md § (whole document)]] [cite: [documents/policies/security_and_mfa_policy.md § (whole document)]].\n\n2. **Reset Factor in Okta**: After verification, IT will reset your MFA factor in Okta Helpdesk. You will then be required to immediately re-enroll your new device [cite: [documents/it_kb/mfa_reset.md § (whole document)]].\n\n3. **Device Compliance**: Ensure your new device is either company-managed or approved as BYOD and is MDM-enrolled. If it's a personal device, it must meet MDM compliance requirements before you can reset device trust and sign back into SSO apps [cite: [documents/it_kb/okta_device_change.md § (whole document)]] [cite: [documents/policies/security_and_mfa_policy.md § (whole document)]].\n\n4. **Report Promptly**: If you encounter any issues during this process or suspect security concerns (like unexpected account activity), report them to IT Security immediately. Early reporting helps contain potential incidents [cite: [documents/policies/security_and_mfa_policy.md § (whole document)]].\n\n**Important**: MFA is mandatory for all accounts through Okta with no exceptions, per the Security and MFA Policy effective June 1, 2026. New devices always require identity verification before accessing company systems [cite: [documents/policies/security_and_mfa_policy.md § (whole document)]].\n\nIf you need to initiate this process, submit a ticket with the required fields: your employee ID, email, system (Okta), business impact, error text, and any safe screenshots. For escalation matters like admin access or security risks, IT Manager approval may be needed [cite: [documents/it_kb/mfa_reset.md § (whole document)]] [cite: [documents/it_kb/okta_device_change.md § (whole document)]]."
+  },
+  {
+    "item": "M-I-03",
+    "turn": null,
+    "thread_id": "M-I-03-eb2cc8",
+    "trace_id": "3fa57cb6b2b6e03d61e49bce44425ddb",
+    "status": "completed",
+    "intent": "employee_lookup",
+    "tools_used": [
+      "get_employee",
+      "search_documents"
+    ],
+    "access_decision": null,
+    "answer": "Maya Cohen is eligible for remote work equipment. She is a full-time employee in a customer-facing role, and the equipment policy and remote work policy both allow remote employees to request a monitor and dock, and customer-facing roles may receive a headset. She is currently in preboarding status with a start date of 2026-08-01, so she will receive standard issue equipment (a managed laptop) and can request additional remote equipment through the IT request portal once she starts [cite: [documents/policies/equipment_policy.md § (whole document)]][cite: [documents/policies/remote_work_policy.md § (whole document)]][record: E001]."
+  }
+]

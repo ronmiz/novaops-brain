@@ -1,0 +1,7 @@
+3 items, 3 turns, clock 2026-07-01
+
+  M-I-01  t-   completed   policy_question      trace=c85dede0259979502ab24ee68c91bfc8
+  M-I-02  t-   completed   policy_question      trace=11bc798482bedcb650b13d58d469a8c1
+  M-I-03  t-   completed   employee_lookup      trace=3fa57cb6b2b6e03d61e49bce44425ddb
+
+3 traces · statuses ['completed'] · saved evals\results\submission-M-I-01-M-I-02-M-I-03-20261110-2031.json

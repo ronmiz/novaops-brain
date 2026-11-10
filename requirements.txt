@@ -11,3 +11,4 @@ aiosqlite
 langchain                     # required by Langfuse's LangChain callback
 langfuse>=4.10,<5             # tracing — the submission channel (Lesson 11)
 pytest
+pyyaml

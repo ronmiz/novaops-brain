@@ -268,3 +268,9 @@ def test_clock_is_pinned_to_the_dataset_day():
     from novaops import config
     assert config.TODAY == "2026-07-01"
     assert "2026-07-01" in policy.ANSWER_PROMPT.format(caller_id="E010", caller_group="x", today=config.TODAY)
+
+
+def test_an_eligibility_question_can_see_the_joiners_onboarding_tasks():
+    # M-I-03 "Is Maya Cohen eligible for remote work equipment?" read as an employee lookup (#23)
+    assert "list_onboarding_tasks" in policy.LOADOUTS["employee_lookup"]
+    assert "Eligibility is not delivery" in policy.ANSWER_PROMPT

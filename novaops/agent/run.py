@@ -89,7 +89,9 @@ async def _run_turn(message: str, caller_id: str, caller_group: str, thread_id: 
     }
 
 
-CALL_CHARS, EARLIER_CHARS = 1500, 3000
+# Long enough that a judge sees every hit a search returned: at 1500 the judges marked
+# correctly cited claims "not in the evidence" because the excerpt had been cut (#23).
+CALL_CHARS, EARLIER_CHARS = 5000, 3000
 
 
 def trajectory(turn: list, state: dict, decision) -> dict:

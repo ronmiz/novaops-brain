@@ -33,3 +33,25 @@ def test_trajectory_separates_this_turn_from_earlier_evidence():
     t = run.trajectory(turn, state, None)
     assert t["calls"] == [{"tool": "get_employee", "result": '{"employee_id": "E010"}'}]
     assert "OLD POLICY TEXT" in t["state"]["earlier_tool_results"] and t["state"]["user_rules"] == ["no filing"]
+
+
+# --- the submission runner reads the set the way spec 13 says ---------------------------
+
+import run_submission  # noqa: E402
+
+
+def test_submission_set_is_27_turns_of_maya_and_webex():
+    todo = run_submission.items(None)
+    assert sum(len(i["turns"]) for i in todo) == 27
+    assert {i["id"][0] for i in todo} == {"M", "W"}
+    session = next(i for i in todo if i["id"] == "M-S-01")
+    assert [t for t, _ in session["turns"]] == list(range(1, 13))
+
+
+def test_trace_ids_land_in_their_own_rows(tmp_path, monkeypatch):
+    monkeypatch.setattr(run_submission, "SUBMISSION", tmp_path / "SUBMISSION.md")
+    run_submission.fill_submission([{"item": "M-I-01", "turn": None, "trace_id": "abc"},
+                                    {"item": "M-S-01", "turn": 10, "trace_id": "def"}])
+    text = (tmp_path / "SUBMISSION.md").read_text(encoding="utf-8")
+    assert "| `M-I-01` | — | `abc` |" in text and "| `M-S-01` | 10 | `def` |" in text
+    assert "| `M-S-01` | 1 | |" in text                     # turn 1 untouched (no 1 vs 10 mix-up)
