@@ -1,0 +1,28 @@
+
+S3-intent-shift (E007, IT Group)
+  S3- t 1 PASS  completed subscription_review  lookup      tools=check_team_system_access
+  S3- t 2 PASS  completed ticket_status        lookup      tools=get_employee,list_employee_tickets
+  S3- t 3 PASS  completed ticket_status        acknowledge tools=-
+  S3- t 4 PASS  completed employee_lookup      lookup      tools=get_employee
+  S3- t 5 PASS  completed ticket_status        lookup      tools=list_access_requests
+  S3- t 6 PASS  completed policy_question      lookup      tools=get_policy,list_policies,search_documents
+  S3- t 7 FAIL  completed policy_question      lookup      tools=search_documents
+           ✗ required_facts: ['MDM|MFA|end date|named']
+  S3- t 8 FAIL  completed employee_lookup      recall      tools=-
+           ✗ required_facts: ['Rachel']
+  S3- t 9 PASS  completed onboarding_status    summary     tools=-
+
+S4-constraint-carry (E006, IT Group)
+  S4- t 1 FAIL  completed other                lookup      tools=get_policy
+           ✗ should_use_tools: used=True
+  S4- t 2 PASS  completed subscription_review  lookup      tools=check_software_subscription
+  S4- t 3 PASS  completed subscription_review  lookup      tools=check_software_subscription
+  S4- t 4 PASS  completed subscription_review  lookup      tools=check_software_subscription
+  S4- t 5 PASS  completed subscription_review  summary     tools=-
+  S4- t 6 PASS  completed subscription_review  lookup      tools=check_software_subscription
+  S4- t 7 PASS  completed subscription_review  recall      tools=-
+  S4- t 8 PASS  pending   access_request       action      tools=get_employee,check_software_subscription,list_access_requests,list_employee_tickets,request_approval,get_approval
+  S4- t 9 PASS  completed subscription_review  summary     tools=-
+
+TOTAL 15/18 turns pass all binding + own checks
+Saved evals\results\golden-S3-S4-20261112-2055.json

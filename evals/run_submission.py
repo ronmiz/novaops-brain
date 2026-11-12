@@ -37,6 +37,7 @@ INPUTS = config.DATASET_DIR.parent / "EVALUATION-INPUTS.yaml"
 TEMPLATE = config.DATASET_DIR.parent / "SUBMISSION.md"
 SUBMISSION = ROOT / "SUBMISSION.md"
 REQUIRED = ("maya", "webex")
+OPTIONAL = ("vendor",)          # renewal joins when it is built
 EXPECTED = json.loads((Path(__file__).parent / "expected_inputs.json").read_text(encoding="utf-8"))
 
 
@@ -51,11 +52,14 @@ def expectation(item_id: str, turn: int | None) -> tuple[str, dict]:
     return session["id"], next(t for t in session["turns"] if t["n"] == turn)
 
 
-def items(only: list[str] | None) -> list[dict]:
+def items(only: list[str] | None, optional: bool = False) -> list[dict]:
     """Every required input and session, in file order, as (id, caller, [(turn, message)])."""
     out = []
     for wf in yaml.safe_load(INPUTS.read_text(encoding="utf-8"))["workflows"]:
-        if wf["id"] not in REQUIRED:
+        if wf["id"] not in REQUIRED + (OPTIONAL if optional else ()):
+            continue
+        if wf["id"] == "vendor":       # a document, no caller, no conversation (spec 10)
+            out += [{"id": c["id"], "vendor": c} for c in wf["inputs"]]
             continue
         for case in wf.get("inputs") or []:
             out.append({"id": case["id"], "caller": case["caller"], "turns": [(None, case["message"])]})
@@ -101,16 +105,41 @@ def fill_submission(rows: list[dict]) -> None:
     SUBMISSION.write_text(text, encoding="utf-8")
 
 
+def run_vendor(item: dict) -> list[dict]:
+    """Workflow 3 never touches the agent: one traced call of novaops.vendor.extract."""
+    from novaops import vendor
+    case = item["vendor"]
+    with langfuse.start_as_current_observation(as_type="chain", name="vendor-extraction",
+                                               input={"source": case["source_name"]}) as span:
+        try:
+            result, status = vendor.extract(case["document"], case["source_name"]), "completed"
+        except Exception as exc:                                   # invalid output = truthful failure
+            result, status = {"error": str(exc)}, "failed"
+        span.update(output=result, metadata={"status": status, "source_id": case["source_name"],
+                                             "missing_required_fields": result.get("missing_required_fields")})
+        trace_id = langfuse.get_current_trace_id()
+    want = EXPECTED["inputs"][item["id"]]["missing_required_fields"]
+    got = result.get("missing_required_fields")
+    failed = {} if got == want else {"missing_required_fields": {"expected": want, "got": got}}
+    langfuse.create_score(trace_id=trace_id, name="expected_pass", value=0.0 if failed else 1.0,
+                          data_type="NUMERIC", comment=json.dumps(failed)[:500] or None)
+    print(f"  {item['id']:<7} t-   {'PASS' if not failed else 'FAIL'}  {status:<11} vendor               "
+          f"missing={got} trace={trace_id}")
+    return [{"item": item["id"], "turn": None, "trace_id": trace_id, "status": status, "pass": not failed,
+             "failed": failed, "answer": json.dumps(result, ensure_ascii=False)}]
+
+
 async def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--only", action="append", help="item id, e.g. M-I-01 (repeatable)")
     p.add_argument("--write-submission", action="store_true", help="fill the trace ids into SUBMISSION.md")
+    p.add_argument("--optional", action="store_true", help="also run the optional workflows built so far")
     args = p.parse_args()
-    todo = items(args.only)
-    print(f"{len(todo)} items, {sum(len(i['turns']) for i in todo)} turns, clock {config.TODAY}\n")
+    todo = items(args.only, args.optional)
+    print(f"{len(todo)} items, {sum(len(i.get('turns', [None])) for i in todo)} traces, clock {config.TODAY}\n")
     rows = []
     for item in todo:
-        rows += await run_item(item)
+        rows += run_vendor(item) if "vendor" in item else await run_item(item)
     langfuse.flush()
     tag = "all" if not args.only else "-".join(args.only)
     out = ROOT / "evals" / "results" / f"submission-{tag}-{datetime.now():%Y%m%d-%H%M}.json"
