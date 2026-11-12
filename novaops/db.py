@@ -20,6 +20,8 @@ def reseed() -> None:
     """(Re)build the database from the seed. schema.sql starts with DROP TABLE, so
     running it over an existing file resets it."""
     config.DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    # A fresh file: the seed's DROP TABLEs do not cover the renewal workflow's own tables.
+    config.DB_PATH.unlink(missing_ok=True)
     with closing(sqlite3.connect(config.DB_PATH)) as conn:
         conn.executescript((config.SEED_DIR / "schema.sql").read_text(encoding="utf-8"))
         conn.executescript((config.SEED_DIR / "seed.sql").read_text(encoding="utf-8"))

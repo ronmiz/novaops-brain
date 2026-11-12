@@ -93,6 +93,26 @@
         "legal_name",
         "security_review_required"
       ]
+    },
+    "R-I-01": {
+      "why": "approved reply: recorded on 07-03 (seat limit still 40), applied on 07-21, Rachel (E010, AR001) notified",
+      "stage": "applied",
+      "seat_limit": 50,
+      "notified": [
+        "E010"
+      ]
+    },
+    "R-I-02": {
+      "why": "conditional reply ('this is not final approval'): nothing written, back to a human",
+      "stage": "needs_human",
+      "seat_limit": 40,
+      "notified": []
+    },
+    "R-I-03": {
+      "why": "ambiguous reply: no confirmation id, price or term — back to a human, no write",
+      "stage": "needs_human",
+      "seat_limit": 40,
+      "notified": []
     }
   },
   "sessions": {

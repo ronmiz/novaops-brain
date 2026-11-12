@@ -37,7 +37,7 @@ INPUTS = config.DATASET_DIR.parent / "EVALUATION-INPUTS.yaml"
 TEMPLATE = config.DATASET_DIR.parent / "SUBMISSION.md"
 SUBMISSION = ROOT / "SUBMISSION.md"
 REQUIRED = ("maya", "webex")
-OPTIONAL = ("vendor",)          # renewal joins when it is built
+OPTIONAL = ("vendor", "renewal")
 EXPECTED = json.loads((Path(__file__).parent / "expected_inputs.json").read_text(encoding="utf-8"))
 
 
@@ -60,6 +60,11 @@ def items(only: list[str] | None, optional: bool = False) -> list[dict]:
             continue
         if wf["id"] == "vendor":       # a document, no caller, no conversation (spec 10)
             out += [{"id": c["id"], "vendor": c} for c in wf["inputs"]]
+            continue
+        if wf["id"] == "renewal":      # a clock, three internal events, one provider reply (spec 11)
+            out += [{"id": c["id"], "renewal": {**c, "trigger": wf["trigger"]["as_of"],
+                                                "effective": wf["effective_date_trigger"]["as_of"],
+                                                "events": wf["internal_events"]}} for c in wf["inputs"]]
             continue
         for case in wf.get("inputs") or []:
             out.append({"id": case["id"], "caller": case["caller"], "turns": [(None, case["message"])]})
@@ -129,6 +134,45 @@ def run_vendor(item: dict) -> list[dict]:
              "failed": failed, "answer": json.dumps(result, ensure_ascii=False)}]
 
 
+def run_renewal(item: dict) -> list[dict]:
+    """Workflow 4 end to end as ONE trace (spec 13: a run that pauses and resumes stays one trace):
+    schedule 07-01 -> three internal events -> one provider reply -> schedule on the effective date.
+    Every step is a separate call over persisted state, exactly as separate processes would make it."""
+    from novaops import renewal
+    case = item["renewal"]
+    db.reseed()
+    with langfuse.start_as_current_observation(as_type="chain", name="renewal-run",
+                                               input={"fixture_id": case["fixture_id"]}) as root:
+        def step(name, fn, **kw):
+            with langfuse.start_as_current_observation(as_type="span", name=name, input=kw or None) as span:
+                out = fn()
+                span.update(output=out)
+                return out
+        step("schedule", lambda: renewal.scheduled_run(case["trigger"])["run"], as_of=case["trigger"])
+        for event in case["events"]:
+            step(f"event:{event['event_type']}", lambda e=event: renewal.ingest_event(e)["run"], event_id=event["event_id"])
+        replied = step("provider_reply", lambda: renewal.ingest_provider_reply(case["provider_reply"], "2026-07-03"),
+                       fixture_id=case["fixture_id"])
+        step("schedule", lambda: renewal.scheduled_run(case["effective"])["run"], as_of=case["effective"])
+        run = renewal.run_state()
+        sub = db._rows("SELECT seat_limit, active_seats, annual_cost FROM software_subscriptions WHERE subscription_id='SUB001'")[0]
+        notified = [r["recipient"] for r in db._rows("SELECT recipient FROM renewal_outbox WHERE kind='capacity_changed'")]
+        status = run["status"] if run else "failed"
+        root.update(output={"run": run, "reply_outcome": replied["outcome"], "reason": replied.get("reason"),
+                            "subscription": sub, "notified": notified},
+                    metadata={"status": status, "stage": run and run["stage"], "fixture_id": case["fixture_id"]})
+        trace_id = langfuse.get_current_trace_id()
+    want = EXPECTED["inputs"][item["id"]]
+    got = {"stage": run and run["stage"], "seat_limit": sub["seat_limit"], "notified": notified}
+    failed = {k: {"expected": want[k], "got": got[k]} for k in ("stage", "seat_limit", "notified") if got[k] != want[k]}
+    langfuse.create_score(trace_id=trace_id, name="expected_pass", value=0.0 if failed else 1.0,
+                          data_type="NUMERIC", comment=json.dumps(failed)[:500] or None)
+    print(f"  {item['id']:<7} t-   {'PASS' if not failed else 'FAIL'}  {status:<11} renewal              "
+          f"{got} trace={trace_id}")
+    return [{"item": item["id"], "turn": None, "trace_id": trace_id, "status": status, "pass": not failed,
+             "failed": failed, "answer": json.dumps(got)}]
+
+
 async def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--only", action="append", help="item id, e.g. M-I-01 (repeatable)")
@@ -139,7 +183,8 @@ async def main() -> None:
     print(f"{len(todo)} items, {sum(len(i.get('turns', [None])) for i in todo)} traces, clock {config.TODAY}\n")
     rows = []
     for item in todo:
-        rows += run_vendor(item) if "vendor" in item else await run_item(item)
+        rows += (run_vendor(item) if "vendor" in item else run_renewal(item) if "renewal" in item
+                 else await run_item(item))
     langfuse.flush()
     tag = "all" if not args.only else "-".join(args.only)
     out = ROOT / "evals" / "results" / f"submission-{tag}-{datetime.now():%Y%m%d-%H%M}.json"

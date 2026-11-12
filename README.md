@@ -11,7 +11,8 @@ operational database and governed actions. Built milestone by milestone against
 | 3 · Maya (HR & onboarding) | ✅ golden S1/S2/S9: 8/21 baseline → mean 17.67/21 over 3 runs → 19/21 |
 | 4 · Webex (IT operations) | ✅ W-I-01/02/03 live; pause → approve in a new process → resume = one trace; S6/S8 8/8 (noise delta 0) |
 | 5 · Observability (Langfuse) | ✅ tracing, 3 Langfuse judges, `golden_pass` / `expected_pass` scores |
-| 6 · Vendor (optional) | 🔶 built + tested offline; live run next |
+| 6 · Vendor (optional) | ✅ V-I-01/02/03 live: missing required fields 0 / 1 / 2 as specified, schema-valid |
+| 7 · Renewal (optional) | 🔶 built + tested offline; live run next |
 | 10 · Submission | ⏳ |
 
 ## Stack
@@ -64,7 +65,8 @@ streamable HTTP) as the tool boundary · Langfuse for tracing (Milestone 5).
 | Submission run follows spec 13 (reseed per case, one thread per session, pinned clock, one trace per turn) and fills the trace index | `evals/run_submission.py` |
 | Project-level agent control: a hook that blocks weakening tests; skills for measuring and logging | [`.claude/settings.json`](.claude/settings.json), [`.claude/hooks/protect_tests.py`](.claude/hooks/protect_tests.py), [`.claude/skills/`](.claude/skills/) |
 | Workflow 3 (Vendor) is NOT agent work: one forced-tool Converse call, code-computed missing fields, schema-validated | [`novaops/vendor.py`](novaops/vendor.py), ADR 0008, [`tests/test_vendor.py`](tests/test_vendor.py) |
-| Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py), [`tests/test_maya.py`](tests/test_maya.py), [`tests/test_webex.py`](tests/test_webex.py), [`tests/test_observability.py`](tests/test_observability.py), [`tests/test_harness.py`](tests/test_harness.py) |
+| Workflow 4 (Renewal): scheduled, event-driven, survives process death; the model recommends and extracts, code decides and writes | [`novaops/renewal.py`](novaops/renewal.py), ADR 0009, [`tests/test_renewal.py`](tests/test_renewal.py) |
+| Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py), [`tests/test_maya.py`](tests/test_maya.py), [`tests/test_webex.py`](tests/test_webex.py), [`tests/test_observability.py`](tests/test_observability.py), [`tests/test_harness.py`](tests/test_harness.py), [`tests/test_vendor.py`](tests/test_vendor.py), [`tests/test_renewal.py`](tests/test_renewal.py) |
 
 ## Measured: a judge and a check that disagree (Lesson 11)
 

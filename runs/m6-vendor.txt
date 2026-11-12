@@ -1,0 +1,7 @@
+3 items, 3 traces, clock 2026-07-01
+
+  V-I-01  t-   PASS  completed   vendor               missing=[] trace=fc73efd5bc0f849dff5e5260516bb1e7
+  V-I-02  t-   PASS  completed   vendor               missing=['payment_terms'] trace=47759bb7894e6e151e7f4601ecf07155
+  V-I-03  t-   PASS  completed   vendor               missing=['legal_name', 'security_review_required'] trace=6ff9e346f6fbdd0359e06adefb9b4ead
+
+3 traces · 3/3 meet our expectations · statuses ['completed'] · saved evals\results\submission-V-I-01-V-I-02-V-I-03-20261112-2106.json
