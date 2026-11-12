@@ -219,3 +219,33 @@ def test_a_typo_in_a_name_still_finds_the_person():
 def test_a_seat_question_read_as_a_people_question_still_sees_the_gap_tool():
     assert "check_team_system_access" in policy.LOADOUTS["employee_lookup"]          # W-I-02 (#22)
     assert "check_team_system_access" in policy.LOADOUTS["subscription_review"]
+
+
+# --- S3/S4: a decision is not a write; a status question is not a request (#27) ----------
+
+def _plan(kind, action=False):
+    return policy.TurnPlan(current_intent="access_request", request_type=kind, action_requested=action)
+
+
+def test_closing_a_topic_never_reaches_the_write_path():
+    p = policy.verify_request_type(_plan("action", True),
+                                   "Good — that one's covered, the seat expansion is already with Amir. Treat it as resolved.", "")
+    assert p.request_type == "acknowledge" and p.action_requested is False and not p.requires_tools
+
+
+def test_real_filing_requests_stay_actions():
+    for msg in ("Go ahead and file the Webex access request for her now.",
+                "OK, I'm saying so: file the Webex access request for Rachel Stein."):
+        assert policy.verify_request_type(_plan("action", True), msg, "").action_requested is True
+
+
+def test_ground_rules_need_no_lookup_even_on_turn_one():
+    p = policy.verify_request_type(_plan("acknowledge"), "Ground rules for this session: anything above 7,500 needs Finance.", "")
+    assert policy.enforce_evidence(p, has_evidence=False).request_type == "acknowledge"
+    q = policy.verify_request_type(_plan("acknowledge"), "Which of those needs Finance?", "")
+    assert q.request_type == "lookup"
+
+
+def test_only_asking_for_access_starts_the_approval_workflow():
+    assert policy.ASKS_FOR_ACCESS.search("I joined Customer Success and need Webex access.")
+    assert not policy.ASKS_FOR_ACCESS.search("Does he have a GitHub request already waiting on someone?")

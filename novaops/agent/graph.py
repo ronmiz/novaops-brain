@@ -269,8 +269,9 @@ def build_graph(tools: list, checkpointer=None):
             return "checklist"
         # "I need Webex access": diagnose first (tools), then hand the request to the approval
         # workflow. A draft / recall turn never gets here: drafting is not filing (S6/S8 t3).
-        if plan.current_intent == "access_request" and plan.request_type == "lookup" and used_tool:
-            return "handoff"
+        if (plan.current_intent == "access_request" and plan.request_type == "lookup" and used_tool
+                and policy.ASKS_FOR_ACCESS.search(str(current_turn(state["messages"])[0].content))):
+            return "handoff"      # asking FOR access (W-I-03), not about an existing request (S3 t5, #27)
         return END
 
     def recite(state: AgentState) -> dict:

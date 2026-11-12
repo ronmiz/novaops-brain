@@ -56,7 +56,7 @@ CALLER_TOOLS = {"search_documents", "check_team_system_access"}
 APP_TOOLS = frozenset({"request_approval", "get_approval"})
 
 
-RequestType = Literal["lookup", "recall", "summary", "draft", "pasted_text", "action"]
+RequestType = Literal["lookup", "recall", "summary", "draft", "pasted_text", "action", "acknowledge"]
 
 
 class TurnPlan(BaseModel):
@@ -73,7 +73,9 @@ class TurnPlan(BaseModel):
                      "'what is the state now'); recall = restate something already said or already "
                      "returned by a tool in this conversation; summary = write up what was already "
                      "established; draft = compose text; pasted_text = work out what a message or "
-                     "thread pasted in THIS turn says; action = asks to file or create something."))
+                     "thread pasted in THIS turn says; action = asks to file or create something; "
+                     "acknowledge = the user states a rule or a decision, or closes a topic, and asks "
+                     "nothing ('ground rules: …', 'treat it as resolved')."))
     answer_quote: str = Field(
         default="",
         description=("For recall ONLY: a short verbatim quote from this conversation — a user message or "
@@ -137,7 +139,21 @@ def verify_request_type(plan: TurnPlan, newest_message: str, grounding_text: str
             kind = "lookup"
     elif kind == "pasted_text" and newest_message.count("\n") < 3:
         kind = "lookup"
-    return plan if kind == plan.request_type else plan.model_copy(update={"request_type": kind})
+    elif kind == "action" and not FILING.search(newest_message):
+        kind = "acknowledge"          # no filing verb: a decision or remark, never a write path (#27)
+    elif kind == "acknowledge" and "?" in newest_message:
+        kind = "lookup"               # a question is not an acknowledgement
+    if kind == plan.request_type:
+        return plan
+    return plan.model_copy(update={"request_type": kind,
+                                   "action_requested": plan.action_requested and kind == "action"})
+
+
+# What a request to WRITE sounds like (S2 t10, S4 t8, S8 t4). "Treat it as resolved" is not one (S3 t3, #27).
+FILING = re.compile(r"\b(file|filing|submit|create|open|raise|log|go ahead)\b", re.I)
+# What asking for access sounds like (W-I-03) — as opposed to asking about an existing request (S3 t5).
+ASKS_FOR_ACCESS = re.compile(
+    r"\bneeds?\b[^.?!\n]{0,40}\baccess\b|\b(give|get|grant)\b[^.?!\n]{0,30}\baccess\b|\bnot licensed\b", re.I)
 
 
 def enforce_evidence(plan: TurnPlan, has_evidence: bool) -> TurnPlan:
@@ -145,7 +161,7 @@ def enforce_evidence(plan: TurnPlan, has_evidence: bool) -> TurnPlan:
     conversation yet, a lookup is REQUIRED. Measured: on a first-turn policy question the
     planner skipped tools and the model answered from nothing, with invented citations
     (docs/OBSTACLES.md #5)."""
-    if has_evidence or plan.requires_tools or plan.action_requested:
+    if has_evidence or plan.requires_tools or plan.action_requested or plan.request_type == "acknowledge":
         return plan
     return plan.model_copy(update={"request_type": "lookup"})
 
@@ -184,10 +200,12 @@ PLANNER_PROMPT = (
     "    lookup      'Is the VPN article still current?' / 'Does a contractor need MFA?' / 'What is open now?'\n"
     "    recall      'Remind me what date I mentioned.' / 'Who owns the policy you just read?' / "
     "'So does that need sign-off?' (answered by a policy already returned above)\n"
-    "    summary     'Write up where this stands for my manager.'\n"
+    "    summary     'Write up where this stands for my manager.' / 'Under the rule I gave you, which of "
+    "those would need sign-off?' (reasoning over values already returned above)\n"
     "    draft       'Turn that into two lines I can paste.' / 'Draft one sentence explaining why.'\n"
     "    pasted_text a forwarded email or thread pasted into this message, asking what it means or what applies\n"
     "    action      'Go ahead and file it.'\n"
+    "    acknowledge 'Ground rules for this session: …' / 'That one is covered — treat it as resolved.'\n"
     "- For recall you MUST give answer_quote: a short verbatim quote from a user message, a tool "
     "result or the session memory that contains the answer — copied character for character, never "
     "reworded. Several facts: one exact excerpt per line. If you cannot quote it, it is a lookup.\n"
