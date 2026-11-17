@@ -1,0 +1,47 @@
+# Compose demo (Lesson 14). The dataset is mounted read-only from the course folder and never
+# copied into the image; secrets come from the shared lessons/.env, never from this repo.
+#
+#   export GIT_SHA=$(git rev-parse --short HEAD)
+#   docker compose build && docker compose up -d
+#   curl localhost:8000/health   curl localhost:8000/ready
+#
+# Local SQLite on a named volume is fine for a Compose demo, not for a deployed write path
+# (spec 16): there it would be a managed database.
+x-common: &common
+  image: novaops-brain:${GIT_SHA:?set GIT_SHA=$(git rev-parse --short HEAD) — images are tagged by commit}
+  env_file: ../.env
+  environment:
+    NOVAOPS_MCP_HOST: mcp
+  volumes:
+    - ${NOVAOPS_DATASET_HOST:-../Final Project - Company Brain/project/novaops-enterprise-agent-dataset}:/data/dataset:ro
+    - novaops-state:/data/var
+  restart: unless-stopped
+
+services:
+  mcp:
+    <<: *common
+    build: .
+    command: ["python", "server/server.py"]
+    environment:
+      NOVAOPS_MCP_BIND_HOST: 0.0.0.0
+    healthcheck:            # cheap: is the port open? No model call.
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 9880), 1)"]
+      interval: 10s
+      retries: 6
+
+  api:
+    <<: *common
+    command: ["uvicorn", "novaops.api:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports: ["8000:8000"]
+    depends_on:
+      mcp: {condition: service_healthy}
+    healthcheck:            # liveness only; /ready is the dependency-aware check
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 15s
+
+  worker:                   # the event plane: a separate entry point from the API
+    <<: *common
+    command: ["python", "-m", "novaops.worker", "--every", "86400"]
+
+volumes:
+  novaops-state:

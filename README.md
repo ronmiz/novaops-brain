@@ -12,7 +12,8 @@ operational database and governed actions. Built milestone by milestone against
 | 4 · Webex (IT operations) | ✅ W-I-01/02/03 live; pause → approve in a new process → resume = one trace; S6/S8 8/8 (noise delta 0) |
 | 5 · Observability (Langfuse) | ✅ tracing, 3 Langfuse judges, `golden_pass` / `expected_pass` scores |
 | 6 · Vendor (optional) | ✅ V-I-01/02/03 live: missing required fields 0 / 1 / 2 as specified, schema-valid |
-| 7 · Renewal (optional) | 🔶 built + tested offline; live run next |
+| 7 · Renewal (optional) | ✅ R-I-01 applied on 07-21 (seat limit 50, Rachel notified); R-I-02 conditional and R-I-03 ambiguous → needs_human, seat limit 40 |
+| 9 · Packaging (optional) | 🔶 API + worker + Dockerfile + Compose; entry-point tests pass, container run pending |
 | 10 · Submission | ⏳ |
 
 ## Stack
@@ -66,6 +67,9 @@ streamable HTTP) as the tool boundary · Langfuse for tracing (Milestone 5).
 | Project-level agent control: a hook that blocks weakening tests; skills for measuring and logging | [`.claude/settings.json`](.claude/settings.json), [`.claude/hooks/protect_tests.py`](.claude/hooks/protect_tests.py), [`.claude/skills/`](.claude/skills/) |
 | Workflow 3 (Vendor) is NOT agent work: one forced-tool Converse call, code-computed missing fields, schema-validated | [`novaops/vendor.py`](novaops/vendor.py), ADR 0008, [`tests/test_vendor.py`](tests/test_vendor.py) |
 | Workflow 4 (Renewal): scheduled, event-driven, survives process death; the model recommends and extracts, code decides and writes | [`novaops/renewal.py`](novaops/renewal.py), ADR 0009, [`tests/test_renewal.py`](tests/test_renewal.py) |
+| Thin validated HTTP entry points over the SAME core functions; `/health` and `/ready` never call a model | [`novaops/api.py`](novaops/api.py), [`tests/test_packaging.py`](tests/test_packaging.py) |
+| Renewal worker is a separate entry point (event plane) from the API (request plane) | [`novaops/worker.py`](novaops/worker.py) |
+| One non-root image, three services, commit-SHA tags, dataset mounted read-only, no secrets in the repo | [`Dockerfile`](Dockerfile), [`compose.yaml`](compose.yaml) |
 | Checks for the above | [`tests/test_foundation.py`](tests/test_foundation.py), [`tests/test_agent_loop.py`](tests/test_agent_loop.py), [`tests/test_maya.py`](tests/test_maya.py), [`tests/test_webex.py`](tests/test_webex.py), [`tests/test_observability.py`](tests/test_observability.py), [`tests/test_harness.py`](tests/test_harness.py), [`tests/test_vendor.py`](tests/test_vendor.py), [`tests/test_renewal.py`](tests/test_renewal.py) |
 
 ## Measured: a judge and a check that disagree (Lesson 11)
@@ -91,7 +95,7 @@ tools, so it reports this turn as a miss, and we leave it visible rather than re
 | Lesson 11 — observability and evals (required) | ✅ | tracing bound to the graph; trace metadata; `golden_pass` / `expected_pass` scores; 3 Langfuse judges (ADR 0007) |
 | Lesson 12 — eval loop engineering | ✅ | the improvement log below: honest baseline first, one change per measured round, a gate the loop cannot cheat (`pytest` + `.claude/hooks/protect_tests.py`), a human accepted every change, before/after in `docs/OBSTACLES.md` |
 | Lesson 13 — guardrails | not part of this project (spec 13) | — |
-| Lesson 14 — packaging and deployment | ⏳ | — |
+| Lesson 14 — packaging and deployment | ✅ (Compose demo; LiteLLM not used) | `novaops/api.py`, `novaops/worker.py`, `Dockerfile`, `compose.yaml` |
 
 ### Improvement log (golden S1/S2/S9, 21 turns)
 

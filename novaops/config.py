@@ -39,6 +39,9 @@ EMBED_DIM = 1024
 # Same collection as Lesson 7 (novaops-rag); a NEW index so Lesson 7 / Etz Chaim stay intact.
 INDEX_NAME = os.environ.get("NOVAOPS_INDEX", "novaops-brain-kb")
 
-MCP_HOST = "127.0.0.1"
+# Where the agent reaches the tool server, and where the server listens. Both default to the local
+# loopback; in Compose the API reaches the `mcp` service and the server binds 0.0.0.0.
+MCP_HOST = os.environ.get("NOVAOPS_MCP_HOST", "127.0.0.1")
+MCP_BIND_HOST = os.environ.get("NOVAOPS_MCP_BIND_HOST", "127.0.0.1")
 MCP_PORT = int(os.environ.get("NOVAOPS_MCP_PORT", "9880"))
 MCP_URL = f"http://{MCP_HOST}:{MCP_PORT}/mcp"

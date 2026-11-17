@@ -1,7 +1,7 @@
 3 items, 3 traces, clock 2026-07-01
 
-  R-I-01  t-   PASS  completed   renewal              {'stage': 'applied', 'seat_limit': 50, 'notified': ['E010']} trace=902f6875677e65a8bafcf164d79ab00d
-  R-I-02  t-   PASS  needs_human renewal              {'stage': 'needs_human', 'seat_limit': 40, 'notified': []} trace=638b3d0725da377d11bd837517e103f9
-  R-I-03  t-   PASS  needs_human renewal              {'stage': 'needs_human', 'seat_limit': 40, 'notified': []} trace=e73d8a992037614b5071cd4d9660ccf4
+  R-I-01  t-   PASS  completed   renewal              {'stage': 'applied', 'seat_limit': 50, 'notified': ['E010']} trace=a72605838ef1c5a2c69a728208ba3b48
+  R-I-02  t-   PASS  needs_human renewal              {'stage': 'needs_human', 'seat_limit': 40, 'notified': []} trace=190c0394eff176911bbd88ec2d6b6b32
+  R-I-03  t-   PASS  needs_human renewal              {'stage': 'needs_human', 'seat_limit': 40, 'notified': []} trace=91429f6a157672233e29b7451da8a292
 
-3 traces · 3/3 meet our expectations · statuses ['completed', 'needs_human'] · saved evals\results\submission-R-I-01-R-I-02-R-I-03-20261112-2206.json
+3 traces · 3/3 meet our expectations · statuses ['completed', 'needs_human'] · saved evals\results\submission-R-I-01-R-I-02-R-I-03-20261117-1044.json

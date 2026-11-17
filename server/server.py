@@ -24,7 +24,7 @@ from mcp.server.fastmcp import FastMCP  # noqa: E402
 from novaops import config, db  # noqa: E402
 from novaops.rag import retrieval  # noqa: E402
 
-mcp = FastMCP("novaops-brain", host=config.MCP_HOST, port=config.MCP_PORT)
+mcp = FastMCP("novaops-brain", host=config.MCP_BIND_HOST, port=config.MCP_PORT)
 POLICIES_DIR = config.DOCS_DIR / "policies"
 
 

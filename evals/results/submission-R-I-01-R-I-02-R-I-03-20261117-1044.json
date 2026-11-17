@@ -1,0 +1,29 @@
+[
+  {
+    "item": "R-I-01",
+    "turn": null,
+    "trace_id": "a72605838ef1c5a2c69a728208ba3b48",
+    "status": "completed",
+    "pass": true,
+    "failed": {},
+    "answer": "{\"stage\": \"applied\", \"seat_limit\": 50, \"notified\": [\"E010\"]}"
+  },
+  {
+    "item": "R-I-02",
+    "turn": null,
+    "trace_id": "190c0394eff176911bbd88ec2d6b6b32",
+    "status": "needs_human",
+    "pass": true,
+    "failed": {},
+    "answer": "{\"stage\": \"needs_human\", \"seat_limit\": 40, \"notified\": []}"
+  },
+  {
+    "item": "R-I-03",
+    "turn": null,
+    "trace_id": "91429f6a157672233e29b7451da8a292",
+    "status": "needs_human",
+    "pass": true,
+    "failed": {},
+    "answer": "{\"stage\": \"needs_human\", \"seat_limit\": 40, \"notified\": []}"
+  }
+]

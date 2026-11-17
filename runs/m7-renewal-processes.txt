@@ -1,0 +1,524 @@
+{
+  "applied": [],
+  "cases": [
+    {
+      "contract_id": "C001",
+      "urgency": "urgent_overdue",
+      "action": "expand",
+      "next_action": "Webex: decision request sent to the approver"
+    },
+    {
+      "contract_id": "C002",
+      "urgency": "urgent_overdue",
+      "action": "renew_as_is",
+      "next_action": "E012 (D_SALES) to review before 2026-06-16"
+    },
+    {
+      "contract_id": "C003",
+      "urgency": "urgent",
+      "action": "renew_as_is",
+      "next_action": "E006 (D_IT) to review before 2026-08-11"
+    },
+    {
+      "contract_id": "C007",
+      "urgency": "urgent",
+      "action": "reduce",
+      "next_action": "E006 (D_IT) to review before 2026-07-12"
+    },
+    {
+      "contract_id": "C017",
+      "urgency": "urgent",
+      "action": "escalate",
+      "next_action": "E011 (D_FINANCE) to review before 2026-08-15"
+    },
+    {
+      "contract_id": "C019",
+      "urgency": "urgent_overdue",
+      "action": "renew_as_is",
+      "next_action": "E006 (D_IT) to review before 2026-06-28"
+    },
+    {
+      "contract_id": "C020",
+      "urgency": "routine",
+      "action": "escalate",
+      "next_action": "E018 (D_CS) to review before 2026-08-30"
+    }
+  ]
+}
+{
+  "run": {
+    "run_id": "RR-WEBEX-2026",
+    "contract_id": "C001",
+    "stage": "awaiting_internal_decision",
+    "status": "pending",
+    "recommendation": {
+      "action": "expand",
+      "rationale": "The contract for Webex has active seats (42) that exceed the seat limit (40), resulting in blocked access requests. The renewal is urgent and overdue, and the contract is set to auto-renew, so expanding the seat limit is necessary to unblock access and avoid service disruption.",
+      "uncertainty": "Security review is required, and the outcome could affect the approval of the expansion.",
+      "target_seats": 45
+    },
+    "proposed_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 23000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "approved_scope": null,
+    "reason": "waiting for the internal decision, the Finance clearance of AP002 and the security review",
+    "updated_at": "2026-07-01"
+  },
+  "subscription": {
+    "seat_limit": 40,
+    "active_seats": 42,
+    "annual_cost": 18400
+  },
+  "outbox": [
+    {
+      "message_key": "RR-WEBEX-2026:decision-request",
+      "kind": "decision_request",
+      "recipient": "E006",
+      "delivery_status": "sent"
+    }
+  ]
+}
+{
+  "run": {
+    "run_id": "RR-WEBEX-2026",
+    "contract_id": "C001",
+    "stage": "awaiting_clearances",
+    "status": "pending",
+    "recommendation": {
+      "action": "expand",
+      "rationale": "The contract for Webex has active seats (42) that exceed the seat limit (40), resulting in blocked access requests. The renewal is urgent and overdue, and the contract is set to auto-renew, so expanding the seat limit is necessary to unblock access and avoid service disruption.",
+      "uncertainty": "Security review is required, and the outcome could affect the approval of the expansion.",
+      "target_seats": 45
+    },
+    "proposed_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 23000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "approved_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 22000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "reason": "waiting for Finance clearance of AP002 and security review",
+    "updated_at": "2026-07-03T09:15:00Z"
+  },
+  "subscription": {
+    "seat_limit": 40,
+    "active_seats": 42,
+    "annual_cost": 18400
+  },
+  "outbox": [
+    {
+      "message_key": "RR-WEBEX-2026:decision-request",
+      "kind": "decision_request",
+      "recipient": "E006",
+      "delivery_status": "sent"
+    }
+  ]
+}
+{
+  "run": {
+    "run_id": "RR-WEBEX-2026",
+    "contract_id": "C001",
+    "stage": "awaiting_clearances",
+    "status": "pending",
+    "recommendation": {
+      "action": "expand",
+      "rationale": "The contract for Webex has active seats (42) that exceed the seat limit (40), resulting in blocked access requests. The renewal is urgent and overdue, and the contract is set to auto-renew, so expanding the seat limit is necessary to unblock access and avoid service disruption.",
+      "uncertainty": "Security review is required, and the outcome could affect the approval of the expansion.",
+      "target_seats": 45
+    },
+    "proposed_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 23000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "approved_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 22000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "reason": "waiting for security review",
+    "updated_at": "2026-07-03T10:05:00Z"
+  },
+  "subscription": {
+    "seat_limit": 40,
+    "active_seats": 42,
+    "annual_cost": 18400
+  },
+  "outbox": [
+    {
+      "message_key": "RR-WEBEX-2026:decision-request",
+      "kind": "decision_request",
+      "recipient": "E006",
+      "delivery_status": "sent"
+    }
+  ]
+}
+{
+  "run": {
+    "run_id": "RR-WEBEX-2026",
+    "contract_id": "C001",
+    "stage": "awaiting_provider_reply",
+    "status": "pending",
+    "recommendation": {
+      "action": "expand",
+      "rationale": "The contract for Webex has active seats (42) that exceed the seat limit (40), resulting in blocked access requests. The renewal is urgent and overdue, and the contract is set to auto-renew, so expanding the seat limit is necessary to unblock access and avoid service disruption.",
+      "uncertainty": "Security review is required, and the outcome could affect the approval of the expansion.",
+      "target_seats": 45
+    },
+    "proposed_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 23000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "approved_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 22000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "reason": "provider request sent",
+    "updated_at": "2026-07-03T10:40:00Z"
+  },
+  "subscription": {
+    "seat_limit": 40,
+    "active_seats": 42,
+    "annual_cost": 18400
+  },
+  "outbox": [
+    {
+      "message_key": "RR-WEBEX-2026:decision-request",
+      "kind": "decision_request",
+      "recipient": "E006",
+      "delivery_status": "sent"
+    },
+    {
+      "message_key": "RR-WEBEX-2026:provider-request",
+      "kind": "provider_request",
+      "recipient": "webex-vendor@webex-vendor.example",
+      "delivery_status": "sent"
+    }
+  ]
+}
+{
+  "run": {
+    "run_id": "RR-WEBEX-2026",
+    "contract_id": "C001",
+    "stage": "awaiting_provider_reply",
+    "status": "pending",
+    "recommendation": {
+      "action": "expand",
+      "rationale": "The contract for Webex has active seats (42) that exceed the seat limit (40), resulting in blocked access requests. The renewal is urgent and overdue, and the contract is set to auto-renew, so expanding the seat limit is necessary to unblock access and avoid service disruption.",
+      "uncertainty": "Security review is required, and the outcome could affect the approval of the expansion.",
+      "target_seats": 45
+    },
+    "proposed_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 23000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "approved_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 22000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "reason": "provider request sent",
+    "updated_at": "2026-07-03T10:40:00Z"
+  },
+  "subscription": {
+    "seat_limit": 40,
+    "active_seats": 42,
+    "annual_cost": 18400
+  },
+  "outbox": [
+    {
+      "message_key": "RR-WEBEX-2026:decision-request",
+      "kind": "decision_request",
+      "recipient": "E006",
+      "delivery_status": "sent"
+    },
+    {
+      "message_key": "RR-WEBEX-2026:provider-request",
+      "kind": "provider_request",
+      "recipient": "webex-vendor@webex-vendor.example",
+      "delivery_status": "sent"
+    }
+  ]
+}
+reply: recorded — recorded as a future agreement
+{
+  "run": {
+    "run_id": "RR-WEBEX-2026",
+    "contract_id": "C001",
+    "stage": "confirmed_awaiting_effective_date",
+    "status": "pending",
+    "recommendation": {
+      "action": "expand",
+      "rationale": "The contract for Webex has active seats (42) that exceed the seat limit (40), resulting in blocked access requests. The renewal is urgent and overdue, and the contract is set to auto-renew, so expanding the seat limit is necessary to unblock access and avoid service disruption.",
+      "uncertainty": "Security review is required, and the outcome could affect the approval of the expansion.",
+      "target_seats": 45
+    },
+    "proposed_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 23000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "approved_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 22000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "reason": "provider confirmed RX-WEBEX-2026-8841; takes effect 2026-07-21",
+    "updated_at": "2026-07-03"
+  },
+  "subscription": {
+    "seat_limit": 40,
+    "active_seats": 42,
+    "annual_cost": 18400
+  },
+  "outbox": [
+    {
+      "message_key": "RR-WEBEX-2026:decision-request",
+      "kind": "decision_request",
+      "recipient": "E006",
+      "delivery_status": "sent"
+    },
+    {
+      "message_key": "RR-WEBEX-2026:provider-request",
+      "kind": "provider_request",
+      "recipient": "webex-vendor@webex-vendor.example",
+      "delivery_status": "sent"
+    }
+  ]
+}
+{
+  "applied": [
+    "AG-RX-WEBEX-2026-8841"
+  ],
+  "cases": [
+    {
+      "contract_id": "C002",
+      "urgency": "urgent_overdue",
+      "action": "renew_as_is",
+      "next_action": "E012 (D_SALES) to review before 2026-06-16"
+    },
+    {
+      "contract_id": "C003",
+      "urgency": "urgent",
+      "action": "renew_as_is",
+      "next_action": "E006 (D_IT) to review before 2026-08-11"
+    },
+    {
+      "contract_id": "C007",
+      "urgency": "urgent_overdue",
+      "action": "reduce",
+      "next_action": "E006 (D_IT) to review before 2026-07-12"
+    },
+    {
+      "contract_id": "C017",
+      "urgency": "urgent",
+      "action": "escalate",
+      "next_action": "E011 (D_FINANCE) to review before 2026-08-15"
+    },
+    {
+      "contract_id": "C018",
+      "urgency": "urgent",
+      "action": "renew_as_is",
+      "next_action": "E006 (D_IT) to review before 2026-08-01"
+    },
+    {
+      "contract_id": "C019",
+      "urgency": "urgent_overdue",
+      "action": "renew_as_is",
+      "next_action": "E006 (D_IT) to review before 2026-06-28"
+    },
+    {
+      "contract_id": "C020",
+      "urgency": "urgent",
+      "action": "escalate",
+      "next_action": "E018 (D_CS) to review before 2026-08-30"
+    }
+  ]
+}
+{
+  "run": {
+    "run_id": "RR-WEBEX-2026",
+    "contract_id": "C001",
+    "stage": "applied",
+    "status": "completed",
+    "recommendation": {
+      "action": "expand",
+      "rationale": "The contract for Webex has active seats (42) that exceed the seat limit (40), resulting in blocked access requests. The renewal is urgent and overdue, and the contract is set to auto-renew, so expanding the seat limit is necessary to unblock access and avoid service disruption.",
+      "uncertainty": "Security review is required, and the outcome could affect the approval of the expansion.",
+      "target_seats": 45
+    },
+    "proposed_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 23000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "approved_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 22000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "reason": "agreement applied on 2026-07-21",
+    "updated_at": "2026-07-21"
+  },
+  "subscription": {
+    "seat_limit": 50,
+    "active_seats": 42,
+    "annual_cost": 22000
+  },
+  "outbox": [
+    {
+      "message_key": "RR-WEBEX-2026:decision-request",
+      "kind": "decision_request",
+      "recipient": "E006",
+      "delivery_status": "sent"
+    },
+    {
+      "message_key": "RR-WEBEX-2026:provider-request",
+      "kind": "provider_request",
+      "recipient": "webex-vendor@webex-vendor.example",
+      "delivery_status": "sent"
+    },
+    {
+      "message_key": "AG-RX-WEBEX-2026-8841:notify:E010",
+      "kind": "capacity_changed",
+      "recipient": "E010",
+      "delivery_status": "sent"
+    }
+  ]
+}
+{
+  "applied": [],
+  "cases": [
+    {
+      "contract_id": "C002",
+      "urgency": "urgent_overdue",
+      "action": "renew_as_is",
+      "next_action": "E012 (D_SALES) to review before 2026-06-16"
+    },
+    {
+      "contract_id": "C003",
+      "urgency": "urgent",
+      "action": "renew_as_is",
+      "next_action": "E006 (D_IT) to review before 2026-08-11"
+    },
+    {
+      "contract_id": "C007",
+      "urgency": "urgent_overdue",
+      "action": "reduce",
+      "next_action": "E006 (D_IT) to review before 2026-07-12"
+    },
+    {
+      "contract_id": "C017",
+      "urgency": "urgent",
+      "action": "escalate",
+      "next_action": "E011 (D_FINANCE) to review before 2026-08-15"
+    },
+    {
+      "contract_id": "C018",
+      "urgency": "urgent",
+      "action": "renew_as_is",
+      "next_action": "E006 (D_IT) to review before 2026-08-01"
+    },
+    {
+      "contract_id": "C019",
+      "urgency": "urgent_overdue",
+      "action": "renew_as_is",
+      "next_action": "E006 (D_IT) to review before 2026-06-28"
+    },
+    {
+      "contract_id": "C020",
+      "urgency": "urgent",
+      "action": "escalate",
+      "next_action": "E018 (D_CS) to review before 2026-08-30"
+    }
+  ]
+}
+{
+  "run": {
+    "run_id": "RR-WEBEX-2026",
+    "contract_id": "C001",
+    "stage": "applied",
+    "status": "completed",
+    "recommendation": {
+      "action": "expand",
+      "rationale": "The contract for Webex has active seats (42) that exceed the seat limit (40), resulting in blocked access requests. The renewal is urgent and overdue, and the contract is set to auto-renew, so expanding the seat limit is necessary to unblock access and avoid service disruption.",
+      "uncertainty": "Security review is required, and the outcome could affect the approval of the expansion.",
+      "target_seats": 45
+    },
+    "proposed_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 23000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "approved_scope": {
+      "action": "expand",
+      "seat_limit": 50,
+      "max_annual_cost_usd": 22000,
+      "term_start_date": "2026-07-21",
+      "term_end_date": "2027-07-20"
+    },
+    "reason": "agreement applied on 2026-07-21",
+    "updated_at": "2026-07-21"
+  },
+  "subscription": {
+    "seat_limit": 50,
+    "active_seats": 42,
+    "annual_cost": 22000
+  },
+  "outbox": [
+    {
+      "message_key": "RR-WEBEX-2026:decision-request",
+      "kind": "decision_request",
+      "recipient": "E006",
+      "delivery_status": "sent"
+    },
+    {
+      "message_key": "RR-WEBEX-2026:provider-request",
+      "kind": "provider_request",
+      "recipient": "webex-vendor@webex-vendor.example",
+      "delivery_status": "sent"
+    },
+    {
+      "message_key": "AG-RX-WEBEX-2026-8841:notify:E010",
+      "kind": "capacity_changed",
+      "recipient": "E010",
+      "delivery_status": "sent"
+    }
+  ]
+}
