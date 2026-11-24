@@ -1,0 +1,49 @@
+turn               golden_pass     expected_pass      faithfulness  citation_quality      no_overclaim
+M-I-01 t-                    -               1.0               1.0               1.0               1.0
+M-I-02 t-                    -               1.0               0.8               0.7               0.0
+    faithfulness: The assistant's answer correctly cites the Security and MFA Policy for the identity verification requirement and correctly states that new devices require verification before MFA reset. However, it claims IT Security will reset MFA settings in Okta – this step isn't explicitly described in the polic
+    citation_quality: The answer makes three factual claims: 1) New devices require identity verification before accessing company systems, which is supported by the policy. 2) IT Security will reset MFA settings in Okta after verification, which is implied by the policy requiring identity verification and specifying Okt
+    no_overclaim: The answer states that IT Security *will* reset MFA settings after verification, which implies the action has been taken or will definitely be taken. The evidence only shows that new devices *require* identity verification and that MFA is managed through Okta, but it does not confirm that IT Securit
+M-I-03 t-                    -               1.0               0.9               1.0               1.0
+    faithfulness: The assistant's answer correctly states that Maya Cohen is in preboarding status with a start date of 2026-08-01, which is supported by record E001. It also correctly notes an available laptop reserved for her onboarding in Israel, supported by record A005. However, the reference to record OT003 (wh
+M-S-01 t1                    -               1.0               1.0               1.0               1.0
+M-S-01 t2                    -               1.0               1.0               1.0               1.0
+M-S-01 t3                    -               1.0               1.0               1.0               1.0
+M-S-01 t4                    -               1.0               0.9               1.0               1.0
+    faithfulness: The assistant correctly states the ticket status as 'open' and priority as 'high' based on the current tool results. However, it incorrectly claims the ticket was filed 'this morning' when the tool result shows the ticket was created on 2026-07-01, which is not 'this morning' relative to the current
+M-S-01 t5                    -               1.0               1.0               1.0               1.0
+M-S-01 t6                    -               1.0               0.5               0.5               1.0
+    faithfulness: The assistant correctly identifies the Dell U2723QE monitor is available in Israel per the tool result [record: A006]. However, the claim about 'no headsets in stock there' is unsupported: the tool results show an empty list for headset inventory check, but this does not confirm absence—just that no
+    citation_quality: The assistant makes two factual claims: (1) Maya Cohen will get a Dell U2723QE monitor available in Israel, supported by [record: A006] which does show that monitor is available in Israel; (2) there are no headsets in stock there, but the evidence contains no information about headset inventory, so 
+M-S-01 t7                    -               1.0               1.0               1.0               1.0
+M-S-01 t8                    -               1.0               1.0               1.0               1.0
+M-S-01 t9                    -               1.0               1.0               1.0               1.0
+M-S-01 t10                   -               0.0               0.6               1.0               0.0
+    expected_pass: {"should_use_tools": "used=True"}
+    faithfulness: The assistant claims an approval request was filed for E001 (Maya Cohen), but the tool result shows it was filed for E006, not E001. The assistant also incorrectly states "nothing has been filed" while the tool result confirms AP005 was filed. These factual mismatches reduce faithfulness.
+    no_overclaim: The assistant states "I've prepared a Webex access request for Maya Cohen (E001) and handed it to IT operations" and "Filed approval request AP005 for E006". However, the tool result shows the action was filing approval request AP005 for E006, not preparing or handing to IT operations. This implies 
+M-S-01 t11                   -               1.0               1.0               1.0               1.0
+M-S-01 t12                   -               1.0               1.0               1.0               1.0
+M-S-02 t1                    -               1.0               1.0               1.0               1.0
+M-S-02 t2                    -               1.0               1.0               1.0               1.0
+M-S-02 t3                    -               1.0               0.9               1.0               1.0
+    faithfulness: The assistant correctly maps specific license-related onboarding tasks (Okta, Salesforce, Webex) to the provided tool results, accurately reporting their status and due dates. However, it incorrectly states that the equipment responsibility form and BambooHR self-service profile are HR tasks still p
+M-S-02 t4                    -               1.0               1.0               1.0               1.0
+M-S-02 t5                    -               1.0               1.0               1.0               1.0
+W-I-01 t-                    -               1.0               1.0               1.0               1.0
+W-I-02 t-                    -               1.0               1.0               1.0               1.0
+W-I-03 t-                    -               1.0               0.8               1.0               0.9
+    faithfulness: The assistant's answer correctly identifies the Webex subscription limit issue (42 active seats vs 40-seat contract) as the cause of blocked access and accurately states that expansion requires IT and Finance approval. It correctly notes the renewal date and the need to contact the manager. However,
+    no_overclaim: The answer states "I've prepared a Webex access request for Rachel Stein (E010) and handed it to IT operations" and "Its status is pending approval: nothing has been filed, and access has not been granted." This is accurate per evidence. However, the answer also says "You should contact your manager
+W-S-01 t1                    -               1.0               1.0               1.0               1.0
+W-S-01 t2                    -               1.0               1.0               1.0               1.0
+W-S-01 t3                    -               1.0               1.0               1.0               1.0
+W-S-01 t4                    -               1.0               0.7               0.0               1.0
+    faithfulness: The assistant correctly reports the pending status and blocking reason (seat limit) based on tool results, but falsely claims to have 'handed it to IT operations' and that 'nothing has been filed' as if an action was taken, when the tool results show no filing occurred and the assistant did not invo
+    citation_quality: The assistant makes one factual claim: "Rachel Stein needs Webex to collaborate with her team and customers as part of her role as a Customer Success Specialist in the D_CS department." This claim is uncited and appears to be an inference based on E010's role entitlement [record: E010], but the evid
+V-I-01 t-                    -               1.0                 -                 -                 -
+V-I-02 t-                    -               1.0                 -                 -                 -
+V-I-03 t-                    -               1.0                 -                 -                 -
+R-I-01 t-                    -               1.0                 -                 -                 -
+R-I-02 t-                    -               1.0                 -                 -                 -
+R-I-03 t-                    -               1.0                 -                 -                 -
