@@ -1,0 +1,217 @@
+[
+  {
+    "session": "S9-maya-own-account",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/making-a-career.md",
+      "documents/handbook/titles-for-ops.md",
+      "documents/handbook/titles-for-programmers.md",
+      "documents/handbook/titles-for-support.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The promotion path for a Customer Success Manager (CSM) at NovaOps follows the general promotion process outlined in the handbook, with specific evidence requirements tailored to the support and customer success ladder. Here is the path and what you need to do:\n\n### General Promotion Process\n- **Timing**: Promotion cycles run twice per year. Proposals submitted in March take effect on April 1, and proposals submitted in September take effect on October 1.\n- **Eligibility**: You generally need at least six months in your current role, sustained performance at your current level, and evidence that you are already operating at the next level in important ways.\n- **Packet Requirements**: A promotion packet must include your current title, proposed title, current manager, department, time in role, proposed effective date, the title ladder being used, evidence, relevant peer input, and the manager's known concerns or open questions. The evidence should show a pattern across recent work and map to the next level.\n\n### CSM-Specific Evidence\nFor a CSM, the relevant ladder is the support and customer success ladder. Here are the key evidence points for each level transition:\n\n#### S1 to S2\n- **Evidence**: Independent queue ownership, clearer explanations, good case hygiene, and the ability to identify patterns.\n\n#### S2 to S3 (Success Manager)\n- **Evidence**: Complex account ownership, difficult customer conversations, useful coaching, and stronger cross-functional judgment. Specific examples include:\n  - Leading difficult customer conversations with a clear agenda, evidence, and next update time.\n  - Coaching S1 and S2 teammates on case framing, customer tone, and escalation quality.\n  - Deciding when a case needs Jira, when it needs Salesforce attention, and when it can be resolved in SupportDesk.\n  - Translating messy customer frustration into specific Product or Engineering questions.\n  - Proposing safe workarounds and naming their limits.\n  - Keeping Sales informed when a case affects a renewal or expansion conversation.\n  - Helping Product distinguish one loud customer preference from a broader product problem.\n  - Writing internal summaries that leaders can use without attending every call.\n\n#### S3 to S4\n- **Evidence**: Segment-level quality improvement, process ownership, and leverage beyond the employee's own accounts.\n\n#### S4 to S5\n- **Evidence**: Function-level strategy.\n\n### Steps to Get Promoted\n1. **Identify the Next Level**: Determine the next level you aim for (e.g., from S2 to S3).\n2. **Gather Evidence**: Collect examples of your work that meet the evidence requirements for the next level. This includes customer outcomes, collaboration examples, and how you strengthened the support system for others.\n3. **Create a Promotion Packet**: Compile your evidence, peer input, and a mapping to the next title level into a promotion packet.\n4. **Submit to Manager**: Give your promotion packet to your manager for review and submission during the next promotion cycle.\n5. **Calibration**: Your manager will present your packet for calibration with People Operations and the department leader. Finance will confirm compensation changes before the decision is final.\n\n### Additional Resources\n- **Making a Career Handbook**: Provides detailed guidelines on the promotion process and packet contents[^1^].\n- **Titles for Support Handbook**: Offers specific evidence requirements for each level in the support and customer success ladder[^2^].\n\nBy following these steps and providing strong, relevant evidence, you can effectively position yourself for a promotion as a CSM at NovaOps.\n\n[^1^]: [documents/handbook/making-a-career.md § Promotion Process]\n[^2^]: [documents/handbook/titles-for-support.md § Promotion Evidence]",
+    "trace_id": "27362e8f75d0bf7b3f7b9bb5faa19cc7"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "pasted_text",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Based on the forwarded thread, the only items that are yours to do are:\n\n1. **Sign the equipment responsibility form** - This is explicitly mentioned as something you need to do.\n2. **Finish your BambooHR self-service profile** - This is also explicitly mentioned as something you need to do once the invite lands.\n\n(cited from the forwarded thread)",
+    "trace_id": "86d10a00e90bee790eb860110854b161"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks",
+      "check_software_subscription",
+      "check_software_subscription",
+      "get_policy",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/contracts/webex_vendor_agreement.md",
+      "documents/handbook/getting-started.md",
+      "documents/handbook/our-internal-systems.md",
+      "documents/handbook/titles-for-ops.md",
+      "documents/handbook/titles-for-programmers.md",
+      "documents/it_kb/webex_license_assignment.md",
+      "documents/policies/access_management_policy.md",
+      "documents/policies/saas_procurement_policy.md"
+    ],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "EMP001",
+      "employee_name": "Joiner",
+      "start_date": "2026-07-01",
+      "items": [
+        {
+          "item": "Complete employment documents, payroll setup, emergency contact details, and compliance acknowledgments",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "documents/handbook/getting-started.md"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Receive company-owned laptop, charger, headset, and basic accessories (full-time) or request remote equipment through IT portal (remote)",
+          "category": "equipment",
+          "status": "pending",
+          "citations": [
+            "documents/handbook/getting-started.md"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Learn department usage of Slack, Jira, GitHub, Salesforce, BambooHR, Webex, or AWS",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "documents/handbook/getting-started.md"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Schedule and attend 30-day check-in with manager",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "documents/handbook/getting-started.md"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Acknowledge data retention, security, customer confidentiality, and renewal obligations",
+          "category": "policy",
+          "status": "pending",
+          "citations": [
+            "documents/policies/saas_procurement_policy.md"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Understand SaaS Procurement Policy including approval thresholds and expansion process",
+          "category": "policy",
+          "status": "pending",
+          "citations": [
+            "documents/policies/saas_procurement_policy.md"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Review Webex SaaS Subscription Agreement including seat limits and renewal terms",
+          "category": "policy",
+          "status": "pending",
+          "citations": [
+            "documents/contracts/webex_vendor_agreement.md"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Familiarize with GitHub, Jira, and AWS responsibilities and access requirements",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "documents/handbook/titles-for-programmers.md"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Complete access requests for required systems with proper business justification and approvals",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "documents/handbook/titles-for-programmers.md",
+            "documents/handbook/getting-started.md",
+            "documents/policies/access_management_policy.md"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Understand Webex license assignment process and current seat limitations",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "documents/it_kb/webex_license_assignment.md"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "### Your Software Licenses\n\nYour onboarding tasks show these software items are still pending:\n\n- **Webex** – blocked because the subscription is over its seat limit (42 active seats vs. 40 allowed) [record: OT005]\n- **Salesforce** – planned; the subscription has seats available, so it should proceed [record: OT004][record: SUB002]\n\n### What to Do Next\n\n1. **Webex**  \n   - **Action**: Nothing from you right now. IT and Finance need to resolve the seat shortage before your request can proceed.  \n   - **Why**: The Webex contract (ending 2026-07-20) is already over limit, and the handbook says seat-limited requests are queued until capacity frees up [documents/handbook/our-internal-systems.md § Access Requests][documents/contracts/webex_vendor_agreement.md § Webex Seat Limit Exception].\n\n2. **Salesforce**  \n   - **Action**: IT will process this during onboarding; no extra step needed from you.  \n   - **Why**: The subscription has 3 seats free, and your task is scheduled for 2026-07-28 [record: OT004][record: SUB002].\n\n### General Guidance on Software Licenses\n\n- **Eligibility vs. Delivery**: You can be eligible for a tool but still wait if the company hits a seat cap or a renewal freeze.  \n- **Approval Thresholds**:  \n  - **Finance involvement**: Required for any new spend above USD 500/month or USD 2,500/year (SaaS Procurement Policy, effective 2026-06-01) [documents/policies/saas_procurement_policy.md § Approval threshold].  \n  - **IT involvement**: Required for security, license impact, and capacity checks.  \n  - **Manager involvement**: Required for business need and role-based access.\n\nIf you need a tool not listed in your onboarding tasks, submit a request through the IT portal, including the system name, business reason, and whether customer/billing data will be visible. IT will check seats, security, and any finance threshold [documents/handbook/our-internal-systems.md § Access Requests].",
+    "trace_id": "0e9e2eb5f3d64913a4641a47fe61211b"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 4,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/getting-started.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The handbook does not have a separate manager playbook, but it does give guidance for managers on feedback in the first 90 days of an employee’s tenure. Here’s what it says:\n\n- **Day 60**: By this point, the employee should be doing meaningful work with light supervision. Managers should review any temporary scaffolding (e.g., buddy systems, temporary admin rights) and decide what the employee now owns independently. This is a good time to start normalizing expectations for the role.\n- **Day 90**: The employee and manager should agree on normal performance expectations for the employee’s level. The manager should be able to describe the work the employee owns, the quality bar for their level, and the next few key outcomes that matter. The employee should understand adjacent-team handoffs, role-specific risks, and where to find durable records.\n- **If stuck at Day 90**: If onboarding still feels stuck, the employee should bring the manager a short list of missing access, unclear ownership, confusing rituals, and decisions they cannot yet make.\n\nThe handbook emphasizes that by day 90, feedback should shift from “how to do the work” to “what the work means” and “how it fits into the bigger picture”[^1^].\n\n[^1^]: [documents/handbook/getting-started.md § First 60 to 90 Days]",
+    "trace_id": "f4e55b3c2f89740d25b9f9b50cca1792"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Your laptop is planned for preparation and MDM enrollment on **2026-07-26**, which is before your start date of **2026-07-01** [record: OT003]. IT will handle this, and you don’t need to do anything else for it.",
+    "trace_id": "26fa1843f7a4735546f3e15895466dce"
+  }
+]

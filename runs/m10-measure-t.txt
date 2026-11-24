@@ -1,0 +1,56 @@
+
+S1-quick-policy (E010, Regular Employee)
+  S1- t 1 PASS  completed policy_question      lookup      tools=get_policy
+  S1- t 2 PASS  completed policy_question      recall      tools=-
+  S1- t 3 PASS  completed policy_question      recall      tools=-
+  S1- t 4 PASS  completed policy_question      draft       tools=-
+
+TOTAL 4/4 turns pass all binding + own checks
+Saved evals\results\golden-S1-20261124-1411.json
+
+S2-onboarding-maya (E004, HR Group)
+  S2- t 1 PASS  completed employee_lookup      lookup      tools=get_employee,list_onboarding_tasks
+  S2- t 2 PASS  completed onboarding_status    lookup      tools=search_documents
+  S2- t 3 PASS  completed onboarding_status    lookup      tools=list_onboarding_tasks
+  S2- t 4 PASS  completed ticket_status        lookup      tools=get_employee,list_employee_tickets
+  S2- t 5 PASS  completed onboarding_status    lookup      tools=check_asset_inventory
+  S2- t 6 PASS  completed equipment_request    lookup      tools=check_asset_inventory,check_asset_inventory
+  S2- t 7 PASS  completed onboarding_status    recall      tools=-
+  S2- t 8 PASS  completed onboarding_status    lookup      tools=check_software_subscription
+  S2- t 9 PASS  completed policy_question      lookup      tools=get_policy,list_policies,get_policy
+  S2- t10 FAIL  pending   access_request       action      tools=get_employee,check_software_subscription,list_access_requests,list_employee_tickets,request_approval,get_approval
+           ✗ should_use_tools: used=True
+  S2- t11 PASS  completed onboarding_status    lookup      tools=list_onboarding_tasks
+  S2- t12 PASS  completed onboarding_status    summary     tools=-
+
+TOTAL 11/12 turns pass all binding + own checks
+Saved evals\results\golden-S2-20261124-1413.json
+
+S9-maya-own-account (E001, Regular Employee)
+  S9- t 1 PASS  completed policy_question      lookup      tools=search_documents
+  S9- t 2 PASS  completed policy_question      pasted_text tools=-
+  S9- t 3 PASS  completed onboarding_status    lookup      tools=list_onboarding_tasks
+  S9- t 4 PASS  completed policy_question      lookup      tools=get_policy,list_policies,search_documents
+  S9- t 5 PASS  completed equipment_request    lookup      tools=list_onboarding_tasks
+
+TOTAL 5/5 turns pass all binding + own checks
+Saved evals\results\golden-S9-20261124-1414.json
+
+S6-boundary-clean (E004, HR Group)
+  S6- t 1 PASS  completed policy_question      lookup      tools=get_policy,list_policies,search_documents
+  S6- t 2 PASS  completed employee_lookup      lookup      tools=get_employee
+  S6- t 3 PASS  completed access_request       draft       tools=-
+  S6- t 4 PASS  pending   access_request       action      tools=get_employee,check_software_subscription,list_access_requests,list_employee_tickets,request_approval,get_approval
+
+TOTAL 4/4 turns pass all binding + own checks
+Saved evals\results\golden-S6-20261124-1414.json
+
+S8-boundary-heavy-noise (E004, HR Group)
+  S8- t 1 FAIL  completed policy_question      lookup      tools=search_documents
+           ✗ required_facts: ['MFA', 'device|trust']
+  S8- t 2 PASS  completed employee_lookup      lookup      tools=get_employee
+  S8- t 3 PASS  completed policy_question      draft       tools=-
+  S8- t 4 PASS  pending   access_request       action      tools=get_employee,check_software_subscription,list_access_requests,list_employee_tickets,request_approval,get_approval
+
+TOTAL 3/4 turns pass all binding + own checks
+Saved evals\results\golden-S8-20261124-1415.json

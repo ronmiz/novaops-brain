@@ -1,0 +1,74 @@
+[
+  {
+    "session": "S1-quick-policy",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy"
+    ],
+    "sources_seen": [
+      "documents/policies/equipment_policy.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "NovaOps's equipment policy states that personal laptops are not allowed for employees, except for a five-business-day IT continuity exception when a managed laptop is being repaired or replaced and the employee has no working device. IT must approve and log the exception before the employee uses a personal machine, even for those five days. All equipment remains NovaOps property and must be returned through IT at offboarding or role change​​[documents/policies/equipment_policy.md § Personal laptops].",
+    "trace_id": "80e99b3f786040fd39b98700c62f7eaf"
+  },
+  {
+    "session": "S1-quick-policy",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "recall",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "During the five-business-day IT continuity exception, IT must approve and log the exception before the employee uses a personal machine, even for those five days. This means you cannot just go ahead; you need explicit approval and logging from IT​​[documents/policies/equipment_policy.md § Personal laptops].",
+    "trace_id": "fd0fd12601153631ec3aa31eec8cbe93"
+  },
+  {
+    "session": "S1-quick-policy",
+    "turn": 3,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "recall",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The Equipment Policy is owned by IT, as stated at the top of the policy document​​[documents/policies/equipment_policy.md § (whole document)].",
+    "trace_id": "ecf6034df23832b135aabdc819225ef2"
+  },
+  {
+    "session": "S1-quick-policy",
+    "turn": 4,
+    "kind": "summary",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "draft",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "NovaOps does not allow personal laptops for work except during a five-business-day IT continuity exception when a managed laptop is being repaired or replaced and the employee has no working device. IT must approve and log the exception before the employee uses a personal machine, even for those five days​​[documents/policies/equipment_policy.md § Personal laptops].",
+    "trace_id": "9faf0c8f2bb67b962200886db6d9d150"
+  }
+]
