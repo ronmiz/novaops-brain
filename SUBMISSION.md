@@ -9,8 +9,8 @@ and it is how every trace gets found.
 
 | | |
 | ------------------- | ------------------------------------------------ |
-| **Repository URL**  | `https://github.com/<you>/<repo>` |
-| **Access**          | public / instructor added as collaborator *(delete one)* |
+| **Repository URL**  | `https://github.com/ronmiz/novaops-brain` |
+| **Access**          | public |
 | **Commit reviewed** | `<full sha>` |
 
 ## 2. Langfuse

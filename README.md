@@ -141,6 +141,16 @@ documents). `novaops/config.py` reads it from the course folder next to the repo
 with `NOVAOPS_DATASET_DIR`. Credentials come from the shared `lessons/.env`; see
 [`.env.example`](.env.example) for the variable names.
 
+From a fresh clone anywhere else, point at the dataset first (tests stop with this hint if it
+is missing):
+
+```bash
+git clone https://github.com/ronmiz/novaops-brain.git && cd novaops-brain
+export NOVAOPS_DATASET_DIR="<path>/novaops-enterprise-agent-dataset"
+python -m pip install -r requirements.txt
+python -m pytest -q                       # 153 passed, no AWS needed
+```
+
 ## Run (Windows, Git Bash)
 
 ```bash
