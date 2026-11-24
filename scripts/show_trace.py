@@ -47,6 +47,8 @@ def main(trace_id: str) -> None:
             print(f"{'  ' * depth}- {o.name}  [{o.type}]  {o.start_time:%H:%M:%S}")
             if depth == 0 and o.metadata:
                 for k, v in o.metadata.items():
+                    if "key" in k.lower():      # the SDK echoes the project's public key (#41)
+                        continue
                     print(f"{'  ' * depth}    {k}: {str(v)[:160]}")
             show(o.id, depth + 1)
     show(None, 0)

@@ -76,7 +76,7 @@ trace 426d98b6c18e4a3512cb892f9d656f3d — 59 observations
     approval_id: AP001
     decision: request_on_file
     status: blocked
-    scope.attributes.public_key: pk-lf-cda10bf0-eb8c-495f-87b1-b4618e7eb234
+    scope.attributes.public_key: pk-lf-<redacted>
     scope.version: 4.18.0
     scope.name: langfuse-sdk
     resourceAttributes.service.name: unknown_service:python.exe
