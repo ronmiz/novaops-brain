@@ -1,0 +1,97 @@
+[
+  {
+    "session": "S8-boundary-heavy-noise",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": false,
+    "failed": {
+      "required_facts": [
+        "MFA",
+        "device|trust"
+      ]
+    },
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/it_kb/vpn_access.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The VPN steps are in the IT knowledge base article titled **VPN Access** (KB article ID: IT-KB-108), last updated 2026-06-20. The article covers symptoms, first-line troubleshooting, required ticket fields, and escalation steps. It notes that outdated guidance about shared VPN passwords is invalid and that escalation to IT Manager is needed for admin access, over-limit subscriptions, security risk, or missing approvals​​[documents/it_kb/vpn_access.md § (whole document)].",
+    "trace_id": "290cf40ea87350d705abb334a4edfda9"
+  },
+  {
+    "session": "S8-boundary-heavy-noise",
+    "turn": 2,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "employee_lookup",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_employee"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Rachel Stein’s employee record is as follows:  \n- **Name**: Rachel Stein  \n- **Employee ID**: E010  \n- **Email**: rachel.stein@novaops.example  \n- **Role**: Customer Success Specialist  \n- **Department**: D_CS  \n- **Manager**: E018  \n- **Location**: United Kingdom  \n- **Employment Type**: Full-time  \n- **Status**: active  \n- **Start Date**: 2025-02-03  \n- **User Group**: UG_REGULAR  \n- **Systems Allowed by Role**: Salesforce, Webex, Slack, Notion, Okta, SupportDesk​​[record: E010].",
+    "trace_id": "e8c6414b0f87fc7e5687862b9cfaff12"
+  },
+  {
+    "session": "S8-boundary-heavy-noise",
+    "turn": 3,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "draft",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Rachel Stein needs Webex to collaborate with her customer success team on video calls and screen-sharing during client meetings, as it is one of the systems allowed by her role as a Customer Success Specialist​​[record: E010].",
+    "trace_id": "fe650ddf9671d85bb60bf616be9e28b9"
+  },
+  {
+    "session": "S8-boundary-heavy-noise",
+    "turn": 4,
+    "kind": "action",
+    "pass": true,
+    "failed": {},
+    "status": "pending",
+    "intent": "access_request",
+    "request_type": "action",
+    "answer_quote": "",
+    "tools_used": [
+      "get_employee",
+      "check_software_subscription",
+      "list_access_requests",
+      "list_employee_tickets",
+      "request_approval",
+      "get_approval"
+    ],
+    "sources_seen": [],
+    "handoff": {
+      "subject_employee_id": "E010",
+      "subject_name": "Rachel Stein",
+      "system": "Webex",
+      "justification": "Rachel Stein needs Webex to collaborate with her customer success team on video calls and screen-sharing during client meetings, as it is one of the systems allowed by her role as a Customer Success Specialist.",
+      "requested_by": "E004",
+      "source_thread_id": "S8-854be3",
+      "request_id": "req-1f24168af2dd",
+      "status": "pending_approval"
+    },
+    "checklist": null,
+    "answer": "I've prepared a Webex access request for Rachel Stein (E010) and handed it to IT operations. Its status is pending approval: nothing has been filed, and access has not been granted. Justification: Rachel Stein needs Webex to collaborate with her customer success team on video calls and screen-sharing during client meetings, as it is one of the systems allowed by her role as a Customer Success Specialist.\n\nWebex access for E010: pending approval (status: pending). Access has not been granted.\nBlocked by: 42 of 40 Webex seats are in use — no free seat\nObserved:\n- Webex has 42 active seats against a 40-seat limit — over the limit [record: SUB001]\n- E010 is entitled to Webex by role [record: E010]\n- Access request AR001 is blocked: Eligible by department, but seats exceed contract limit. [record: AR001]\n- Approval AP001 (access_request) by E006 is needed [record: AP001]\n- Approval AP002 (subscription_expansion) by E011 is needed [record: AP002]\n- Ticket T001 'Webex says account is not licensed' is open [record: T001]\nActions taken:\n- Reused existing ticket T001 — no new ticket created\n- Reused open approval AP001 for E006 — no new row\nNext steps:\n- E006 must record a decision on AP001; nothing is filed until then\n- Free a seat or expand the subscription — expansion needs E011 (AP002)",
+    "trace_id": "b16d4fbd6071a3a8a663fc2413a23381"
+  }
+]

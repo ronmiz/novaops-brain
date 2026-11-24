@@ -13,7 +13,7 @@ import time
 import boto3
 from opensearchpy import AWSV4SignerAuth, OpenSearch, RequestsHttpConnection, helpers
 
-from .. import config, llm
+from .. import config, db, llm
 from .documents import embedding_text, load_chunks
 
 INDEX_BODY = {
@@ -28,6 +28,7 @@ INDEX_BODY = {
         "section": {"type": "keyword"},
         "audience": {"type": "keyword"},        # the permission boundary — filtered at retrieval
         "doc_date": {"type": "date", "format": "yyyy-MM-dd"},
+        "people": {"type": "keyword"},          # employee ids the document names (#35)
     }},
 }
 
@@ -71,7 +72,7 @@ def rebuild_index() -> int:
         os_client.indices.delete(index=config.INDEX_NAME)
     os_client.indices.create(index=config.INDEX_NAME, body=INDEX_BODY)
 
-    chunks = load_chunks(config.DOCS_DIR)
+    chunks = load_chunks(config.DOCS_DIR, db.ids_by_full_name())
     print(f"{len(chunks)} chunks from {len({c['source'] for c in chunks})} documents. Embedding...")
     for i, chunk in enumerate(chunks, 1):
         chunk["vector"] = llm.embed(embedding_text(chunk))

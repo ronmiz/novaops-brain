@@ -1,0 +1,167 @@
+[
+  {
+    "session": "S9-maya-own-account",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": false,
+    "failed": {
+      "required_facts": [
+        "six months|6 months",
+        "April 1|October 1"
+      ]
+    },
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/making-a-career.md",
+      "documents/handbook/titles-for-support.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The career development path for a Customer Success Manager (CSM) at NovaOps is outlined in the handbook under the \"Titles for Support\" and \"Making a Career\" sections [documents/handbook/titles-for-support.md § Levels][documents/handbook/making-a-career.md § Growth Philosophy].\n\nThe key steps for a CSM to advance are:\n\n1. **S3 Level**: As a Senior Support Specialist or Customer Success Manager, you should handle complex accounts, coach teammates, manage difficult conversations, and turn customer feedback into useful internal signals [documents/handbook/titles-for-support.md § Levels]. This level involves balancing empathy with boundaries and owning complicated customer situations without overpromising.\n\n2. **S4 Level**: At this level, you may operate as a senior individual contributor who redesigns escalation flow, reduces repeat cases, and improves customer trust across a segment, even without direct reports [documents/handbook/titles-for-support.md § Levels]. This involves setting strategy for customer retention, support quality, and escalation management.\n\n3. **S5 Level - Customer Success Director**: The highest level mentioned, where you set strategy for customer retention, support quality, and escalation management across the function [documents/handbook/titles-for-support.md § Levels]. This involves defining support and customer-health strategy, setting escalation standards, owning customer communication principles, and making tradeoffs between short-term customer recovery and long-term product or process health.\n\nThe general growth philosophy at NovaOps emphasizes increasing judgment, scope, and trust, rather than just being busy [documents/handbook/making-a-career.md § Growth Philosophy]. Growth can happen through promotion, larger scope, transfer, people management, or deeper individual contribution at the same title.",
+    "trace_id": "35272439f32acfd58c493e1c725f2283"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "pasted_text",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Based on the forwarded thread, the only items that are yours to do are:\n\n1. Sign the equipment responsibility form [forwarded thread]\n2. Finish your BambooHR self-service profile once the invite lands [forwarded thread]",
+    "trace_id": "8efb24e52ef0a9235f3be03390def451"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "SUB001",
+      "employee_name": "Jane Doe",
+      "start_date": "2026-07-10",
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "task",
+          "status": "blocked",
+          "citations": [
+            "OT005"
+          ],
+          "blocked_reason": "Webex licensing currently unavailable"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Your software licenses are handled through IT onboarding tasks. Here's the current status from your onboarding checklist:\n\n- **Okta profile**: Pending (due 2026-07-25) [record: OT002]\n- **Salesforce Customer Success profile**: Planned (due 2026-07-28) [record: OT004]\n- **Webex standard user license**: Blocked (due 2026-07-28) [record: OT005]\n\nThe Webex license is blocked due to a seat availability issue, as noted in the forwarded thread you shared. The other licenses are either pending or planned and will be processed by IT on their scheduled dates.",
+    "trace_id": "a93712b99f765b04623e05637e513988"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 4,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "search_documents"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The manager playbook is available to people managers only, so I can't retrieve it for you. If you need guidance on giving feedback in someone's first 90 days, you should ask your manager or a people operations lead for access to the playbook.",
+    "trace_id": "f7445c8cfca3c174e28d71433ad6b46c"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Yes, your laptop is planned to be prepared by IT on 2026-07-26, which is before your start date of 2026-07-01 [record: OT003]. The task is currently marked as \"planned\" and is scheduled for completion the day after your start date.",
+    "trace_id": "a0110e78515a7e4f9f36b5c60d8f0623"
+  }
+]

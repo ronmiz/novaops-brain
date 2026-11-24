@@ -58,12 +58,12 @@ def knn(query: str, caller_id: str, collections: list[str] | None = None,
             client().search(index=config.INDEX_NAME, body=body)["hits"]["hits"]]
 
 
-_FULL_NAME = re.compile(r"\b([A-Z][a-z]+ [A-Z][a-z]+)\b")
-
-
 def names_in(query: str) -> list[str]:
-    # a full name, or an employee's first or last name alone ("Maya's offer letter", #33)
-    return list(dict.fromkeys(_FULL_NAME.findall(query) + db.people_named(query)))
+    """EMPLOYEES named in the query: their full name, else their first or last name alone
+    ("Maya's offer letter", #33). Only names the employee table knows — any two capitalised
+    words ("Customer Success", "Okta Verify") are not a person (#35)."""
+    full = [n for n in db.ids_by_full_name() if n in query]
+    return full or db.people_named(query)
 
 
 def topic_of(query: str, names: list[str]) -> str:
@@ -89,10 +89,21 @@ def name_query(query: str, caller_id: str, collections: list[str] | None = None,
             "query": {"bool": {"must": must, "filter": [filt] if filt else []}}}
 
 
-def candidates(query: str, caller_id: str, collections: list[str] | None = None) -> list[dict]:
-    """k-NN candidates plus exact-name hits, deduplicated by (source, section)."""
+def person_query(employee_id: str, caller_id: str, collections: list[str] | None = None, k: int = 5) -> dict:
+    """The documents tagged with this employee id at ingest (#35) — an exact identifier, not a
+    name match: there are two Mayas, there is one E001. Same permission filter as k-NN."""
+    filt = build_filter(caller_id, collections)
+    return {"size": k, "_source": {"excludes": ["vector"]},
+            "query": {"bool": {"must": [{"term": {"people": employee_id}}], "filter": [filt] if filt else []}}}
+
+
+def candidates(query: str, caller_id: str, collections: list[str] | None = None,
+               employee_id: str | None = None) -> list[dict]:
+    """k-NN candidates on the topic, plus the person's own documents: by employee id when the
+    caller of the tool knows it, else by exact name. Deduplicated."""
     found = knn(topic_of(query, names_in(query)), caller_id, collections)
-    body = name_query(query, caller_id, collections)
+    body = (person_query(employee_id, caller_id, collections) if employee_id
+            else name_query(query, caller_id, collections))
     if body:
         found += [hit["_source"] for hit in client().search(index=config.INDEX_NAME, body=body)["hits"]["hits"]]
     seen, out = set(), []
@@ -139,7 +150,8 @@ def cut(ranked: list[tuple[dict, float]], min_score: float = MIN_SCORE,
     return hits
 
 
-def search(query: str, caller_id: str, collections: list[str] | None = None) -> list[dict]:
+def search(query: str, caller_id: str, collections: list[str] | None = None,
+           employee_id: str | None = None) -> list[dict]:
     """The function behind the MCP `search_documents` tool. Returns cite-ready hits:
     source, section, doc_date, text, relevance."""
-    return cut(rerank(query, candidates(query, caller_id, collections)))
+    return cut(rerank(query, candidates(query, caller_id, collections, employee_id)))

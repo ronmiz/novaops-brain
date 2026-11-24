@@ -66,6 +66,11 @@ def get_employee(query: str) -> list[dict]:
                                              (names[name],))]
 
 
+def ids_by_full_name() -> dict[str, str]:
+    """Full name -> employee id, for tagging documents at ingest (#35)."""
+    return {r["full_name"]: r["employee_id"] for r in _rows("SELECT full_name, employee_id FROM employees")}
+
+
 def people_named(text: str) -> list[str]:
     """Full names of employees whose first or last name appears as a capitalised word in
     `text` ("Maya's offer letter" -> Maya Cohen and the other Maya). Used by retrieval (#33)."""

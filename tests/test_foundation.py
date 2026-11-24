@@ -112,3 +112,25 @@ def test_people_go_to_the_exact_match_and_the_topic_to_knn():
     assert retrieval.topic_of("Maya Cohen promotion path for a CSM", names) == "promotion path for a CSM"
     assert retrieval.topic_of("Maya's offer letter", retrieval.names_in("Maya's offer letter")) == "offer letter"
     assert retrieval.topic_of("VPN setup steps", []) == "VPN setup steps"
+
+
+def test_documents_are_tagged_with_the_employee_ids_they_name():
+    # #35: the id is exact — two Mayas exist, one E001
+    people = db.ids_by_full_name()
+    letter = next(c for c in documents.load_chunks(config.DOCS_DIR, people)
+                  if c["source"].endswith("maya_cohen_offer_letter.md"))
+    assert people["Maya Cohen"] in letter["people"]
+    assert people["Maya Rosen"] not in letter["people"]
+
+
+def test_person_query_is_an_exact_id_under_the_permission_filter():
+    body = retrieval.person_query("E001", "E001")
+    assert body["query"]["bool"]["must"] == [{"term": {"people": "E001"}}]
+    assert body["query"]["bool"]["filter"] == [{"bool": {"must": [{"term": {"audience": "all"}}]}}]
+
+
+def test_two_capitalised_words_are_not_a_person():
+    # #35: "Customer Success" was matched as a name, stripped from the topic and phrase-matched
+    assert retrieval.names_in("promotion path Customer Success Manager") == []
+    assert retrieval.names_in("Okta Verify device trust") == []
+    assert retrieval.names_in("Maya Cohen offer letter") == ["Maya Cohen"]

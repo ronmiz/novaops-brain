@@ -1,0 +1,174 @@
+[
+  {
+    "session": "S9-maya-own-account",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": false,
+    "failed": {
+      "required_facts": [
+        "six months|6 months",
+        "April 1|October 1"
+      ]
+    },
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/making-a-career.md",
+      "documents/handbook/titles-for-support.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The career development path for a Customer Success Manager (CSM) at NovaOps is outlined in the **Titles for Support** document and the **Making a Career** handbook. Here’s the path and what it entails:\n\n### **Current Role: Customer Success Manager (CSM)**\n- **Focus**: Handling complex accounts, coaching teammates, managing difficult conversations, and turning customer feedback into useful internal signals.\n- **Key Responsibilities**:\n  - Own complicated customer situations (e.g., workflow automation failures, onboarding account issues, renewal risks).\n  - Make the customer feel heard without overpromising.\n  - Lead difficult customer conversations with a clear agenda.\n  - Coach S1 and S2 teammates on case framing and customer tone.\n  - Decide when to escalate cases to Jira, Salesforce, or SupportDesk.\n  - Translate customer frustration into specific Product or Engineering questions.\n  - Propose safe workarounds and define their limits.\n  - Keep Sales informed about cases affecting renewals or expansions.\n  - Help Product distinguish individual customer preferences from broader product issues.\n  - Write internal summaries for leaders.\n\n### **Next Step: Senior Customer Success Manager (S3)**\n- **Focus**: Owning customer health and complex support outcomes, not just managing many customer meetings.\n- **Key Evidence for Promotion**:\n  - Guide a customer through a troubled launch.\n  - Coordinate a SupportDesk case.\n  - Open a precise Jira issue for an automation defect.\n  - Update Salesforce with renewal risk.\n  - Keep the customer informed without overpromising.\n\n### **Further Steps: Higher Levels**\n- **S4 (Senior Individual Contributor or Manager)**:\n  - **S4 as a Senior Individual Contributor**: Redesign escalation flow, reduce repeat cases, and improve customer trust across a segment.\n  - **S4 as a Manager**: Approve schedules and improve support quality, not just manage people.\n  \n- **S5 (Customer Success Director)**:\n  - **Focus**: Setting strategy for customer retention, support quality, and escalation management across the function.\n  - **Key Responsibilities**:\n    - Define support and customer-health strategy across segments.\n    - Set escalation standards with other departments (Sales, Product, Engineering, etc.).\n    - Own customer communication principles for major incidents.\n    - Use Salesforce, SupportDesk, Jira, and customer feedback to identify systemic risk.\n    - Decide where to invest in staffing, tooling, documentation, automation, or training.\n    - Make tradeoffs between short-term customer recovery and long-term product or process health.\n    - Represent Customer Success in company-level planning.\n\n### **General Growth Philosophy**\n- **Key Principles**:\n  - Growth is built through increasing judgment, scope, and trust.\n  - Promotions are not rewards for being busy but for demonstrating increased value to customers, teammates, and the company.\n  - Every role has a title ladder that describes expected independence, decision quality, collaboration, and impact.\n  - Growth can happen through promotion, larger scope, transfer, people management, or deeper individual contribution at the same title.\n\n### **How to Progress**\n1. **Demonstrate Increased Judgment and Scope**:\n   - Take ownership of complex customer situations.\n   - Show ability to make decisions that impact customer health and company outcomes.\n   \n2. **Build Trust**:\n   - Consistently meet or exceed expectations in handling difficult cases.\n   - Provide clear, actionable feedback to customers and internal teams.\n\n3. **Seek Opportunities for Larger Impact**:\n   - Volunteer for high-visibility projects or cross-functional initiatives.\n   - Propose process improvements or new strategies to enhance customer success.\n\n4. **Communicate with Your Manager**:\n   - Discuss your career goals and seek feedback on areas for improvement.\n   - Ask for opportunities to take on more responsibility or lead projects.\n\n5. **Consider Transfers or New Paths**:\n   - If you see a better fit elsewhere in the company, discuss a transfer with your manager and the hiring manager. Ensure there is a clear ramp plan and mutual agreement on expectations.\n\nBy focusing on these areas, you can effectively progress in your career as a CSM at NovaOps​​[documents/handbook/titles-for-support.md § Levels][documents/handbook/making-a-career.md § Growth Philosophy][documents/handbook/making-a-career.md § Transfers and New Paths]().",
+    "trace_id": "ee35323d7b14cbda4a31551e346ef2a1"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "pasted_text",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Based on the forwarded message, the only items that are yours to do are:\n\n1. **Sign the equipment responsibility form** [forwarded thread]\n2. **Finish your BambooHR self-service profile once the invite lands** [forwarded thread]",
+    "trace_id": "f1bf5bbaa200bc22c7473587430b42d0"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "SUB001",
+      "employee_name": "Jane Doe",
+      "start_date": "2026-07-10",
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "task",
+          "status": "blocked",
+          "citations": [
+            "OT005"
+          ],
+          "blocked_reason": "Webex license request blocked"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Your software licenses are currently in the following status:\n\n- **Okta profile and baseline groups**: Pending, due July 25, owned by IT [record: OT002]\n- **Salesforce Customer Success profile**: Planned, due July 28, owned by IT [record: OT004]\n- **Webex standard user license**: Blocked, due July 28, owned by IT [record: OT005]\n\nThe only action you need to take right now is to finish your BambooHR self-service profile once the invite lands — this is a HR task planned for July 28 [record: OT006]. The software license requests themselves are being handled by IT.",
+    "trace_id": "dd3ff65fdcf7d3bcdad12b4bbf5939ce"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 4,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/getting-started.md",
+      "documents/handbook/our-rituals.md",
+      "documents/handbook/stateFMLA.md",
+      "documents/handbook/titles-for-ops.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The manager playbook is not available in the documents or handbook. The closest guidance on feedback in the first 90 days comes from the **Getting Started** and **Our Rituals** sections of the handbook, which outline onboarding expectations and rituals but do not specify a formal feedback process for managers to use with new hires.\n\nIf you need the playbook itself, it is available only to people managers.\n\nSources: [documents/handbook/getting-started.md] [documents/handbook/our-rituals.md] [documents/handbook/stateFMLA.md]",
+    "trace_id": "ee5b8ae9f8b026ee16d9259b53303dc9"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Yes, your laptop is planned to be prepared by **July 26**, two days after your start date. The task is owned by IT and is currently in the \"planned\" status [record: OT003].",
+    "trace_id": "44b997dd596f1b41da951f253ef6548b"
+  }
+]

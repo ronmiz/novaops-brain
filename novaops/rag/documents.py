@@ -81,9 +81,17 @@ def window(text: str) -> list[str]:
     return out
 
 
-def load_chunks(docs_dir: Path) -> list[dict]:
+def people_in(body: str, people: dict[str, str]) -> list[str]:
+    """Employee ids of everyone the document names in full (#35). Documents name people,
+    almost never their ids, so the id is attached here, from the employee table."""
+    return sorted({emp_id for name, emp_id in people.items() if name in body})
+
+
+def load_chunks(docs_dir: Path, people: dict[str, str] | None = None) -> list[dict]:
     """One record per chunk. `source` is `documents/<collection>/<file>.md` — the same
-    form GOLDEN-DATASETS.json uses, so citations compare 1:1 with the expectations."""
+    form GOLDEN-DATASETS.json uses, so citations compare 1:1 with the expectations.
+    `people` (full name -> employee id) tags every chunk of a document with the ids of
+    the people it names — a document about Maya Cohen is about E001 in every chunk."""
     chunks = []
     for path in sorted(docs_dir.glob("*/*.md")):
         collection = path.parent.name
@@ -95,6 +103,7 @@ def load_chunks(docs_dir: Path) -> list[dict]:
             "title": title or path.stem,
             "audience": audience_for(collection, meta),
             "doc_date": doc_date(meta, body),
+            "people": people_in(body, people or {}),
         }
         # Short documents stay WHOLE. Measured (evals/retrieval_eval.py): splitting a
         # 120-word KB article into 5 sections left "MFA" only in the title, so the
