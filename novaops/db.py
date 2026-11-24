@@ -5,6 +5,7 @@ the evaluation run reseeds before every independent case (spec section 13).
 The queries are Lesson 10's server/db.py, repointed at the project dataset.
 """
 import difflib
+import re
 import sqlite3
 from contextlib import closing
 
@@ -66,6 +67,15 @@ def get_employee(query: str) -> list[dict]:
 
 
 def check_software_subscription(software: str) -> list[dict]:
+    """Matches the system or vendor name. A descriptive query ('Webex standard user license')
+    falls back to its words, so it still finds Webex instead of returning nothing (#29)."""
+    rows = _subscriptions(software)
+    for word in (w for w in re.findall(r"[A-Za-z]{4,}", software) if not rows):
+        rows = _subscriptions(word)
+    return rows
+
+
+def _subscriptions(software: str) -> list[dict]:
     like = f"%{software}%"
     rows = _rows(
         "SELECT sub.subscription_id, sub.contract_id, sys.system_name, v.vendor_name, "

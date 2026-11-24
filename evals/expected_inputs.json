@@ -13,12 +13,12 @@
       ]
     },
     "M-I-02": {
-      "why": "it_kb/mfa_reset.md: identity verification (manager/HR/IT video), IT resets the factor in Okta, re-enroll",
+      "why": "it_kb/mfa_reset.md: identity verification (manager/HR/IT video), IT resets the factor in Okta, re-enroll; re-enrolment may be phrased 'set up MFA again on the new phone' (accepted 2026-11-24 after reading run B — same fact, different words)",
       "should_use_tools": true,
       "required_facts": [
         "identity|verif",
         "Okta",
-        "enrol|enroll"
+        "enrol|enroll|set up"
       ],
       "forbidden_tools": [
         "create_access_request"

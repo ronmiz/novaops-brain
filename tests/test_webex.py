@@ -256,3 +256,9 @@ def test_names_in_a_message_are_candidates_to_check():
     # caller's own id (E004). The graph now checks capitalised names against the records (#28).
     assert "Rachel Stein" in policy.name_candidates("Quick tangent — Rachel Stein pinged me about her ticket.")
     assert policy.name_candidates("what is the status of my ticket?") == []
+
+
+def test_a_descriptive_subscription_query_still_finds_the_system():
+    # M-S-01 t8 (final run B): the model asked for "Webex standard user license" and got nothing (#29)
+    rows = db.check_software_subscription("Webex standard user license")
+    assert rows and rows[0]["subscription_id"] == "SUB001" and rows[0]["active_seats"] == 42
