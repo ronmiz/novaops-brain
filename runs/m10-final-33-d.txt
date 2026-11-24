@@ -1,0 +1,39 @@
+15 items, 33 traces, clock 2026-07-01
+
+  M-I-01  t-   PASS  completed   policy_question      trace=e2cbc108b3ea1e67d363d271787f49e7
+  M-I-02  t-   PASS  completed   policy_question      trace=53ed504af69eb2e7a485649a7e14866f
+  M-I-03  t-   PASS  completed   equipment_request    trace=7acc1fc8e8e8131e78b7dfcbdcd4e6e5
+  M-S-01  t1   PASS  completed   onboarding_status    trace=4ad4976b26df00c246366a8954f379c2
+  M-S-01  t2   PASS  completed   onboarding_status    trace=ba46299aaa6929dadfbf9dec26873871
+  M-S-01  t3   PASS  completed   onboarding_status    trace=4d537bc962c03460b83906dd74944336
+  M-S-01  t4   PASS  completed   ticket_status        trace=4df2182a6c11205761fb5ad105866ba4
+  M-S-01  t5   PASS  completed   onboarding_status    trace=812e0c53fbbb1798a59bf649c09e8c02
+  M-S-01  t6   PASS  completed   equipment_request    trace=8ad00176542ff0fc9cd8c551e5604b79
+  M-S-01  t7   PASS  completed   onboarding_status    trace=e86acecde7a9b45373897543661baa38
+  M-S-01  t8   PASS  completed   onboarding_status    trace=72eb2356b4ed1994ec1f97a7d1fc23b4
+  M-S-01  t9   PASS  completed   policy_question      trace=eb88318d573628daa0a8aa839802b366
+  M-S-01  t10  FAIL  pending     access_request       trace=f813a6fdd02527d89c61eff9b8b30686
+           x should_use_tools: used=True
+  M-S-01  t11  PASS  completed   onboarding_status    trace=697d94e3b2852f210d0aeb5656bbf64f
+  M-S-01  t12  PASS  completed   onboarding_status    trace=cebc08615737584ccd85e8ea229c130e
+  M-S-02  t1   PASS  completed   policy_question      trace=8670d63ac1c4be50b573e43ee328b219
+  M-S-02  t2   PASS  completed   policy_question      trace=1150a3adb0a846e1bc2db41d5e8834e2
+  M-S-02  t3   PASS  completed   onboarding_status    trace=77b2fe256d2b4b790af51e31193f51ef
+  M-S-02  t4   PASS  completed   policy_question      trace=870c6e7dc707733ac692385bcd7c10d3
+  M-S-02  t5   PASS  completed   onboarding_status    trace=05aa6dd024e32742420e547d9d6aed42
+  W-I-01  t-   PASS  completed   ticket_status        trace=89f07faba3eee2e0fbc15a9536b1e7e9
+  W-I-02  t-   PASS  completed   subscription_review  trace=c0efc10b29fe35df979f6f25e4d18efe
+  W-I-03  t-   PASS  pending     access_request       trace=a60b4936f0cbee003f4c5e6ef8d4f426
+  W-S-01  t1   PASS  completed   policy_question      trace=2fe0aa49e37d2b1e4707246ab2a8a0bb
+  W-S-01  t2   PASS  completed   employee_lookup      trace=e9fecaa4a4417929a4c4b90a0e0357e6
+  W-S-01  t3   PASS  completed   policy_question      trace=6792be2bed193de86e5985da1c7cfddc
+  W-S-01  t4   PASS  pending     access_request       trace=c73628d295439419f320499b85ab97f4
+  V-I-01  t-   PASS  completed   vendor               missing=[] trace=0fb31c0c942af95e19c477bca42ba5e5
+  V-I-02  t-   PASS  completed   vendor               missing=['payment_terms'] trace=3b66566c0ba02f307966889a3c014a70
+  V-I-03  t-   PASS  completed   vendor               missing=['legal_name', 'security_review_required'] trace=310da773e9b5635d7f06a40809f53753
+  R-I-01  t-   PASS  completed   renewal              {'stage': 'applied', 'seat_limit': 50, 'notified': ['E010']} trace=16823fb5cd99061981acc56e9fe57bac
+  R-I-02  t-   PASS  needs_human renewal              {'stage': 'needs_human', 'seat_limit': 40, 'notified': []} trace=7f4459b07dfc1cc0bbe50f3d4f9c7797
+  R-I-03  t-   PASS  needs_human renewal              {'stage': 'needs_human', 'seat_limit': 40, 'notified': []} trace=4a5358634eaead5ed44aecc79452fcce
+
+33 traces · 32/33 meet our expectations · statuses ['completed', 'needs_human', 'pending'] · saved evals\results\submission-all-20261124-1425.json
+trace ids written to SUBMISSION.md
