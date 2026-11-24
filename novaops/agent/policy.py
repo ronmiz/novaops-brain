@@ -144,9 +144,13 @@ def verify_request_type(plan: TurnPlan, newest_message: str, grounding_text: str
         excerpts = [_norm(line) for line in _BRACKET.sub(" ", plan.answer_quote).splitlines()]
         excerpts = [e for e in excerpts if e]
         ground = _norm(grounding_text)
-        if (FRESHNESS.search(newest_message) or sum(map(len, excerpts)) < 6
-                or not all(e in ground for e in excerpts)):
-            kind = "lookup"
+        if FRESHNESS.search(newest_message):
+            kind = "lookup"                       # asks for the current state: always look
+        elif not (sum(map(len, excerpts)) >= 6 and all(e in ground or _near(e, ground) for e in excerpts)):
+            # Unverified recall (#30): the planner quoted nothing, or reworded the source. It may
+            # still answer without a tool, but the ANSWER is then checked instead — every claim
+            # cited to evidence already in the conversation, or the turn is sent back as a lookup.
+            return plan.model_copy(update={"answer_quote": ""})
     elif kind == "pasted_text" and newest_message.count("\n") < 3:
         kind = "lookup"
     elif kind == "action" and not FILING.search(newest_message):
@@ -164,6 +168,13 @@ FILING = re.compile(r"\b(file|filing|submit|create|open|raise|log|go ahead)\b", 
 # What asking for access sounds like (W-I-03) — as opposed to asking about an existing request (S3 t5).
 ASKS_FOR_ACCESS = re.compile(
     r"\bneeds?\b[^.?!\n]{0,40}\baccess\b|\b(give|get|grant)\b[^.?!\n]{0,30}\baccess\b|\bnot licensed\b", re.I)
+
+
+def _near(excerpt: str, ground: str, n: int = 4, share: float = 0.5) -> bool:
+    """A reworded quote: at least half of its 4-word runs appear verbatim in the grounding."""
+    words = excerpt.split()
+    grams = [" ".join(words[i:i + n]) for i in range(len(words) - n + 1)]
+    return bool(grams) and sum(g in ground for g in grams) / len(grams) >= share
 
 
 def enforce_evidence(plan: TurnPlan, has_evidence: bool) -> TurnPlan:
@@ -261,6 +272,8 @@ ANSWER_PROMPT = (
     "summarise anyone else's items — not even in an 'everything else is handled by…' sentence. "
     "Your whole answer is that list; end it there.\n"
     "- Never say an action was taken unless a tool result shows it.\n"
+    "- What a DOCUMENT says (an offer letter, a contract, a policy): answer from that document — "
+    "search for it — not from an employee record.\n"
     "- 'My licences / my access / my systems': start from the caller's OWN records (onboarding tasks, "
     "access requests), not from every subscription the company has.\n"
     "- Never say a document's content is missing when a tool returned it, and never offer to fetch "

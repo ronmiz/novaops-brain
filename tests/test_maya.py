@@ -200,13 +200,17 @@ def test_recall_with_a_real_quote_stands():
                                       "remind me where she is based", GROUNDING).request_type == "recall"
 
 
-@pytest.mark.parametrize("quote, message", [
-    ("", "which team owns it?"),                                        # no quote
-    ("Finance approval above USD 7,500", "does a seat need Finance?"),  # quote not in the conversation
-    ("Owner: IT", "who owns it right now?"),                            # asks for the current state
+@pytest.mark.parametrize("quote, message, kind", [
+    ("", "which team owns it?", "recall"),                                        # no quote
+    ("Finance approval above USD 7,500", "does a seat need Finance?", "recall"),  # quote not in the conversation
+    ("Owner: IT", "who owns it right now?", "lookup"),                            # asks for the current state
 ])
-def test_unverified_recall_becomes_a_lookup(quote, message):
-    assert policy.verify_request_type(_recall(quote), message, GROUNDING).request_type == "lookup"
+def test_unverified_recall_loses_its_quote_and_is_answer_checked(quote, message, kind):
+    # Since #30 an unverified recall keeps no quote; the graph then requires the ANSWER to cite
+    # evidence already in the conversation, or sends the turn back as a lookup. A question about
+    # the current state is always a lookup.
+    p = policy.verify_request_type(_recall(quote), message, GROUNDING)
+    assert p.request_type == kind and (kind == "lookup" or p.answer_quote == "")
 
 
 def test_pasted_text_needs_something_pasted():
@@ -246,7 +250,7 @@ def test_quote_of_several_excerpts_is_checked_line_by_line():
     ok = _recall("Maya Cohen location=Israel\nMaya Cohen start_date=2026-08-01")
     bad = _recall("Maya Cohen location=Israel\nMaya Cohen start_date=2026-09-01")
     assert policy.verify_request_type(ok, "remind me", memory_text).request_type == "recall"
-    assert policy.verify_request_type(bad, "remind me", memory_text).request_type == "lookup"
+    assert policy.verify_request_type(bad, "remind me", memory_text).answer_quote == ""     # unverified (#30)
 
 
 # --- round 10: last-resort sources, pinned clock (docs/OBSTACLES.md #19) -------------
@@ -293,3 +297,12 @@ def test_a_closed_branch_must_not_drive_later_tool_choice():
 def test_a_turn_one_rule_is_checked_where_it_must_bind():
     r = {"answer": "x", "tools_used": [], "constraints": ["Finance sign-off above 7,500 under the Q3 freeze"]}
     assert golden_replay.check_turn("S4-x", {"n": 5}, r)["constraint"][0] is True
+
+
+def test_a_reworded_quote_of_the_source_counts_as_grounded():
+    # S1 t2 (#30): the planner quoted the earlier ANSWER's paraphrase of the policy, not the policy.
+    tool = ('{"text": "Personal laptops are not allowed for employees, with one narrow exception: a '
+            'five-business-day IT continuity exception when a managed laptop is being repaired"}')
+    plan = _recall("NovaOps does not allow personal laptops for work, except for a five-business-day IT "
+                   "continuity exception when a managed laptop is being repaired")
+    assert policy.verify_request_type(plan, "does IT need to sign it off?", tool).answer_quote

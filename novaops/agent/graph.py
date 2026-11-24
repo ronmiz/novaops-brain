@@ -262,7 +262,10 @@ def build_graph(tools: list, checkpointer=None):
     def rearm(state: AgentState) -> dict:
         """The plan needed a lookup but the model answered without one: widen to every
         READ tool once and retry. Never widens to a write."""
+        plan = policy.TurnPlan(**state["plan"])
         return {"loadout": read_tools, "rearmed": True,
+                # a recall that could not be grounded is now a lookup: the model must call a tool
+                "plan": plan.model_copy(update={"request_type": "lookup"}).model_dump(),
                 "messages": [RemoveMessage(id=state["messages"][-1].id)]}
 
     def route(state: AgentState) -> str:
@@ -277,6 +280,12 @@ def build_graph(tools: list, checkpointer=None):
         # returned is invented — send it back once, with the read tools (#13).
         if not used_tool and not state.get("rearmed") and contracts.citation_report(
                 str(last.content), evidence(state["messages"]))["unsupported"]:
+            return "rearm"
+        # An unverified recall (no exact quote, #30) stands only if the answer cites evidence
+        # already in this conversation; otherwise it becomes a lookup.
+        if (plan.request_type == "recall" and not plan.answer_quote and not used_tool
+                and not state.get("rearmed")
+                and not contracts.citation_report(str(last.content), evidence(state["messages"]))["has_citation"]):
             return "rearm"
         # Tools returned evidence but the answer cites none of it, or cites a record no tool
         # returned: rewrite once, told to cite (#17, #19).
