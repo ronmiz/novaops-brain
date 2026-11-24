@@ -33,7 +33,8 @@ SCOPES: dict[str, str] = {
 # classification can still recover. No write tool may ever appear in this table.
 LOADOUTS: dict[str, list[str] | None] = {
     # A threshold question needs the amount it is compared with (S2 t9: 7,500 vs 18,400) (#18).
-    "policy_question": ["search_documents", "list_policies", "get_policy", "check_software_subscription"],
+    "policy_question": ["search_documents", "list_policies", "get_policy", "check_software_subscription",
+                        "list_onboarding_tasks"],
     # "Which of my team has a Webex seat?" is often read as a people question (W-I-02, #22).
     "employee_lookup": ["get_employee", "check_team_system_access", "list_onboarding_tasks",
                         "search_documents"],
@@ -104,6 +105,15 @@ def unverified_employee_id(args: dict, caller_id: str, known_text: str) -> str |
     if emp and (not re.fullmatch(r"E\d{3}", emp) or (emp != caller_id and emp not in known_text)):
         return emp      # a name passed as an id, or an id nobody established
     return None
+
+
+_FULL_NAME = re.compile(r"\b([A-Z][a-z]+ [A-Z][a-z]+)\b")
+
+
+def name_candidates(message: str) -> list[str]:
+    """Capitalised two-word phrases that MAY be a person ('Rachel Stein', but also 'Customer
+    Success') — the graph checks each against the employee records before acting on it (#28)."""
+    return list(dict.fromkeys(_FULL_NAME.findall(message)))
 
 
 FRESHNESS = re.compile(r"\b(right now|now|currently|still|after that|at the moment|today|latest)\b", re.I)
@@ -186,7 +196,8 @@ PLANNER_PROMPT = (
     "Intent = its topic:\n"
     "  policy_question · what a policy, handbook, memo or IT article says; how-to questions\n"
     "  employee_lookup · who someone is (record, role, manager, status)\n"
-    "  onboarding_status · a joiner's checklist, required systems, start-date paperwork\n"
+    "  onboarding_status · a joiner's checklist, required systems, start-date paperwork; a joiner asking "
+    "about 'my licences / my access / my systems'\n"
     "  equipment_request · hardware (laptops, monitors, docks, headsets), incl. who is eligible for it\n"
     "  subscription_review · a SaaS subscription's seats (including who holds one), cost, renewal\n"
     "  access_request · getting a person access to a system\n"
@@ -250,6 +261,10 @@ ANSWER_PROMPT = (
     "summarise anyone else's items — not even in an 'everything else is handled by…' sentence. "
     "Your whole answer is that list; end it there.\n"
     "- Never say an action was taken unless a tool result shows it.\n"
+    "- 'My licences / my access / my systems': start from the caller's OWN records (onboarding tasks, "
+    "access requests), not from every subscription the company has.\n"
+    "- Never say a document's content is missing when a tool returned it, and never offer to fetch "
+    "more later: if you need more, call the tool now.\n"
     "- Eligibility is not delivery: say what the policy allows and what the records show as planned "
     "or pending (for a joiner, check the onboarding tasks). Never promise someone WILL receive something.\n"
     "- Asked for steps or a process: give the steps themselves from the source, not a description "

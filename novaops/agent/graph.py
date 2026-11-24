@@ -36,7 +36,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 
 from .. import config, llm
-from . import contracts, memory, policy, write_gate
+from . import approval, contracts, memory, policy, write_gate
 
 KEEP_TURNS = 4           # verbatim user turns the answer model sees; 2 lost S1 t1's rule by t4 (#12)
 EVIDENCE_CHARS = 12_000  # tool evidence handed to the checklist / handoff extractors
@@ -212,6 +212,19 @@ def build_graph(tools: list, checkpointer=None):
             [SystemMessage(system), *window(state["messages"])])
         return {"messages": [response]}
 
+    lookup = approval.mcp_caller(by_name)
+    named: dict[str, list] = {}
+
+    async def someone_else(message: str, caller_id: str) -> str | None:
+        """A person other than the caller, named in this message and found in the records."""
+        for name in policy.name_candidates(message):
+            if name not in named:
+                named[name] = (await lookup("get_employee", {"query": name}) or []) if "get_employee" in by_name else []
+            rows = named[name] if isinstance(named[name], list) else []
+            if rows and all(r.get("employee_id") != caller_id for r in rows):
+                return name
+        return None
+
     async def run_tools(state: AgentState) -> dict:
         results = []
         for call in state["messages"][-1].tool_calls:
@@ -224,6 +237,14 @@ def build_graph(tools: list, checkpointer=None):
             if call["name"] in policy.CALLER_TOOLS:
                 args["caller_id"] = state["caller_id"]     # application input, overrides the model
             unknown = policy.unverified_employee_id(args, state["caller_id"], known_ids_text(state["messages"]))
+            if not unknown and args.get("employee_id") == state["caller_id"]:
+                other = await someone_else(str(current_turn(state["messages"])[0].content), state["caller_id"])
+                if other:      # "Rachel Stein pinged me about HER ticket" answered with the caller's id (#28)
+                    results.append(ToolMessage(
+                        f"This message is about {other}, not about the caller ({state['caller_id']}). "
+                        f"Look {other} up with get_employee and use their employee id.",
+                        tool_call_id=call["id"], name=call["name"], status="error"))
+                    continue
             if unknown:
                 results.append(ToolMessage(
                     f"Employee id {unknown!r} has not been established in this conversation. "

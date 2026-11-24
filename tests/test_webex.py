@@ -249,3 +249,10 @@ def test_ground_rules_need_no_lookup_even_on_turn_one():
 def test_only_asking_for_access_starts_the_approval_workflow():
     assert policy.ASKS_FOR_ACCESS.search("I joined Customer Success and need Webex access.")
     assert not policy.ASKS_FOR_ACCESS.search("Does he have a GitHub request already waiting on someone?")
+
+
+def test_names_in_a_message_are_candidates_to_check():
+    # M-S-01 t4: "Rachel Stein pinged me about her Webex login ticket" was answered with the
+    # caller's own id (E004). The graph now checks capitalised names against the records (#28).
+    assert "Rachel Stein" in policy.name_candidates("Quick tangent — Rachel Stein pinged me about her ticket.")
+    assert policy.name_candidates("what is the status of my ticket?") == []
