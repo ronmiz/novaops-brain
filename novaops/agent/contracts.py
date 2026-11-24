@@ -41,10 +41,14 @@ class AccessRequestIntent(AccessRequestProposal):
 
 def handoff_answer(intent: AccessRequestIntent) -> str:
     """Deterministic: what was proposed, what was NOT done. No model writes this text."""
-    return (f"I've prepared a {intent.system} access request for {intent.subject_name} "
-            f"({intent.subject_employee_id}) and handed it to IT operations. Its status is "
-            f"pending approval: nothing has been filed, and access has not been granted. "
-            f"Justification: {intent.justification}")
+    # Judges read "handed it to IT operations" as an action no tool showed, and "nothing has
+    # been filed" as contradicting the approval request filed below it (#39): say exactly
+    # which record exists and which does not.
+    return (f"I've passed a {intent.system} access request for {intent.subject_name} "
+            f"({intent.subject_employee_id}) to the IT approval workflow; its result is below. "
+            f"Status: pending approval. No access request has been filed and access has not been "
+            f"granted. Proposed justification (a draft for the approver, not a recorded fact): "
+            f"{intent.justification}")
 
 
 # --- the onboarding checklist -------------------------------------------------

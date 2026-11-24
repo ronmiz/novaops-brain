@@ -43,7 +43,8 @@ def test_handoff_carries_traceability_and_never_claims_a_grant():
         source_thread_id="S2-abc", request_id="req-1")
     text = contracts.handoff_answer(intent).lower()
     assert intent.status == "pending_approval"
-    assert "pending" in text and "nothing has been filed" in text and "not been granted" in text
+    assert "pending" in text and "no access request has been filed" in text and "not been granted" in text
+    assert "handed it to" not in text      # an action no tool showed (#39)
 
 
 def test_requested_by_comes_from_the_application_not_the_model():

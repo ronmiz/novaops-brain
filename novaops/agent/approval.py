@@ -166,11 +166,13 @@ def build_decision(values: dict) -> contracts.AccessDecision:
         steps.append(f"{who}'s manager must confirm a business need before IT can consider {system} access")
     elif approval:
         aid, approver = approval["approval_id"], approval["approver_id"]
-        actions.append(f"{'Reused open approval' if approval.get('reused') else 'Filed approval request'} {aid} "
-                       f"for {approver}{' — no new row' if approval.get('reused') else ''}")
+        # "for E006" read as "for employee E006" (#39): name the subject and the approver apart
+        actions.append(f"{'Reused open approval request' if approval.get('reused') else 'Filed approval request'} "
+                       f"{aid} for {who}'s {system} access, awaiting approver {approver}"
+                       f"{' — no new row' if approval.get('reused') else ''} [record: {aid}]")
         if approval["status"] in OPEN:
             decision, status = "pending_approval", "pending"
-            steps.append(f"{approver} must record a decision on {aid}; nothing is filed until then")
+            steps.append(f"{approver} must record a decision on {aid}; no access request is filed until then")
         elif approval["status"] == "rejected":
             decision, status = "rejected", "blocked"
             blocking = f"{aid} rejected by {approver}: {approval.get('decision_reason') or 'no reason given'}"
