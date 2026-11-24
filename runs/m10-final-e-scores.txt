@@ -1,0 +1,49 @@
+turn               golden_pass     expected_pass      faithfulness  citation_quality      no_overclaim
+M-I-01 t-                    -               1.0               1.0               1.0               1.0
+M-I-02 t-                    -               1.0               1.0               1.0               1.0
+M-I-03 t-                    -               1.0               1.0               1.0               1.0
+M-S-01 t1                    -               1.0               1.0               1.0               1.0
+M-S-01 t2                    -               1.0               1.0               1.0               1.0
+M-S-01 t3                    -               1.0               0.9               0.8               1.0
+    faithfulness: The assistant incorrectly states Webex is blocked due to Q3 SaaS freeze, but the tool result only shows status 'blocked' with no cause specified. The answer adds an unsupported reason. All other checklist items and statuses are directly supported by the tool results.
+    citation_quality: The answer makes one unsupported factual claim: it states that the Webex task is blocked due to a Q3 SaaS freeze, but the evidence only shows the task status as 'blocked' without specifying the reason. All other claims are supported by the cited records. Therefore, 5 out of 6 claims are correctly su
+M-S-01 t4                    -               1.0               1.0               1.0               1.0
+M-S-01 t5                    -               1.0               1.0               1.0               1.0
+M-S-01 t6                    -               1.0               0.9               0.5               0.0
+    faithfulness: The assistant correctly identifies the monitor (Dell U2723QE) as available per the tool result [record: A006], but incorrectly claims 'no headsets are currently available in Israel'—the tool results contain no data about headsets, so this claim isn't supported or refuted by evidence. Thus, one factu
+    citation_quality: The assistant makes two factual claims: (1) Maya Cohen will get a Dell U2723QE monitor from the remote equipment pool in Israel, citing record A006; this is supported as the tool result shows a monitor of that model is available in Israel with a note about the remote equipment pool. (2) No headsets 
+    no_overclaim: The assistant states "Maya Cohen will get a Dell U2723QE monitor" which overstates the situation - the inventory record only shows the monitor is available in Israel and reserved for a remote equipment pool, but does not confirm it has been assigned or will be assigned to Maya Cohen. This implies ac
+M-S-01 t7                    -               1.0               1.0               0.0               1.0
+    citation_quality: The answer states a factual claim: "Maya Cohen (E001) is joining in Israel on 2026-08-01" and attempts to cite [record: E001]. However, the evidence does not contain any record labeled [record: E001]; the employee record shown is [record: E010] for Rachel Stein, not Maya Cohen. The actual establishe
+M-S-01 t8                    -               1.0               1.0               1.0               1.0
+M-S-01 t9                    -               1.0               1.0               1.0               0.0
+    no_overclaim: The assistant states that adding a Webex seat needs Finance approval because of the Q3 SaaS freeze threshold, but the evidence shows the freeze applies to costs, and the Webex subscription is already over its seat limit with active status and a renewal date soon. The answer overstates by implying ap
+M-S-01 t10                   -               0.0               0.9               1.0               0.5
+    expected_pass: {"should_use_tools": "used=True"}
+    faithfulness: The assistant correctly reports the pending approval status and observed records from the tool results. However, it incorrectly states &quot;No access request has been filed&quot; — the tool result explicitly shows an approval request AP005 was filed. This misrepresents the evidence.
+    no_overclaim: The assistant states "Filed approval request AP005 for E001's Webex access" which is an overclaim because the tool result shows the request was filed, but the assistant's phrasing implies the action was taken by the assistant rather than acknowledging it as part of the workflow's observed actions. T
+M-S-01 t11                   -               1.0               1.0               1.0               1.0
+M-S-01 t12                   -               1.0               1.0               1.0               1.0
+M-S-02 t1                    -               1.0               1.0               1.0               1.0
+M-S-02 t2                    -               1.0               1.0               1.0               1.0
+M-S-02 t3                    -               1.0               1.0               1.0               0.0
+    no_overclaim: The assistant states "IT will request your Salesforce profile by 2026-07-28", which overstates the evidence. The record shows the task is merely "planned", not that IT will definitely perform the request. This implies action that hasn't been confirmed or initiated yet. Additionally, "Wait for IT to 
+M-S-02 t4                    -               1.0               1.0               1.0               1.0
+M-S-02 t5                    -               1.0               1.0               1.0               1.0
+W-I-01 t-                    -               1.0               1.0               1.0               1.0
+W-I-02 t-                    -               1.0               1.0               1.0               1.0
+W-I-03 t-                    -               1.0               0.9               1.0               0.5
+    faithfulness: The assistant correctly states that access is blocked due to seat limit excess, referencing record SUB001. It accurately notes the pending approvals needed (IT and Finance) per AR001. However, it incorrectly asserts that the assistant has "passed a Webex access request" and that status is "pending a
+    no_overclaim: The answer overstates by claiming "your access will be granted" once approvals are completed. The evidence shows the request is blocked due to seat limits, with no guarantee approvals will succeed or even be submitted. "Pending approval" and "access has not been granted" are correct, but the forward
+W-S-01 t1                    -               1.0               1.0               1.0               1.0
+W-S-01 t2                    -               1.0               1.0               1.0               1.0
+W-S-01 t3                    -               1.0               1.0               0.0               1.0
+    citation_quality: The answer makes one factual claim: that Rachel Stein needs Webex for collaboration with her team and clients on video calls, screen shares, and secure messaging as part of her role. This claim is not supported by any citation in the evidence (the cited 'forwarded thread' does not appear in the prov
+W-S-01 t4                    -               1.0               0.9               1.0               1.0
+    faithfulness: The assistant claims to have 'passed a Webex access request for Rachel Stein (E010) to the IT approval workflow', but the tool results show no new request was filed; actions only reused an existing approval request AP001 and ticket T001. This claim of action contradicts the evidence. The rest of the
+V-I-01 t-                    -               1.0                 -                 -                 -
+V-I-02 t-                    -               1.0                 -                 -                 -
+V-I-03 t-                    -               1.0                 -                 -                 -
+R-I-01 t-                    -               1.0                 -                 -                 -
+R-I-02 t-                    -               1.0                 -                 -                 -
+R-I-03 t-                    -               1.0                 -                 -                 -

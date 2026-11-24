@@ -8,13 +8,13 @@ operational database and governed actions. Built milestone by milestone against
 |---|---|
 | 1 · Foundation — corpus indexed, database loaded, MCP server, one model seam | ✅ built |
 | 2 · Agent loop (classify → scope → evidence → answer, write gate) | ✅ built |
-| 3 · Maya (HR & onboarding) | ✅ golden S1/S2/S9: 8/21 baseline → mean 17.67/21 over 3 runs → 19/21 |
+| 3 · Maya (HR & onboarding) | ✅ golden S1/S2/S9: 8/21 baseline → mean 17.67/21 over 3 runs → 19/21; S1/S2/S9/S6/S8 (29 turns): mean 24.3 → **26.7** (max 28, see deviation) |
 | 4 · Webex (IT operations) | ✅ W-I-01/02/03 live; pause → approve in a new process → resume = one trace; S6/S8 8/8 (noise delta 0) |
 | 5 · Observability (Langfuse) | ✅ tracing, 3 Langfuse judges, `golden_pass` / `expected_pass` scores |
 | 6 · Vendor (optional) | ✅ V-I-01/02/03 live: missing required fields 0 / 1 / 2 as specified, schema-valid |
 | 7 · Renewal (optional) | ✅ R-I-01 applied on 07-21 (seat limit 50, Rachel notified); R-I-02 conditional and R-I-03 ambiguous → needs_human, seat limit 40 |
-| 9 · Packaging (optional) | 🔶 API + worker + Dockerfile + Compose; entry-point tests pass, container run pending |
-| 10 · Submission | ⏳ |
+| 9 · Packaging (optional) | 🔶 API + worker + Dockerfile + Compose; entry-point tests pass; containers not yet run (Docker Desktop awaits IT approval on the build machine) |
+| 10 · Submission | ✅ final run `runs/m10-final-33-e.txt`: **32/33** against our expectations (the miss is the documented deviation); judges in `runs/m10-final-e-scores.txt`; trace index in [`SUBMISSION.md`](SUBMISSION.md) |
 
 ## Stack
 
@@ -33,6 +33,8 @@ streamable HTTP) as the tool boundary · Langfuse for tracing (Milestone 5).
 | Manager = some employee's `manager_id` is the caller (not `user_group`) | `db.is_manager` |
 | Permission boundary enforced **at retrieval** (pre-filter inside k-NN) | `retrieval.access_clauses` / `retrieval.knn` |
 | Filter → k-NN → Nova rerank → dynamic cut (Lesson 7) | [`novaops/rag/retrieval.py`](novaops/rag/retrieval.py) |
+| A person's documents found by **employee id** (tagged at ingest), not by name; names never steer the embedded topic | `documents.people_in`, `retrieval.person_query`, `retrieval.topic_of`, ADR 0010 |
+| Retrieval runs on the user's own question as well as the model's query (application-filled, hidden from the model) | `retrieval.candidates`, `retrieval.rank_query`, `policy.APP_ARGS`, ADR 0011 |
 | Chunking and final cut chosen by measurement (9/17 → 15/17 expected docs found) | [`docs/adr/0003-chunking-by-measurement.md`](docs/adr/0003-chunking-by-measurement.md), [`evals/retrieval_eval.py`](evals/retrieval_eval.py) |
 | Database is a file and can be reseeded | [`novaops/db.py`](novaops/db.py) |
 | Tools behind a server boundary | [`server/server.py`](server/server.py) |
@@ -95,7 +97,7 @@ tools, so it reports this turn as a miss, and we leave it visible rather than re
 | Lesson 11 — observability and evals (required) | ✅ | tracing bound to the graph; trace metadata; `golden_pass` / `expected_pass` scores; 3 Langfuse judges (ADR 0007) |
 | Lesson 12 — eval loop engineering | ✅ | the improvement log below: honest baseline first, one change per measured round, a gate the loop cannot cheat (`pytest` + `.claude/hooks/protect_tests.py`), a human accepted every change, before/after in `docs/OBSTACLES.md` |
 | Lesson 13 — guardrails | not part of this project (spec 13) | — |
-| Lesson 14 — packaging and deployment | ✅ (Compose demo; LiteLLM not used) | `novaops/api.py`, `novaops/worker.py`, `Dockerfile`, `compose.yaml` |
+| Lesson 14 — packaging and deployment | 🔶 built and unit-tested; containers not yet run (Docker Desktop needs an IT-approved Windows feature on the build machine); LiteLLM not used | `novaops/api.py`, `novaops/worker.py`, `Dockerfile`, `compose.yaml`, `tests/test_packaging.py` |
 
 ### Improvement log (golden S1/S2/S9, 21 turns)
 
@@ -108,6 +110,20 @@ tools, so it reports this turn as a miss, and we leave it visible rather than re
 | 9 (3 runs) | quote citation strip, subscription tool, pasted-thread rule (#17) | mean 16.0 |
 | 10 (3 runs) | per-line quote check, threshold/date rules (#18) | mean 17.67 |
 | 11 | app-attached sources, recite on invented citation, pinned clock (#19) | 19/21 |
+
+From #30 the gate widened to the five sessions S1/S2/S9/S6/S8 (29 turns, max 28 — S2 t10 is the deviation above), every round the mean of 3 runs:
+
+| Round | Change (docs/OBSTACLES.md) | Mean /29 |
+|---|---|---|
+| a–c | baseline of the wider gate | 24.3 |
+| d–f | answer-side recall verification (#30) | 25.0 |
+| g–i | exact-name retrieval, follow-up evidence reuse (#31, #32) | 26.0 |
+| j–l | first-name match, compose requests (#33) | 26.3 — but S9 t1 regressed 3/3 |
+| m–o | names out of the embedded topic (#34) | **24.7 — worse**: a wrong hypothesis |
+| p–r | root cause: any two capitalised words were taken for a name (#35) + employee-id retrieval (ADR 0010) | 26.7 |
+| s–u | retrieve on the user's own question too (#37, ADR 0011) | 26.7; S9 5/5 every run |
+
+Final runs on the 33 submission traces: 29 → 29 → 31 → **32/33** (#37–#39). The judges then caught contradictory wording in the code-written Webex decision text, which our checks could not see (#39), and run E re-ran with the fix.
 
  in [`docs/adr/`](docs/adr/); problems hit along the way and how they were solved are in [`docs/OBSTACLES.md`](docs/OBSTACLES.md).
 
