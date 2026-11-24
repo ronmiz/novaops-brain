@@ -1,0 +1,174 @@
+[
+  {
+    "session": "S9-maya-own-account",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": false,
+    "failed": {
+      "required_facts": [
+        "six months|6 months",
+        "April 1|October 1"
+      ]
+    },
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/making-a-career.md",
+      "documents/handbook/titles-for-support.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The career development path for a Customer Success Manager (CSM) at NovaOps is outlined in the **Titles for Support** document and the **Making a Career** handbook. Here’s the path and what you need to focus on to advance:\n\n### **Current Role: Customer Success Manager (CSM)**\n- **Focus**: Handling complex accounts, coaching teammates, managing difficult conversations, and turning customer feedback into useful internal signals.\n- **Key Responsibilities**:\n  - Own complicated customer situations (e.g., workflow automation failures, onboarding account issues, renewal risks).\n  - Make the customer feel heard without overpromising.\n  - Lead difficult customer conversations with a clear agenda and next update time.\n  - Coach S1 and S2 teammates on case framing, customer tone, and escalation quality.\n  - Decide when a case needs Jira, Salesforce, or SupportDesk resolution.\n  - Translate customer frustration into specific Product or Engineering questions.\n  - Propose safe workarounds and define their limits.\n  - Keep Sales informed about cases affecting renewals or expansions.\n  - Help Product distinguish individual customer preferences from broader product issues.\n  - Write internal summaries for leaders.\n\n### **Next Step: S3 Level**\n- **Promotion Criteria**:\n  - **Ownership of Customer Health**: You must be able to own customer health and complex support outcomes, not just manage many customer meetings.\n  - **Evidence of S3 Behavior**:\n    - Guide a customer through a troubled launch.\n    - Coordinate a SupportDesk case.\n    - Open a precise Jira issue for an automation defect.\n    - Update Salesforce with renewal risk.\n    - Keep the customer informed without overpromising.\n  - **Decision-Making**: Demonstrate the ability to balance empathy with boundaries and protect the customer relationship while protecting NovaOps from bad commitments.\n\n### **Further Advancement: S4 Level**\n- **Promotion Criteria**:\n  - **Strategic Leadership**: Define support and customer-health strategy across segments.\n  - **Escalation Management**: Set escalation standards with Sales, Product, Engineering, IT, Finance, and leadership.\n  - **Systemic Risk Management**: Use Salesforce, SupportDesk, Jira, and customer feedback to identify systemic risks.\n  - **Resource Allocation**: Decide where to invest in staffing, tooling, documentation, automation, or training.\n  - **Tradeoffs**: Make tradeoffs between short-term customer recovery and long-term product or process health.\n  - **Representation**: Represent Customer Success in company-level planning without turning every customer request into a roadmap commitment.\n  - **Fairness**: Ensure promotions, calibration, and growth expectations are fair across Support and Customer Success roles.\n\n### **S5 Level: Customer Success Director**\n- **Promotion Criteria**:\n  - **Function-Wide Strategy**: Set strategy for customer retention, support quality, and escalation management across the function.\n  - **Governance**: Own customer communication principles for major incidents and repeated product pain.\n  - **Tool and Process Utilization**: Use Salesforce, SupportDesk, Jira, and customer feedback to identify systemic risk.\n  - **Investment Decisions**: Decide where to invest in staffing, tooling, documentation, automation, or training.\n  - **Tradeoffs**: Make tradeoffs between short-term customer recovery and long-term product or process health.\n  - **Company Representation**: Represent Customer Success in company-level planning.\n\n### **General Growth Philosophy**\n- **Increasing Judgment, Scope, and Trust**: Growth is built through increasing judgment, scope, and trust. Focus on making your work more valuable to customers, teammates, and the company.\n- **Title Ladders**: Each role has a title ladder that describes expected levels of independence, decision quality, collaboration, and impact. Review the title guides for support roles to understand expectations.\n- **Evidence-Based Growth**: Promotions are not based on being busy but on evidence that your work is becoming more valuable. Look for opportunities to take on larger responsibilities, lead cross-functional projects, and demonstrate leadership.\n\n### **Steps to Advance**\n1. **Excel in Current Role**: Consistently meet or exceed expectations in your current role.\n2. **Seek Feedback**: Regularly ask for feedback from your manager and peers to identify areas for improvement.\n3. **Take on Challenges**: Volunteer for complex cases, lead customer meetings, and coordinate with other teams.\n4. **Document Achievements**: Keep a record of your accomplishments, especially those that demonstrate S3 and S4 behaviors.\n5. **Network**: Build relationships with colleagues in other departments to understand their needs and how you can support them.\n6. **Professional Development**: Attend training sessions, workshops, and conferences to enhance your skills.\n7. **Discuss Career Goals**: Regularly discuss your career aspirations with your manager to get guidance and support.\n\nBy focusing on these areas, you can build a strong case for promotion along the CSM career path at NovaOps​​[documents/handbook/titles-for-support.md § Levels][documents/handbook/making-a-career.md § Growth Philosophy].",
+    "trace_id": "5936f38da2d04d2eb404988cdeb461a5"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "pasted_text",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Based on the forwarded thread, the only items that are yours to do are:\n\n1. **Sign the equipment responsibility form** - Sara explicitly states this is for you to do.\n2. **Finish your BambooHR self-service profile** - Once the invite lands, you need to complete this.",
+    "trace_id": "5806f60af4087a4af34de2e3a0f4f805"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "SUB001",
+      "employee_name": "Jane Doe",
+      "start_date": "2026-07-10",
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "task",
+          "status": "blocked",
+          "citations": [
+            "OT005"
+          ],
+          "blocked_reason": "Webex licensing currently unavailable"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Your software licenses are currently in the onboarding process. Here's the status of the relevant tasks:\n\n- **Okta profile and baseline groups**: Pending with IT, due July 25, 2026​​[record: OT002].\n- **Salesforce Customer Success profile**: Planned with IT, due July 28, 2026​​[record: OT004].\n- **Webex standard user license**: Blocked with IT, due July 28, 2026​​[record: OT005].\n\nThe only action you need to take right now is to **finish your BambooHR self-service profile** once the invite lands, which is planned for July 28, 2026​​[record: OT006].\n\nAll other software license requests are being handled by IT and are either pending or planned. There's no immediate action required from you beyond completing the BambooHR profile when invited​​[record: OT001][record: OT002][record: OT003][record: OT004][record: OT005][record: OT006].",
+    "trace_id": "60f322a835b03c2341d71b967170ac43"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 4,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/getting-started.md",
+      "documents/handbook/our-rituals.md",
+      "documents/handbook/stateFMLA.md",
+      "documents/handbook/titles-for-ops.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The manager playbook is not available as a separate document, but the handbook contains guidance on giving feedback in the first 90 days. Here are the key points from the handbook:\n\n### **Giving Feedback in the First 90 Days**\n\n1. **Day One Focus**:\n   - Your manager should give you three things on day one: the outcome your role was hired to create, the first decisions you can make without asking, and the people you should meet in week one. If these are not clear, ask directly​​[documents/handbook/getting-started.md § Day One].\n\n2. **Onboarding Plan**:\n   - Your manager owns your onboarding plan. For example, a new Customer Success Manager should have a manager, a buddy, a Salesforce training path, and a first-month customer-shadowing schedule before day one​​[documents/handbook/getting-started.md § Before Your First Day].\n\n3. **First-Week Rituals**:\n   - First-week rituals should mix context, setup, and one small real contribution. For a new Customer Success teammate, this might include shadowing a Webex customer call, updating a Salesforce note, and reviewing a SupportDesk pattern​​[documents/handbook/our-rituals.md § People Operations and Onboarding Rituals].\n\n4. **Regular Check-ins**:\n   - Managers should schedule regular check-ins with new hires to provide feedback and address any concerns. These check-ins help ensure the new hire is on track and feeling supported​​[documents/handbook/our-rituals.md § People Operations and Onboarding Rituals].\n\n5. **Constructive Feedback**:\n   - Feedback should be specific, actionable, and focused on behavior and outcomes rather than personal traits. It should also be timely, given as close to the event as possible​​[documents/handbook/our-rituals.md § People Operations and Onboarding Rituals].\n\n6. **Encourage Questions**:\n   - Managers should encourage new hires to ask questions and seek clarification when needed. This helps build confidence and ensures the new hire understands their role and expectations​​[documents/handbook/getting-started.md § Day One].\n\n7. **Document Progress**:\n   - Managers should document progress and feedback in the employee's BambooHR profile and any relevant performance tools. This creates a record of development and helps track growth over time​​[documents/handbook/our-rituals.md § People Operations and Onboarding Rituals].\n\nBy following these guidelines, managers can effectively support new hires and help them integrate smoothly into their roles.",
+    "trace_id": "e1329241b7d8e7ded1ba4d67510d943a"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Yes, you are scheduled to receive a laptop before your start date. The IT task to prepare your laptop, monitor, dock, and MDM enrollment is marked as \"planned\" with a due date of July 26, 2026, which is before your start date on August 1, 2026​​[record: OT003].",
+    "trace_id": "2a694823ca33a65a59f9bfadb05fcdbc"
+  }
+]

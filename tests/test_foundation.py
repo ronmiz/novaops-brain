@@ -100,6 +100,15 @@ def test_short_documents_stay_whole_long_ones_split(chunks):
 def test_name_query_matches_the_person_under_the_permission_filter():
     # #31: "Maya Cohen" must match Maya's documents exactly, never bypassing the audience filter
     body = retrieval.name_query("Maya Cohen offer letter day one", "E001")
-    assert body["query"]["bool"]["must"][0]["bool"]["should"] == [{"match_phrase": {"text": "Maya Cohen"}}]
+    assert body["query"]["bool"]["must"][0]["bool"]["should"][0] == {"match_phrase": {"text": "Maya Cohen"}}
     assert body["query"]["bool"]["filter"] == [{"bool": {"must": [{"term": {"audience": "all"}}]}}]
     assert retrieval.name_query("what does her offer letter say", "E001") is None
+
+
+def test_people_go_to_the_exact_match_and_the_topic_to_knn():
+    # #34: a name in the embedded query pulled chunks about the person, not the topic
+    names = retrieval.names_in("Maya Cohen promotion path for a CSM")
+    assert "Maya Cohen" in names
+    assert retrieval.topic_of("Maya Cohen promotion path for a CSM", names) == "promotion path for a CSM"
+    assert retrieval.topic_of("Maya's offer letter", retrieval.names_in("Maya's offer letter")) == "offer letter"
+    assert retrieval.topic_of("VPN setup steps", []) == "VPN setup steps"

@@ -61,11 +61,26 @@ def knn(query: str, caller_id: str, collections: list[str] | None = None,
 _FULL_NAME = re.compile(r"\b([A-Z][a-z]+ [A-Z][a-z]+)\b")
 
 
+def names_in(query: str) -> list[str]:
+    # a full name, or an employee's first or last name alone ("Maya's offer letter", #33)
+    return list(dict.fromkeys(_FULL_NAME.findall(query) + db.people_named(query)))
+
+
+def topic_of(query: str, names: list[str]) -> str:
+    """The query without the people in it: names go to the exact match, the topic to k-NN.
+    With "Maya Cohen" in the embedded query, S9 t1's promotion question pulled chunks about
+    the person instead of the promotion process (#34)."""
+    words = {w for n in names for w in n.split()}
+    topic = re.sub(r"\b(" + "|".join(map(re.escape, sorted(words))) + r")(?:'s)?\b", " ", query) if words else query
+    return re.sub(r"\s+", " ", topic).strip() or query
+
+
 def name_query(query: str, caller_id: str, collections: list[str] | None = None, k: int = 5) -> dict | None:
     """Embeddings blur people: "Maya Cohen offer letter" ranked Sara Cohen's and Ben Walker's
     documents above Maya's own (#31). A full name in the query also gets an exact phrase match
     on the text, under the SAME permission filter as the k-NN query."""
-    names = _FULL_NAME.findall(query)
+    # a full name, or an employee's first or last name alone ("Maya's offer letter", #33)
+    names = names_in(query)
     if not names:
         return None
     must = [{"bool": {"should": [{"match_phrase": {"text": n}} for n in names], "minimum_should_match": 1}}]
@@ -76,7 +91,7 @@ def name_query(query: str, caller_id: str, collections: list[str] | None = None,
 
 def candidates(query: str, caller_id: str, collections: list[str] | None = None) -> list[dict]:
     """k-NN candidates plus exact-name hits, deduplicated by (source, section)."""
-    found = knn(query, caller_id, collections)
+    found = knn(topic_of(query, names_in(query)), caller_id, collections)
     body = name_query(query, caller_id, collections)
     if body:
         found += [hit["_source"] for hit in client().search(index=config.INDEX_NAME, body=body)["hits"]["hits"]]

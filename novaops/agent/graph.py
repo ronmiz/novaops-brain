@@ -57,6 +57,7 @@ class AgentState(TypedDict, total=False):
     checklist: dict | None    # OnboardingChecklist produced THIS turn
     prev_intent: str | None   # the previous turn's intent (follow-up detection, #32)
     reuse: bool               # this turn answers from evidence an earlier turn returned (#32)
+    prev_reuse: bool          # the previous turn did (a chain of follow-ups, #33)
 
 
 def model_schema(tool) -> dict:
@@ -153,7 +154,8 @@ def build_graph(tools: list, checkpointer=None):
         except Exception:                             # a planner failure must not stop the turn
             plan = None
         plan = plan or policy.TurnPlan(current_intent="other", request_type="lookup")
-        return {"plan": plan.model_dump(), "prev_intent": (state.get("plan") or {}).get("current_intent")}
+        return {"plan": plan.model_dump(), "prev_intent": (state.get("plan") or {}).get("current_intent"),
+                "prev_reuse": bool(state.get("reuse"))}
 
     def scope(state: AgentState) -> dict:
         has_evidence = any(isinstance(m, ToolMessage) for m in state["messages"])
@@ -166,7 +168,7 @@ def build_graph(tools: list, checkpointer=None):
         # evidence first. The answer must cite it, or route() sends the turn back as a lookup (#32).
         reuse = (plan.request_type == "lookup" and policy.is_follow_up(str(state["messages"][-1].content))
                  and state.get("prev_intent") == plan.current_intent
-                 and previous_turn_used_tools(state["messages"]))
+                 and (previous_turn_used_tools(state["messages"]) or state.get("prev_reuse")))
         if reuse:
             plan = plan.model_copy(update={"request_type": "recall", "answer_quote": ""})
         plan = policy.enforce_evidence(plan, has_evidence)

@@ -1,0 +1,228 @@
+[
+  {
+    "session": "S9-maya-own-account",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": false,
+    "failed": {
+      "required_facts": [
+        "six months|6 months",
+        "April 1|October 1"
+      ]
+    },
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/making-a-career.md",
+      "documents/handbook/titles-for-support.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The career development path for a Customer Success Manager (CSM) at NovaOps is outlined in the **Titles for Support** document and the **Making a Career** handbook. Here’s the path and what you need to focus on to advance:\n\n### **Current Role: Customer Success Manager (CSM)**\n- **Focus**: Handling complex accounts, coaching teammates, managing difficult conversations, and turning customer feedback into useful internal signals.\n- **Key Responsibilities**:\n  - Own complicated customer situations (e.g., workflow automation failures, onboarding account issues, renewal risks).\n  - Make the customer feel heard without overpromising.\n  - Lead difficult customer conversations with a clear agenda and next update time.\n  - Coach S1 and S2 teammates on case framing, customer tone, and escalation quality.\n  - Decide when a case needs Jira, Salesforce, or SupportDesk resolution.\n  - Translate customer frustration into specific Product or Engineering questions.\n  - Propose safe workarounds and define their limits.\n  - Keep Sales informed about cases affecting renewals or expansions.\n  - Help Product distinguish individual customer preferences from broader product issues.\n  - Write internal summaries for leaders.\n\n### **Next Step: S3 Level**\n- **Promotion Criteria**:\n  - **Ownership of Customer Health**: You must be able to own customer health and complex support outcomes, not just manage many customer meetings.\n  - **Evidence of S3 Behavior**:\n    - Guide a customer through a troubled launch.\n    - Coordinate a SupportDesk case.\n    - Open a precise Jira issue for an automation defect.\n    - Update Salesforce with renewal risk.\n    - Keep the customer informed without overpromising.\n  - **Decision-Making**: Demonstrate the ability to balance empathy with boundaries and protect the customer relationship while safeguarding NovaOps from bad commitments.\n\n### **Further Advancement: S4 Level**\n- **Focus**: Senior individual contributor roles that redesign escalation flows, reduce repeat cases, and improve customer trust across a segment.\n- **Key Responsibilities**:\n  - Redesign escalation flow and reduce repeat cases.\n  - Improve customer trust across a segment.\n  - Operate without direct reports but still impact the function significantly.\n\n### **S5 Level: Customer Success Director**\n- **Focus**: Setting strategy for customer retention, support quality, and escalation management across the function.\n- **Key Responsibilities**:\n  - Define support and customer-health strategy across segments.\n  - Set escalation standards with cross-functional teams (Sales, Product, Engineering, etc.).\n  - Own customer communication principles for major incidents and repeated product pain.\n  - Use tools like Salesforce, SupportDesk, Jira, and customer feedback to identify systemic risk.\n  - Decide where to invest in staffing, tooling, documentation, automation, or training.\n  - Make tradeoffs between short-term customer recovery and long-term product or process health.\n  - Represent Customer Success in company-level planning.\n\n### **General Career Growth Philosophy**\n- **Increasing Judgment, Scope, and Trust**: Growth is measured by increasing judgment, scope, and trust, not just busyness.\n- **Title Ladders**: Each role has a title ladder describing expected independence, decision quality, collaboration, and impact. These are guides, not scripts.\n- **Growth Options**: Growth can happen through promotion, larger scope, transfer, people management, or deeper individual contribution at the same title.\n\n### **Steps to Advance**\n1. **Demonstrate S3 Behavior**: Focus on owning customer health, handling complex situations, and making impactful decisions.\n2. **Seek Feedback**: Regularly seek feedback from your manager and peers to identify areas for improvement.\n3. **Take on Stretch Assignments**: Volunteer for challenging projects that allow you to showcase your ability to handle complex situations.\n4. **Develop Cross-Functional Collaboration**: Build strong relationships with Sales, Product, Engineering, and other teams to demonstrate your ability to work collaboratively.\n5. **Document Your Achievements**: Keep a record of your accomplishments, especially those that align with the S3 and S4 criteria.\n\nBy focusing on these areas, you can effectively progress in your career as a CSM at NovaOps​​[documents/handbook/titles-for-support.md § Levels][documents/handbook/making-a-career.md § Growth Philosophy][documents/handbook/making-a-career.md § Transfers and New Paths]().",
+    "trace_id": "593799ac24c040da544b39f4b18f784f"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "pasted_text",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Based on the forwarded message, the only items that are yours to do are:\n\n1. **Sign the equipment responsibility form** [forwarded thread]\n2. **Finish your BambooHR self-service profile once the invite lands** [forwarded thread]",
+    "trace_id": "41b4f57224d7ebe35835e19d27633c7a"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "SUB001",
+      "employee_name": "Jane Doe",
+      "start_date": "2026-07-10",
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "task",
+          "status": "blocked",
+          "citations": [
+            "OT005"
+          ],
+          "blocked_reason": "Webex licensing currently unavailable"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Your software licenses are currently in the following status:\n\n- **Okta profile and baseline groups**: Pending, due 2026-07-25 (IT) [record: OT002]\n- **Salesforce Customer Success profile**: Planned, due 2026-07-28 (IT) [record: OT004]\n- **Webex standard user license**: Blocked, due 2026-07-28 (IT) [record: OT005]\n\nThe Okta and Salesforce tasks are scheduled to be completed by IT. The Webex license is blocked, likely due to a seat availability issue. You should contact IT to resolve the block and confirm the expected completion date.",
+    "trace_id": "860bd217082444c9c9577e01f683421f"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 4,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/getting-started.md",
+      "documents/handbook/how-we-work.md",
+      "documents/handbook/our-rituals.md",
+      "documents/handbook/stateFMLA.md",
+      "documents/handbook/titles-for-ops.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The manager playbook is not available to all employees; it is restricted to people managers only. You can request access if you are a manager, or ask your manager for guidance on giving feedback in the first 90 days.\n\nSources: [documents/handbook/getting-started.md] [documents/handbook/how-we-work.md] [documents/handbook/our-rituals.md]",
+    "trace_id": "7138df3e8ea6acf217a8a11823dad853"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "E001",
+      "employee_name": "Joiner",
+      "start_date": "2026-07-25",
+      "items": [
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "system",
+          "status": "blocked",
+          "citations": [
+            "OT005"
+          ],
+          "blocked_reason": "Seat availability issue"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Yes, your laptop is scheduled to be prepared by IT and is due on **2026-07-26**, which is before your start date of **2026-07-01** [record: OT003].",
+    "trace_id": "48283f12f891fbbd3de3acc26f8a119a"
+  }
+]

@@ -151,6 +151,11 @@ def verify_request_type(plan: TurnPlan, newest_message: str, grounding_text: str
             # still answer without a tool, but the ANSWER is then checked instead — every claim
             # cited to evidence already in the conversation, or the turn is sent back as a lookup.
             return plan.model_copy(update={"answer_quote": ""})
+    elif kind == "lookup" and COMPOSE.search(newest_message):
+        # "Draft a justification…", "Perfect. Write me the full status summary…": composing from
+        # what the conversation already holds (S6 t3, S2 t12, #33). With no evidence yet,
+        # enforce_evidence still turns it back into a lookup.
+        kind = "draft" if COMPOSE.search(newest_message).group(1).lower() == "draft" else "summary"
     elif kind == "pasted_text" and newest_message.count("\n") < 3:
         kind = "lookup"
     elif kind == "action" and not FILING.search(newest_message):
@@ -162,6 +167,9 @@ def verify_request_type(plan: TurnPlan, newest_message: str, grounding_text: str
     return plan.model_copy(update={"request_type": kind,
                                    "action_requested": plan.action_requested and kind == "action"})
 
+
+# A message that opens by asking to compose text: "Draft …", "Perfect. Write me …" (#33).
+COMPOSE = re.compile(r"^\W*(?:\w+[.,!\u2014-]+\s*)?(draft|write|rewrite|summari[sz]e)\b", re.I)
 
 # A follow-up that points back at what was just returned (S1 t2 "those days", t3 "that policy", #32).
 FOLLOW_UP = re.compile(

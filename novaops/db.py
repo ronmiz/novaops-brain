@@ -66,6 +66,14 @@ def get_employee(query: str) -> list[dict]:
                                              (names[name],))]
 
 
+def people_named(text: str) -> list[str]:
+    """Full names of employees whose first or last name appears as a capitalised word in
+    `text` ("Maya's offer letter" -> Maya Cohen and the other Maya). Used by retrieval (#33)."""
+    words = set(re.findall(r"\b[A-Z][a-z]{2,}\b", text))
+    return [r["full_name"] for r in _rows("SELECT full_name FROM employees ORDER BY full_name")
+            if words & set(r["full_name"].split())]
+
+
 def check_software_subscription(software: str) -> list[dict]:
     """Matches the system or vendor name. A descriptive query ('Webex standard user license')
     falls back to its words, so it still finds Webex instead of returning nothing (#29)."""

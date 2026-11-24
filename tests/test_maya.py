@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from novaops.agent import contracts, memory, policy
+from novaops.rag import retrieval
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "evals"))
 import golden_replay  # noqa: E402
@@ -314,3 +315,20 @@ def test_a_follow_up_on_what_was_just_returned_is_detected():
     assert policy.is_follow_up("Which team owns that policy?")
     assert not policy.is_follow_up("Is that policy still current right now?")
     assert not policy.is_follow_up("And Figma.")
+
+
+@pytest.mark.parametrize("message,kind", [
+    ("Draft a one-sentence business justification for Rachel's Webex access request, but do not file it.", "draft"),
+    ("Perfect. Write me the full status summary I can send to Yael.", "summary"),
+    ("What does the VPN article say about MFA?", "lookup"),
+])
+def test_a_request_to_compose_is_not_a_lookup(message, kind):
+    # #33: S6 t3 / S2 t12 were labelled lookup and called tools in 1 of 3 runs
+    plan = policy.TurnPlan(current_intent="access_request", request_type="lookup")
+    assert policy.verify_request_type(plan, message, "").request_type == kind
+
+
+def test_retrieval_matches_an_employee_named_by_first_name_alone():
+    # #33: "Maya's offer letter" has no full name; the employee table supplies it
+    should = retrieval.name_query("Maya's offer letter day one", "E001")["query"]["bool"]["must"][0]["bool"]["should"]
+    assert {"match_phrase": {"text": "Maya Cohen"}} in should

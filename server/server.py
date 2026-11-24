@@ -43,7 +43,8 @@ def search_documents(query: str, caller_id: str, collections: list[str] | None =
     overrides an older or more general one.
 
     Args:
-        query: What you need to find, in natural language.
+        query: What you need to find, in natural language. About a specific person, put
+            their full name in the query (e.g. "Maya Cohen offer letter").
         caller_id: The employee id of the person asking. Supplied by the application.
         collections: Optional narrowing — any of policies, internal_memos, it_kb,
             contracts, employment, handbook, manager_playbook.
