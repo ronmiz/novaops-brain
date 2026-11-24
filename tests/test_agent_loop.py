@@ -142,3 +142,13 @@ def test_lookup_turn_forces_a_tool_call_until_one_has_run(monkeypatch):
     recall = {**base, "plan": policy.TurnPlan(current_intent="other", request_type="recall").model_dump()}
     asyncio.run(answer({**recall, "messages": [HumanMessage("q")]}))
     assert calls == ["any", None, None]      # forced before evidence; free after it; never on recall
+
+
+def test_model_never_sees_the_question_argument():
+    # #37: the user's own message is filled by the application, like caller_id
+    @tool
+    def search_documents(query: str, caller_id: str, question: str | None = None) -> str:
+        """Search."""
+        return ""
+    params = graph.model_schema(search_documents)["function"]["parameters"]
+    assert "question" not in params["properties"] and "caller_id" not in params["properties"]

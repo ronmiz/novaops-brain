@@ -53,6 +53,10 @@ LOADOUTS: dict[str, list[str] | None] = {
 
 # Tools whose `caller_id` argument is filled by the application, never by the model.
 CALLER_TOOLS = {"search_documents", "check_team_system_access"}
+# Arguments the APPLICATION fills, removed from what the model sees (#37): the user's own
+# question goes to retrieval beside the model's search query.
+APP_ARGS = {"search_documents": ("caller_id", "question"), "check_team_system_access": ("caller_id",)}
+QUESTION_CHARS = 1500
 # Called by application code in the approval workflow; never visible to any model.
 APP_TOOLS = frozenset({"request_approval", "get_approval"})
 

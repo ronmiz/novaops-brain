@@ -98,10 +98,16 @@ def person_query(employee_id: str, caller_id: str, collections: list[str] | None
 
 
 def candidates(query: str, caller_id: str, collections: list[str] | None = None,
-               employee_id: str | None = None) -> list[dict]:
-    """k-NN candidates on the topic, plus the person's own documents: by employee id when the
-    caller of the tool knows it, else by exact name. Deduplicated."""
+               employee_id: str | None = None, question: str | None = None) -> list[dict]:
+    """k-NN candidates on the topic — of the model's query AND of the user's own question —
+    plus the person's own documents: by employee id when the caller of the tool knows it,
+    else by exact name. Deduplicated."""
     found = knn(topic_of(query, names_in(query)), caller_id, collections)
+    if question and question.strip() != query.strip():
+        # Multi-query retrieval (#37): "How do I get promoted here? What does the path look like
+        # for a CSM?" was searched as "CSM career path"; the promotion-cycle section answers the
+        # FIRST half and only the user's own words still asked for it.
+        found += knn(topic_of(question, names_in(question)), caller_id, collections)
     body = (person_query(employee_id, caller_id, collections) if employee_id
             else name_query(query, caller_id, collections))
     if body:
@@ -150,8 +156,15 @@ def cut(ranked: list[tuple[dict, float]], min_score: float = MIN_SCORE,
     return hits
 
 
+def rank_query(query: str, question: str | None) -> str:
+    """What the reranker scores against: the user's question first, the model's search focus after."""
+    if not question or question.strip() == query.strip():
+        return query
+    return f"{question}\n(search focus: {query})"
+
+
 def search(query: str, caller_id: str, collections: list[str] | None = None,
-           employee_id: str | None = None) -> list[dict]:
+           employee_id: str | None = None, question: str | None = None) -> list[dict]:
     """The function behind the MCP `search_documents` tool. Returns cite-ready hits:
     source, section, doc_date, text, relevance."""
-    return cut(rerank(query, candidates(query, caller_id, collections, employee_id)))
+    return cut(rerank(rank_query(query, question), candidates(query, caller_id, collections, employee_id, question)))

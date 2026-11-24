@@ -134,3 +134,11 @@ def test_two_capitalised_words_are_not_a_person():
     assert retrieval.names_in("promotion path Customer Success Manager") == []
     assert retrieval.names_in("Okta Verify device trust") == []
     assert retrieval.names_in("Maya Cohen offer letter") == ["Maya Cohen"]
+
+
+def test_the_reranker_scores_against_the_users_question_first():
+    # #37: the model's paraphrase dropped half of a two-part question
+    q = "How do I get promoted here? What does the path look like for a CSM?"
+    assert retrieval.rank_query("CSM career path", q) == f"{q}\n(search focus: CSM career path)"
+    assert retrieval.rank_query("CSM career path", None) == "CSM career path"
+    assert retrieval.rank_query("same", "same") == "same"

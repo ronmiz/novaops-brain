@@ -36,7 +36,7 @@ def cited(rows: list[dict], key: str) -> list[dict]:
 
 @mcp.tool()
 def search_documents(query: str, caller_id: str, collections: list[str] | None = None,
-                     employee_id: str | None = None) -> list[dict]:
+                     employee_id: str | None = None, question: str | None = None) -> list[dict]:
     """Search NovaOps documents: policies, internal memos, IT knowledge base, vendor
     contracts, employment records, the employee handbook and the manager playbook.
     Results are already filtered to what the caller may see. Cite every hit you use by
@@ -51,9 +51,10 @@ def search_documents(query: str, caller_id: str, collections: list[str] | None =
         employee_id: Optional. When you need ONE employee's own documents (offer letter,
             profile, onboarding summary), their employee id as get_employee returned it.
             Leave it out for general policy or handbook questions.
+        question: The user's own message. Supplied by the application.
     """
     return [{"cite": f"[{h['source']} § {h['section']}]", **h}
-            for h in retrieval.search(query, caller_id, collections, employee_id)]
+            for h in retrieval.search(query, caller_id, collections, employee_id, question)]
 
 
 @mcp.tool()

@@ -61,14 +61,15 @@ class AgentState(TypedDict, total=False):
 
 
 def model_schema(tool) -> dict:
-    """The tool's schema as the MODEL sees it: `caller_id` removed for caller-scoped
-    tools, so the model cannot even express a different caller."""
+    """The tool's schema as the MODEL sees it: the arguments the application fills
+    (`caller_id`, and the user's `question` for search, #37) are removed, so the model cannot
+    even express a different caller."""
     schema = copy.deepcopy(convert_to_openai_tool(tool))
-    if tool.name in policy.CALLER_TOOLS:
-        params = schema["function"]["parameters"]
-        params.get("properties", {}).pop("caller_id", None)
-        if "caller_id" in params.get("required", []):
-            params["required"].remove("caller_id")
+    params = schema["function"]["parameters"]
+    for arg in policy.APP_ARGS.get(tool.name, ()):
+        params.get("properties", {}).pop(arg, None)
+        if arg in params.get("required", []):
+            params["required"].remove(arg)
     return schema
 
 
@@ -258,6 +259,9 @@ def build_graph(tools: list, checkpointer=None):
             args = dict(call["args"])
             if call["name"] in policy.CALLER_TOOLS:
                 args["caller_id"] = state["caller_id"]     # application input, overrides the model
+            if "question" in policy.APP_ARGS.get(call["name"], ()):
+                # the user's words, not the model's paraphrase of them, also drive retrieval (#37)
+                args["question"] = str(current_turn(state["messages"])[0].content)[:policy.QUESTION_CHARS]
             unknown = policy.unverified_employee_id(args, state["caller_id"], known_ids_text(state["messages"]))
             if not unknown and args.get("employee_id") == state["caller_id"]:
                 other = await someone_else(str(current_turn(state["messages"])[0].content), state["caller_id"])
