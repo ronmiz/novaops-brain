@@ -1,0 +1,167 @@
+[
+  {
+    "session": "S9-maya-own-account",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": false,
+    "failed": {
+      "required_facts": [
+        "April 1|October 1"
+      ]
+    },
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/making-a-career.md",
+      "documents/handbook/titles-for-ops.md",
+      "documents/handbook/titles-for-support.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The career path for a Customer Success Manager (CSM) at NovaOps follows the support and customer success title ladder, as outlined in the handbook [documents/handbook/titles-for-support.md § Levels]. Here is the typical progression:\n\n- **Current Role: Customer Success Manager (S3)** — Handles complex accounts, coaches teammates, manages difficult conversations, and turns customer feedback into useful internal signals. You own complicated customer situations and make the customer feel heard without overpromising [documents/handbook/titles-for-support.md § Levels].\n\n- **Next Level: S4, Senior Customer Success Manager or Customer Success Director** — Sets quality standards for SupportDesk, creates playbooks for risky situations, reviews Jira escalation quality, builds account-health views, partners with Sales on renewal-risk language, coordinates customer recovery plans, improves onboarding and handoff processes, and coaches managers or senior ICs on support judgment and customer trust [documents/handbook/titles-for-support.md § Levels].\n\n**Promotion Process** — NovaOps promotion cycles run twice per year (March and September). A promotion requires a manager-written packet with evidence from recent work, peer input, and a mapping to the next title level. You need at least six months in your current role, sustained performance, and evidence that you are already operating at the next level [documents/handbook/making-a-career.md § Promotion Process].",
+    "trace_id": "bbbec9de96719847bba00d3072ab9568"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "other",
+    "request_type": "pasted_text",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "From the forwarded thread, the only items that are yours to do are:\n\n- Sign the equipment responsibility form [forwarded thread].\n- Finish your BambooHR self-service profile once the invite lands [forwarded thread].",
+    "trace_id": "1ff00838da62e44c7681a7190dfbf49d"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "SUB001",
+      "employee_name": "Jane Doe",
+      "start_date": "2026-07-10",
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "record: OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "record: OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "task",
+          "status": "blocked",
+          "citations": [
+            "record: OT005"
+          ],
+          "blocked_reason": "Webex seats are over the limit and customer-facing calls are being blocked"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Your software licenses are in the onboarding tasks. Here is the status for each:\n\n- **Okta profile and baseline groups** — pending, due 2026-07-25, owned by IT [record: OT002].\n- **Salesforce Customer Success profile** — planned, due 2026-07-28, owned by IT [record: OT004].\n- **Webex standard user license** — blocked, due 2026-07-28, owned by IT [record: OT005].\n\nThe Okta and Salesforce tasks are still pending or planned, and the Webex license is blocked. You can check with IT for any updates or to help unblock the Webex license.",
+    "trace_id": "25f79dfe3239dc9d782fa55a1e8329b4"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 4,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "search_documents"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The manager playbook is available to people managers only, so I cannot retrieve it for you. If you are a people manager, you can access it directly to review the guidance on giving feedback in someone's first 90 days.",
+    "trace_id": "4ad26998c9549cce04600257546e63c2"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Yes, your laptop is planned to be prepared by **2026-07-26**, as part of the IT onboarding tasks [record: OT003]. The task is currently in the \"planned\" status and is owned by IT.",
+    "trace_id": "77d599aaac57a1f2be192d857cc440d4"
+  }
+]

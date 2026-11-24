@@ -1,0 +1,226 @@
+[
+  {
+    "session": "S9-maya-own-account",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/making-a-career.md",
+      "documents/handbook/titles-for-QA.md",
+      "documents/handbook/titles-for-ops.md",
+      "documents/handbook/titles-for-programmers.md",
+      "documents/handbook/titles-for-support.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The promotion path for a Customer Success Manager (CSM) at NovaOps follows the general promotion process outlined in the handbook, with specific expectations for the support ladder. Here is the path and what you need to do:\n\n**General Promotion Process**  \n- Promotions happen twice a year: March proposals effective April 1, and September proposals effective October 1.  \n- You need at least six months in your current role, sustained performance, and evidence that you are already operating at the next level.  \n- Your manager writes a packet with evidence, peer input, and a mapping to the next title level.  \n- Packets go through calibration with People Operations and department leaders.  \n- Finance confirms compensation changes before the decision is final [documents/handbook/making-a-career.md § Promotion Process].\n\n**CSM-Specific Expectations**  \nFor S2 to S3 (likely your current level to Senior CSM):  \n- Own complex accounts and handle difficult conversations.  \n- Coach S1 and S2 teammates on case framing and customer tone.  \n- Decide when cases need Jira, Salesforce, or SupportDesk attention.  \n- Translate customer frustration into specific product or engineering questions.  \n- Propose safe workarounds and define their limits.  \n- Keep Sales informed about cases affecting renewals or expansions.  \n- Help Product distinguish individual customer preferences from broader issues.  \n- Write internal summaries leaders can use without attending every call [documents/handbook/titles-for-support.md § Levels].\n\n**Evidence to Collect**  \n- Show patterns of complex account ownership, difficult customer conversations, useful coaching, and stronger cross-functional judgment.  \n- For S2 to S3, evidence should include leading difficult customer conversations, coaching teammates, making cross-functional decisions, and turning feedback into actionable items.  \n- Avoid vague claims like “handled many tickets.” Instead, show impact: e.g., “Reduced repeat onboarding tickets by changing the admin setup guide and creating a SupportDesk macro” [documents/handbook/titles-for-support.md § Promotion Evidence].\n\n**Next Steps**  \n1. Identify recent work that matches S3 expectations (complex accounts, coaching, cross-functional decisions).  \n2. Gather artifacts: customer summaries, coaching notes, Jira issues, Salesforce updates, peer feedback.  \n3. Ask your manager to help draft a promotion packet with this evidence.  \n4. Ensure the packet includes specific examples, impact, and how you’ve operated at the S3 level [documents/handbook/making-a-career.md § Promotion Packet Contents].",
+    "trace_id": "f2940ab8004444cb4b65c6050d1b2e87"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "pasted_text",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Based on the forwarded thread, the only items that are yours to do are:\n\n1. Sign the equipment responsibility form  \n2. Finish your BambooHR self-service profile once the invite lands",
+    "trace_id": "fef7ffcd95112c23a5722bf3c5592fe4"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "Thanks. How do I get my software licenses sorted?",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "SUB001",
+      "employee_name": "Jane Doe",
+      "start_date": "2026-07-10",
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "record: OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "record: OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "task",
+          "status": "blocked",
+          "citations": [
+            "record: OT005"
+          ],
+          "blocked_reason": "Webex license request is blocked pending IT approval"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Your software licenses are handled through IT onboarding tasks. Here is the current status for the licenses you need:\n\n- **Okta profile and baseline groups**: Pending, due 2026-07-25 [record: OT002]  \n- **Salesforce Customer Success profile**: Planned, due 2026-07-28 [record: OT004]  \n- **Webex standard user license**: Blocked, due 2026-07-28 [record: OT005]  \n\nThe Okta and Salesforce tasks are progressing, but the Webex license is blocked. You do not need to take any action; IT will resolve the block and complete these tasks [record: OT002][record: OT004][record: OT005].",
+    "trace_id": "981b38b3833c00d6ee3f16ab639558c5"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 4,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "search_documents"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The manager playbook is available to people managers only, so I cannot retrieve it for you. If you are a people manager, you can access it directly through the internal knowledge base.",
+    "trace_id": "8b4d333becbfd2201ac0b2c11d2bef11"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "E001",
+      "employee_name": "E001",
+      "start_date": "2026-07-10",
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "task",
+          "status": "blocked",
+          "citations": [
+            "OT005"
+          ],
+          "blocked_reason": "awaiting IT resolution"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Yes, your laptop is planned for preparation by IT and is due on **2026-07-26**, one day after you start [record: OT003].",
+    "trace_id": "bb292eb0ea88329307baba9a3ef0680d"
+  }
+]

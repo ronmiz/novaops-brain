@@ -1,0 +1,167 @@
+[
+  {
+    "session": "S9-maya-own-account",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/making-a-career.md",
+      "documents/handbook/titles-for-QA.md",
+      "documents/handbook/titles-for-ops.md",
+      "documents/handbook/titles-for-programmers.md",
+      "documents/handbook/titles-for-support.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The promotion path for a Customer Success Manager (CSM) at NovaOps follows the general promotion process outlined in the handbook, with specific expectations for the support ladder. Here is the path and what you need to do:\n\n### General Promotion Process [documents/handbook/making-a-career.md § Promotion Process]\n- **Timing**: Promotion cycles run twice per year. Proposals submitted in March take effect April 1, and proposals submitted in September take effect October 1.\n- **Eligibility**: You generally need at least six months in your current role, sustained performance at your current level, and evidence that you are already operating at the next level in important ways. Tenure alone is not enough, and a single intense project is not enough if the next level requires repeatable judgment.\n- **Packet Requirements**: A promotion requires a manager-written packet with evidence from recent work, peer input when relevant, and a mapping to the next title level. The packet must be understandable to a department leader who did not attend every meeting. It should include current title, proposed title, current manager, department, time in role, proposed effective date, the title ladder being used, evidence, relevant peer input, and the manager's known concerns or open questions.\n\n### Support Ladder and CSM Promotion [documents/handbook/titles-for-support.md § Levels]\n- **Current Role (Likely S2 or S3)**: As a CSM, you are likely at the S2 or S3 level, handling complex accounts, coaching teammates, managing difficult conversations, and turning customer feedback into useful internal signals.\n- **Next Level (S3 or S4)**: To advance, you need to demonstrate the ability to own complicated customer situations, balance empathy with boundaries, and protect the customer relationship while also protecting NovaOps from bad commitments.\n\n### Evidence for Promotion [documents/handbook/titles-for-support.md § Promotion Evidence]\nFor S2 to S3:\n- **Complex Account Ownership**: Show that you have owned complex accounts, managed difficult customer conversations, and turned feedback into actionable items.\n- **Difficult Customer Conversations**: Demonstrate leading difficult conversations with a clear agenda, evidence, and next update time.\n- **Coaching**: Provide examples of coaching S1 and S2 teammates on case framing, customer tone, and escalation quality.\n- **Cross-Functional Judgment**: Show decisions on when a case needs Jira, Salesforce attention, or can be resolved in SupportDesk.\n\nFor S3 to S4:\n- **Segment-Level Quality Improvement**: Evidence should show segment-level quality improvement, process ownership, and leverage beyond your own accounts.\n- **Function-Level Strategy**: For S4 to S5, evidence should show function-level strategy, durable escalation systems, and measurable improvement in customer trust, retention, or support quality.\n\n### Steps to Follow\n1. **Identify Your Current Level**: Determine your current title level (S2 or S3) and the next level you aim for (S3 or S4).\n2. **Gather Evidence**: Collect evidence of your work that aligns with the next level’s expectations. This includes complex account ownership, difficult customer conversations, coaching, and cross-functional judgment.\n3. **Prepare the Packet**: Work with your manager to prepare a promotion packet that includes all required elements: current title, proposed title, current manager, department, time in role, proposed effective date, the title ladder being used, evidence, relevant peer input, and any known concerns or open questions.\n4. **Submit the Packet**: Submit the packet during the promotion cycle (March or September) for calibration with People Operations and the department leader.\n5. **Calibration**: Be prepared for the calibration meeting where your packet will be compared against the same standard as other packets.\n\nBy following these steps and providing strong, specific evidence of your work, you can position yourself for a successful promotion. [documents/handbook/making-a-career.md § Promotion Process][documents/handbook/titles-for-support.md § Levels][documents/handbook/titles-for-support.md § Promotion Evidence]",
+    "trace_id": "6dfcb49d258d4d982cec7eb91f3c565f"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "pasted_text",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Based on the forwarded message, the only items that are yours to do are:\n\n1. **Sign the equipment responsibility form** [forwarded thread]\n2. **Finish your BambooHR self-service profile once the invite lands** [forwarded thread]",
+    "trace_id": "b2cbf4fb13f769d2583f45c62bfa5c96"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "SUB001",
+      "employee_name": "Jane Doe",
+      "start_date": "2026-07-10",
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "record: OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "record: OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "task",
+          "status": "blocked",
+          "citations": [
+            "record: OT005"
+          ],
+          "blocked_reason": "Webex licensing approval pending"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Your software licenses are currently in the following status:\n\n- **Okta profile**: Created but baseline groups are still pending (IT task, due 2026-07-25) [record: OT002]\n- **Salesforce Customer Success profile**: Requested but planned (IT task, due 2026-07-28) [record: OT004]\n- **Webex standard user license**: Blocked (IT task, due 2026-07-28) [record: OT005]\n\nThe Okta baseline groups and Salesforce profile are pending or planned IT actions. The Webex license is blocked, likely due to a seat availability issue. You should follow up with IT for an update on the Webex block and the planned tasks.",
+    "trace_id": "3012b71e32e5c9f78d93f2cffde1e5c6"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 4,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/getting-started.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The handbook does not have a separate manager playbook, but it does give guidance on feedback in the first 90 days:\n\n- **Day 60**: By this point, you should be doing meaningful work with light supervision. Your manager should remove temporary scaffolding if you still depend on a buddy for routine decisions. Review any temporary admin rights (AWS, GitHub, Okta, Salesforce, BambooHR) to see if they should be removed, extended, or made permanent [documents/handbook/getting-started.md § First 60 to 90 Days].\n\n- **Day 90**: By this point, you and your manager should agree on normal performance expectations for your level. Your manager should be able to describe the work you own, the quality bar for your level, and the next few outcomes that matter. You should be able to explain adjacent-team handoffs, role-specific risks, and which systems contain the durable record [documents/handbook/getting-started.md § First 60 to 90 Days].\n\nIf onboarding still feels stuck at day 90, you should bring your manager a short list of missing access, unclear ownership, confusing rituals, and decisions you cannot make yet [documents/handbook/getting-started.md § First 60 to 90 Days].",
+    "trace_id": "5bccddf26056caa5c4df0648d86e62d6"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Your laptop is planned to be prepared by **2026-07-26**, which is before your start date of **2026-07-01** [record: OT003].",
+    "trace_id": "d083ccee04cc7568b3d65e33472c9a55"
+  }
+]
