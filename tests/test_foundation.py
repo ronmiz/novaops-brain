@@ -95,3 +95,11 @@ def test_short_documents_stay_whole_long_ones_split(chunks):
     assert len(by_source["documents/handbook/making-a-career.md"]) > 1
     assert all(len(v) == 1 for k, v in by_source.items()
                if not k.startswith(("documents/handbook/", "documents/manager_playbook/")))
+
+
+def test_name_query_matches_the_person_under_the_permission_filter():
+    # #31: "Maya Cohen" must match Maya's documents exactly, never bypassing the audience filter
+    body = retrieval.name_query("Maya Cohen offer letter day one", "E001")
+    assert body["query"]["bool"]["must"][0]["bool"]["should"] == [{"match_phrase": {"text": "Maya Cohen"}}]
+    assert body["query"]["bool"]["filter"] == [{"bool": {"must": [{"term": {"audience": "all"}}]}}]
+    assert retrieval.name_query("what does her offer letter say", "E001") is None

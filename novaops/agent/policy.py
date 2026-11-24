@@ -163,6 +163,15 @@ def verify_request_type(plan: TurnPlan, newest_message: str, grounding_text: str
                                    "action_requested": plan.action_requested and kind == "action"})
 
 
+# A follow-up that points back at what was just returned (S1 t2 "those days", t3 "that policy", #32).
+FOLLOW_UP = re.compile(
+    r"\b(that|those|this|these) (policy|policies|days|rule|rules|document|article|exception|memo|letter)\b", re.I)
+
+
+def is_follow_up(message: str) -> bool:
+    return bool(FOLLOW_UP.search(message)) and not FRESHNESS.search(message)
+
+
 # What a request to WRITE sounds like (S2 t10, S4 t8, S8 t4). "Treat it as resolved" is not one (S3 t3, #27).
 FILING = re.compile(r"\b(file|filing|submit|create|open|raise|log|go ahead)\b", re.I)
 # What asking for access sounds like (W-I-03) — as opposed to asking about an existing request (S3 t5).

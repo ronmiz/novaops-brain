@@ -1,0 +1,167 @@
+[
+  {
+    "session": "S9-maya-own-account",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/making-a-career.md",
+      "documents/handbook/titles-for-QA.md",
+      "documents/handbook/titles-for-ops.md",
+      "documents/handbook/titles-for-programmers.md",
+      "documents/handbook/titles-for-support.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The promotion process at NovaOps runs twice a year, with proposals due in March for April 1 effective dates and in September for October 1 effective dates. To be eligible, you need at least six months in your current role, sustained performance at your current level, and evidence that you are already operating at the next level in important ways. Tenure alone is not enough, and a single intense project is not sufficient if the next level requires repeatable judgment.\n\nFor a Customer Success Manager (CSM), the promotion evidence should show complex account ownership, difficult customer conversations, useful coaching, and stronger cross-functional judgment. For higher levels, evidence should show segment-level quality improvement, process ownership, and leverage beyond the employee's own accounts. The evidence should include customer outcomes, collaboration examples, and how the employee strengthened the support system for others.\n\nA promotion packet should be understandable to a department leader who did not attend every meeting. It should include current title, proposed title, current manager, department, time in role, proposed effective date, the title ladder being used, evidence, relevant peer input, and the manager's known concerns or open questions. The evidence section should show a pattern across recent work, with strong evidence including shipped product improvements, reduced incidents, better release quality, customer outcomes, measurable process improvements, durable documentation, mentoring that made another person more effective, decisions that prevented waste, or repeated judgment in ambiguous situations.\n\nManagers calibrate promotion proposals with People Operations and the department leader. Finance confirms compensation changes before the decision is final. Your manager should not promise a promotion before calibration is complete.\n\nTo get promoted as a CSM, focus on demonstrating complex account ownership, handling difficult customer conversations, providing useful coaching, and showing stronger cross-functional judgment. For higher levels, aim to show segment-level quality improvement, process ownership, and leverage beyond your own accounts. Gather evidence of your impact, including customer outcomes, collaboration examples, and improvements to the support system. Work with your manager to develop a promotion packet that clearly maps your evidence to the next title level.\n\ncite: [documents/handbook/making-a-career.md § Promotion Process]\ncite: [documents/handbook/titles-for-support.md § Promotion Evidence]",
+    "trace_id": "0e9c10e9c4d991ef13658f713f0afffa"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "pasted_text",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Based on the forwarded thread, the only items that are yours to do are:\n\n1. Sign the equipment responsibility form\n2. Finish your BambooHR self-service profile once the invite lands\n\ncite: (forwarded thread)",
+    "trace_id": "962feec50ef049c9f51423a304a6f329"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "Thanks. How do I get my software licenses sorted?",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "SUB001",
+      "employee_name": "Jane Doe",
+      "start_date": "2026-07-10",
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "task",
+          "status": "blocked",
+          "citations": [
+            "OT005"
+          ],
+          "blocked_reason": "Webex license request blocked pending IT approval"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Your software licenses are handled through IT onboarding tasks. Here's what's currently in progress for you:\n\n- **Okta profile and baseline groups**: Pending, due July 25, 2026 [record: OT002]\n- **Salesforce Customer Success profile**: Planned, due July 28, 2026 [record: OT004]\n- **Webex standard user license**: Blocked, due July 28, 2026 [record: OT005]\n\nThe Webex license is blocked due to what appears to be a seat availability issue, as mentioned in your forwarded thread. The other licenses are either pending or planned and should be processed by IT according to their due dates.\n\nTo move the Webex license forward, you'll need to wait for IT to resolve the seat availability issue. The other licenses will be processed automatically as part of your onboarding tasks.",
+    "trace_id": "54e3dc75bc373b1ba9e52d5caea5747e"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 4,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "list_policies",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/getting-started.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The handbook doesn't have a separate manager playbook, but it does cover feedback expectations for new employees in the first 90 days. Here's what it says:\n\n- **Day 60**: You should be doing meaningful work with light supervision. Your manager should remove temporary scaffolding if you're still depending on a buddy for routine decisions. Review any temporary admin rights (AWS, GitHub, Okta, Salesforce, BambooHR) to see if they should be removed, extended, or made permanent.\n\n- **Day 90**: You and your manager should agree on normal performance expectations for your level. Your manager should describe the work you own, quality standards, and upcoming priorities. You should understand adjacent-team handoffs, role-specific risks, and where durable records are stored.\n\n- If onboarding feels stuck at day 90, bring your manager a short list of missing access, unclear ownership, confusing rituals, and decisions you can't make yet.\n\nThe handbook emphasizes that by day 90, managers should be able to clearly articulate performance expectations and the employee should understand their responsibilities and systems. Feedback should be ongoing throughout this period, with specific check-ins at days 30 and 90.\n\ncite: [documents/handbook/getting-started.md § First 60 to 90 Days]\ncite: [documents/handbook/getting-started.md § First 30 Days]",
+    "trace_id": "6252214f613f882722d752bb61948566"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Yes, you are scheduled to receive a laptop before your start date. The IT task to prepare your laptop, monitor, dock, and MDM enrollment is planned for July 26, 2026, which is before your August 1 start date.\n\ncite: [record: OT003]",
+    "trace_id": "2c50661bcef05b4d043d6be6587022ef"
+  }
+]

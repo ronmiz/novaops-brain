@@ -1,0 +1,690 @@
+[
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 1,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_employee",
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "E001",
+      "employee_name": "Maya Cohen",
+      "start_date": "2026-08-01",
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "task",
+          "status": "blocked",
+          "citations": [
+            "OT005"
+          ],
+          "blocked_reason": "Blocked pending approval"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT006"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Okta access",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "OT002",
+            "lc_6f883c2f-659e-4472-9a18-187847d3855c"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "BambooHR Employee Self-Service access",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "OT006",
+            "lc_6f883c2f-659e-4472-9a18-187847d3855c"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Salesforce access",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "OT004",
+            "lc_6f883c2f-659e-4472-9a18-187847d3855c"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Webex access",
+          "category": "system",
+          "status": "blocked",
+          "citations": [
+            "OT005",
+            "lc_6f883c2f-659e-4472-9a18-187847d3855c"
+          ],
+          "blocked_reason": "Blocked pending approval"
+        },
+        {
+          "item": "Slack access",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "lc_6f883c2f-659e-4472-9a18-187847d3855c"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Notion access",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "lc_6f883c2f-659e-4472-9a18-187847d3855c"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "SupportDesk access",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "lc_6f883c2f-659e-4472-9a18-187847d3855c"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Laptop, monitor, dock",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "OT003"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Maya Cohen (E001) starts 2026-08-01, hybrid, Israel. Onboarding tasks:\n\n- HR: Collect signed offer letter and work eligibility confirmation — completed [record: OT001]\n- IT: Create Okta profile and baseline groups — pending, due 2026-07-25 [record: OT002]\n- IT: Prepare laptop, monitor, dock, and MDM enrollment — planned, due 2026-07-26 [record: OT003]\n- Access: Request Salesforce Customer Success profile — planned, due 2026-07-28 [record: OT004]\n- Access: Request Webex standard user license — blocked, due 2026-07-28 [record: OT005] (Q3 SaaS freeze applies)\n- HR: Add employee self-service profile in BambooHR — planned, due 2026-07-28 [record: OT006]",
+    "trace_id": "968c2e66d7f61f34873dde1112b6bbae"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 2,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_employee",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/employment/maya_cohen_offer_letter.md",
+      "documents/employment/maya_cohen_onboarding_summary.md"
+    ],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "E001",
+      "employee_name": "Maya Cohen",
+      "start_date": "2026-08-01",
+      "items": [
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "task",
+          "status": "blocked",
+          "citations": [
+            "OT005"
+          ],
+          "blocked_reason": "Webex may be blocked by seat limit"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "OT006"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "OT001"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Maya Cohen's offer letter requires on day one:\n\n- Okta\n- Slack\n- Notion\n- Salesforce\n- Webex\n- BambooHR employee self-service\n- SupportDesk viewer\n\nAnd equipment: laptop, monitor, dock, headset [documents/employment/maya_cohen_offer_letter.md § (whole document)].",
+    "trace_id": "b304f5226fa11813544d0e865356729f"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "E001",
+      "employee_name": "Maya Cohen",
+      "start_date": "2026-08-01",
+      "items": [
+        {
+          "item": "Okta access",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "record: OT002",
+            "record: E001",
+            "documents/employment/maya_cohen_offer_letter.md § (whole document)"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Slack access",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "record: E001",
+            "documents/employment/maya_cohen_offer_letter.md § (whole document)"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Notion access",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "record: E001",
+            "documents/employment/maya_cohen_offer_letter.md § (whole document)"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Salesforce access",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "record: OT004",
+            "record: E001",
+            "documents/employment/maya_cohen_offer_letter.md § (whole document)"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Webex access",
+          "category": "system",
+          "status": "blocked",
+          "citations": [
+            "record: OT005",
+            "documents/employment/maya_cohen_offer_letter.md § (whole document)"
+          ],
+          "blocked_reason": "Q3 SaaS freeze"
+        },
+        {
+          "item": "BambooHR employee self-service",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "record: OT006",
+            "record: E001",
+            "documents/employment/maya_cohen_offer_letter.md § (whole document)"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "SupportDesk viewer access",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "record: E001",
+            "documents/employment/maya_cohen_offer_letter.md § (whole document)"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Laptop",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "record: OT003",
+            "documents/employment/maya_cohen_offer_letter.md § (whole document)"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Monitor",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "record: OT003",
+            "documents/employment/maya_cohen_offer_letter.md § (whole document)"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Dock",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "record: OT003",
+            "documents/employment/maya_cohen_offer_letter.md § (whole document)"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Headset",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "documents/employment/maya_cohen_offer_letter.md § (whole document)"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Maya Cohen's current onboarding checklist:\n\n- HR: Collect signed offer letter and work eligibility confirmation — completed [record: OT001]\n- IT: Create Okta profile and baseline groups — pending, due 2026-07-25 [record: OT002]\n- IT: Prepare laptop, monitor, dock, and MDM enrollment — planned, due 2026-07-26 [record: OT003]\n- Access: Request Salesforce Customer Success profile — planned, due 2026-07-28 [record: OT004]\n- Access: Request Webex standard user license — blocked, due 2026-07-28 [record: OT005]\n- HR: Add employee self-service profile in BambooHR — planned, due 2026-07-28 [record: OT006]",
+    "trace_id": "1c3412c34b7a70a59c98116d5b3cce03"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 4,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "ticket_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_employee_tickets",
+      "get_employee",
+      "list_employee_tickets"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Rachel Stein's Webex login ticket (T001) is open and assigned to IT. It was created today at 09:30 UTC and is marked high priority [record: T001].",
+    "trace_id": "f8a8aa25224d2d8e0c97a3d06156e581"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "check_asset_inventory"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Yes — a MacBook Pro 14 (asset A005) is available in Israel and reserved for Maya Cohen [record: A005].",
+    "trace_id": "96ea8449c12a6e6574ce02637767d512"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 6,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "equipment_request",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "check_asset_inventory",
+      "check_asset_inventory"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Maya Cohen will get a Dell U2723QE monitor (asset A006) from the remote equipment pool in Israel. No headsets are currently available in the Israel inventory [record: A006].",
+    "trace_id": "f6e906858ac1b9665b9bfcb933bbf3e2"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 7,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "employee_lookup",
+    "request_type": "recall",
+    "answer_quote": "employee_id: E001\nstart_date: 2026-08-01\nlocation: Israel",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Maya Cohen's location is Israel and her start date is 2026-08-01 [established facts].",
+    "trace_id": "d6c51f433e3b88b3d68a3051df198b85"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 8,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "subscription_review",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "check_software_subscription"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "There is no Webex seat available — the subscription is over its limit by 2 seats [record: SUB001].",
+    "trace_id": "6d48ec96b97c23d89343f40abf1c2fe2"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 9,
+    "kind": "retrieval",
+    "pass": false,
+    "failed": {
+      "required_facts": [
+        "7,500|7500"
+      ]
+    },
+    "status": "completed",
+    "intent": "subscription_review",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "get_policy",
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/our-internal-systems.md",
+      "documents/handbook/titles-for-ops.md",
+      "documents/manager_playbook/README.md",
+      "documents/manager_playbook/boundaries.md",
+      "documents/manager_playbook/manager-standards.md",
+      "documents/policies/access_management_policy.md",
+      "documents/policies/saas_procurement_policy.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Adding a Webex seat requires Finance approval because it is a paid expansion above the USD 500 per month threshold [documents/policies/saas_procurement_policy.md § Approval threshold].",
+    "trace_id": "dbbf353cee0e8f32b23f9de2f9913ae4"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 10,
+    "kind": "action",
+    "pass": false,
+    "failed": {
+      "should_use_tools": "used=True"
+    },
+    "status": "pending",
+    "intent": "access_request",
+    "request_type": "action",
+    "answer_quote": "",
+    "tools_used": [
+      "get_employee",
+      "check_software_subscription",
+      "list_access_requests",
+      "list_employee_tickets",
+      "request_approval",
+      "get_approval"
+    ],
+    "sources_seen": [],
+    "handoff": {
+      "subject_employee_id": "E001",
+      "subject_name": "Maya Cohen",
+      "system": "Webex",
+      "justification": "Maya Cohen requires a Webex standard user license for day-one access as part of her onboarding, but the current subscription is over its seat limit and requires Finance approval due to the Q3 SaaS freeze.",
+      "requested_by": "E004",
+      "source_thread_id": "S2-5dca64",
+      "request_id": "req-24e784f2d20c",
+      "status": "pending_approval"
+    },
+    "checklist": null,
+    "answer": "I've prepared a Webex access request for Maya Cohen (E001) and handed it to IT operations. Its status is pending approval: nothing has been filed, and access has not been granted. Justification: Maya Cohen requires a Webex standard user license for day-one access as part of her onboarding, but the current subscription is over its seat limit and requires Finance approval due to the Q3 SaaS freeze.\n\nWebex access for E001: pending approval (status: pending). Access has not been granted.\nBlocked by: 42 of 40 Webex seats are in use — no free seat\nObserved:\n- Webex has 42 active seats against a 40-seat limit — over the limit [record: SUB001]\n- E001 is entitled to Webex by role [record: E001]\nActions taken:\n- Filed approval request AP005 for E006\nNext steps:\n- E006 must record a decision on AP005; nothing is filed until then\n- Free a seat or expand the subscription",
+    "trace_id": "9774ed350095a2c9a318ec35ef9f54bd"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 11,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "E001",
+      "employee_name": "Maya Cohen",
+      "start_date": "2026-08-01",
+      "items": [
+        {
+          "item": "Okta access",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "record: OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Slack access",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "documents/manager_playbook/README.md § Retrieval-Friendly Facts"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Notion access",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "documents/manager_playbook/README.md § Retrieval-Friendly Facts"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Salesforce Customer Success profile",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "record: OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Webex standard user license",
+          "category": "system",
+          "status": "blocked",
+          "citations": [
+            "record: OT005"
+          ],
+          "blocked_reason": "Blocked due to Q3 SaaS freeze"
+        },
+        {
+          "item": "BambooHR employee self-service profile",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "record: OT006"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "SupportDesk viewer access",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "documents/manager_playbook/README.md § Retrieval-Friendly Facts"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Laptop",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "record: OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Monitor",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "record: OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Dock",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "record: OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Headset",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "record: OT003"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Maya Cohen's open onboarding tasks are:\n\n- OT002: Create Okta profile and baseline groups (IT, pending, due 2026-07-25) [record: OT002]\n- OT003: Prepare laptop, monitor, dock, and MDM enrollment (IT, planned, due 2026-07-26) [record: OT003]\n- OT004: Request Salesforce Customer Success profile (IT, planned, due 2026-07-28) [record: OT004]\n- OT005: Request Webex standard user license (IT, blocked, due 2026-07-28) [record: OT005]\n- OT006: Add employee self-service profile in BambooHR (HR, planned, due 2026-07-28) [record: OT006]",
+    "trace_id": "f69da8cc414604fe57238ce2cca771d2"
+  },
+  {
+    "session": "S2-onboarding-maya",
+    "turn": 12,
+    "kind": "summary",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "summary",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Maya Cohen (E001) starts on 2026-08-01 in Israel. Open onboarding tasks:\n\n- OT001: Completed\n- OT002: Create Okta profile and baseline groups (IT, pending, due 2026-07-25) [record: OT002]\n- OT003: Prepare laptop, monitor, dock, and MDM enrollment (IT, planned, due 2026-07-26) [record: OT003]\n- OT004: Request Salesforce Customer Success profile (IT, planned, due 2026-07-28) [record: OT004]\n- OT005: Request Webex standard user license (IT, blocked, due 2026-07-28) [record: OT005]\n- OT006: Add employee self-service profile in BambooHR (HR, planned, due 2026-07-28) [record: OT006]\n\nTicket T001 is open, high priority, and assigned to IT.",
+    "trace_id": "d2c14d6f2b6db80ccf2d17573ee14411"
+  }
+]

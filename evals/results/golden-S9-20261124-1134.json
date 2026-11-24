@@ -1,0 +1,216 @@
+[
+  {
+    "session": "S9-maya-own-account",
+    "turn": 1,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "search_documents"
+    ],
+    "sources_seen": [
+      "documents/handbook/making-a-career.md",
+      "documents/handbook/titles-for-QA.md",
+      "documents/handbook/titles-for-ops.md",
+      "documents/handbook/titles-for-programmers.md",
+      "documents/handbook/titles-for-support.md"
+    ],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The promotion path for a Customer Success Manager (CSM) at NovaOps follows the general promotion process outlined in the handbook, with specific expectations and evidence required for each level within the support ladder. Here is the path and what you need to know:\n\n### General Promotion Process\n- **Cycles**: Promotions run twice a year, with proposals due in March for effect on April 1 and in September for effect on October 1.\n- **Eligibility**: You generally need at least six months in your current role, sustained performance at your current level, and evidence that you are already operating at the next level in important ways.\n- **Packet Requirements**: A promotion packet must include your current title, proposed title, current manager, department, time in role, proposed effective date, the title ladder being used, evidence, relevant peer input, and the manager's known concerns or open questions. The evidence should show a pattern across recent work and be understandable to a department leader who did not attend every meeting.\n\n### CSM-Specific Path and Evidence\n- **S1 to S2**: Evidence should show independent queue ownership, clearer explanations, good case hygiene, and the ability to identify patterns.\n- **S2 to S3**: Evidence should show complex account ownership, difficult customer conversations, useful coaching, and stronger cross-functional judgment. Strong S3 behavior includes leading difficult customer conversations, coaching teammates, managing difficult conversations, and turning customer feedback into useful internal signals. An S3 can own complicated customer situations and balance empathy with boundaries.\n- **S3 to S4**: Evidence should show segment-level quality improvement, process ownership, and leverage beyond the employee's own accounts.\n- **S4 to S5**: Evidence should show function-level strategy and influence.\n\n### What to Do\n1. **Prepare Your Evidence**: Collect examples of your work that demonstrate you are operating at the next level. This can include complex account management, difficult customer conversations, coaching teammates, cross-functional collaboration, and any process improvements you have led.\n2. **Discuss with Your Manager**: Talk to your manager about your career goals and ask for feedback on your readiness for the next level. Your manager can help you identify areas to focus on and gather relevant evidence.\n3. **Submit a Promotion Packet**: When you feel ready, work with your manager to prepare a promotion packet that includes all the required elements and strong evidence of your performance at the next level.\n\nRemember, tenure alone is not enough, and a single intense project is not sufficient if the next level requires repeatable judgment. Your packet should clearly map your examples to the next level rather than listing every case you touched.\n\n**Sources:**\n- [documents/handbook/making-a-career.md § Promotion Process]\n- [documents/handbook/titles-for-support.md § Levels]\n- [documents/handbook/titles-for-support.md § Promotion Evidence]",
+    "trace_id": "19490183a503fb1e675ae4df81c79669"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 2,
+    "kind": "reasoning",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "pasted_text",
+    "answer_quote": "",
+    "tools_used": [],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "Based on the forwarded message, the only items that are yours to do are:\n\n1. **Sign the equipment responsibility form** - Sara specifically mentions this as something you need to do.\n2. **Finish your BambooHR self-service profile** - Sara also mentions that you need to complete this once the invite lands.\n\n**Source:** (forwarded thread)",
+    "trace_id": "f37839e4bd5affa74133ba1b0622ead6"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 3,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "SUB001",
+      "employee_name": "Jane Doe",
+      "start_date": "2026-07-10",
+      "items": [
+        {
+          "item": "Collect signed offer letter and work eligibility confirmation",
+          "category": "task",
+          "status": "done",
+          "citations": [
+            "record: OT001"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "task",
+          "status": "pending",
+          "citations": [
+            "record: OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "task",
+          "status": "blocked",
+          "citations": [
+            "record: OT005"
+          ],
+          "blocked_reason": "Pending IT approval"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Based on your onboarding tasks, here's the status of your software licenses and access:\n\n**Current Status:**\n- **Okta profile**: Created but baseline groups are still pending (IT task, due 2026-07-25) `[record: OT002]`\n- **Salesforce Customer Success profile**: Planned but not yet requested (IT task, due 2026-07-28) `[record: OT004]`\n- **Webex standard user license**: Blocked (IT task, due 2026-07-28) `[record: OT005]`\n\n**What you need to do:**\n1. **Sign the equipment responsibility form** - This is mentioned in Sara's email as something you need to do\n2. **Complete your BambooHR self-service profile** - This is also mentioned in Sara's email as something you need to do once the invite lands `[record: OT006]`\n\n**Next steps for licenses:**\n- The Salesforce profile and Webex license are both pending IT action. The Webex license is currently blocked, likely due to the seat issue mentioned in Sara's email.\n- Your Okta baseline groups are still pending with IT.\n\n**Recommendation:** \n- Complete the two items Sara mentioned (equipment form and BambooHR profile) \n- Follow up with IT about the blocked Webex license and the pending Salesforce profile request\n\nThe system shows these as IT-owned tasks, so they'll handle the actual license provisioning once your HR items are complete.",
+    "trace_id": "3a076b414ab8f97e25ab29c65fc8ad53"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 4,
+    "kind": "retrieval",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "policy_question",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "search_documents"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": null,
+    "answer": "The manager playbook is available to people managers only, so I cannot retrieve its contents for you. If you are a people manager, you can access it directly through your internal resources. If you are not a people manager but need guidance on feedback processes, please reach out to your manager or HR for appropriate resources.",
+    "trace_id": "db388f2f544e5aaa097745c5c6a57d5f"
+  },
+  {
+    "session": "S9-maya-own-account",
+    "turn": 5,
+    "kind": "lookup",
+    "pass": true,
+    "failed": {},
+    "status": "completed",
+    "intent": "onboarding_status",
+    "request_type": "lookup",
+    "answer_quote": "",
+    "tools_used": [
+      "list_onboarding_tasks"
+    ],
+    "sources_seen": [],
+    "handoff": null,
+    "checklist": {
+      "employee_id": "E001",
+      "employee_name": "Joiner",
+      "start_date": "2026-07-10",
+      "items": [
+        {
+          "item": "Create Okta profile and baseline groups",
+          "category": "system",
+          "status": "pending",
+          "citations": [
+            "record: OT002"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Prepare laptop, monitor, dock, and MDM enrollment",
+          "category": "equipment",
+          "status": "planned",
+          "citations": [
+            "record: OT003"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Salesforce Customer Success profile",
+          "category": "system",
+          "status": "planned",
+          "citations": [
+            "record: OT004"
+          ],
+          "blocked_reason": null
+        },
+        {
+          "item": "Request Webex standard user license",
+          "category": "system",
+          "status": "blocked",
+          "citations": [
+            "record: OT005"
+          ],
+          "blocked_reason": "Blocked by IT"
+        },
+        {
+          "item": "Add employee self-service profile in BambooHR",
+          "category": "task",
+          "status": "planned",
+          "citations": [
+            "record: OT006"
+          ],
+          "blocked_reason": null
+        }
+      ],
+      "status": "completed",
+      "validation_errors": []
+    },
+    "answer": "Based on your onboarding tasks, **yes, you are scheduled to receive a laptop before your start date of July 1st, 2026**. \n\nThe IT task for preparing your laptop, monitor, dock, and MDM enrollment is marked as \"planned\" with a due date of **2026-07-26**, which is before your start date. This means IT has your equipment preparation scheduled to be completed before you begin work.\n\n**Source:** [record: OT003]",
+    "trace_id": "119864c5c0ff92c4af052f15db309a20"
+  }
+]

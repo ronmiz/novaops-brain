@@ -306,3 +306,11 @@ def test_a_reworded_quote_of_the_source_counts_as_grounded():
     plan = _recall("NovaOps does not allow personal laptops for work, except for a five-business-day IT "
                    "continuity exception when a managed laptop is being repaired")
     assert policy.verify_request_type(plan, "does IT need to sign it off?", tool).answer_quote
+
+
+def test_a_follow_up_on_what_was_just_returned_is_detected():
+    # #32: S1 t2/t3 point back at the policy turn 1 returned; "right now" always looks again
+    assert policy.is_follow_up("And during those days, does IT have to sign it off?")
+    assert policy.is_follow_up("Which team owns that policy?")
+    assert not policy.is_follow_up("Is that policy still current right now?")
+    assert not policy.is_follow_up("And Figma.")

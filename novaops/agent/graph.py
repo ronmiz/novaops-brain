@@ -55,6 +55,8 @@ class AgentState(TypedDict, total=False):
     distilled_upto: int       # messages before this index are represented by memory
     handoff: dict | None      # AccessRequestIntent emitted THIS turn
     checklist: dict | None    # OnboardingChecklist produced THIS turn
+    prev_intent: str | None   # the previous turn's intent (follow-up detection, #32)
+    reuse: bool               # this turn answers from evidence an earlier turn returned (#32)
 
 
 def model_schema(tool) -> dict:
@@ -84,6 +86,11 @@ def window(messages: list, keep: int = KEEP_TURNS) -> list:
     older = [m for m in messages[begin:turn_start]
              if not isinstance(m, ToolMessage) and not getattr(m, "tool_calls", None)]
     return older + list(messages[turn_start:])
+
+
+def previous_turn_used_tools(messages: list) -> bool:
+    starts = [i for i, m in enumerate(messages) if isinstance(m, HumanMessage)]
+    return len(starts) >= 2 and any(isinstance(m, ToolMessage) for m in messages[starts[-2]:starts[-1]])
 
 
 def known_ids_text(messages: list) -> str:
@@ -146,7 +153,7 @@ def build_graph(tools: list, checkpointer=None):
         except Exception:                             # a planner failure must not stop the turn
             plan = None
         plan = plan or policy.TurnPlan(current_intent="other", request_type="lookup")
-        return {"plan": plan.model_dump()}
+        return {"plan": plan.model_dump(), "prev_intent": (state.get("plan") or {}).get("current_intent")}
 
     def scope(state: AgentState) -> dict:
         has_evidence = any(isinstance(m, ToolMessage) for m in state["messages"])
@@ -155,10 +162,18 @@ def build_graph(tools: list, checkpointer=None):
         grounding = known_ids_text(state["messages"]) + "\n" + memory_text(state)
         plan = policy.verify_request_type(policy.TurnPlan(**state["plan"]),
                                           str(state["messages"][-1].content), grounding)
+        # "Which team owns that policy?" right after the policy came back: answer from that
+        # evidence first. The answer must cite it, or route() sends the turn back as a lookup (#32).
+        reuse = (plan.request_type == "lookup" and policy.is_follow_up(str(state["messages"][-1].content))
+                 and state.get("prev_intent") == plan.current_intent
+                 and previous_turn_used_tools(state["messages"]))
+        if reuse:
+            plan = plan.model_copy(update={"request_type": "recall", "answer_quote": ""})
         plan = policy.enforce_evidence(plan, has_evidence)
         loadout = policy.select_tools(plan, read_tools) + write_gate.released_writes(approval=None)
         return {"plan": plan.model_dump(), "loadout": loadout, "rearmed": False, "recite": False,
-                "scope": policy.SCOPES[plan.current_intent], "handoff": None, "checklist": None}
+                "scope": policy.SCOPES[plan.current_intent], "handoff": None, "checklist": None,
+                "reuse": reuse}
 
     def after_scope(state: AgentState) -> str:
         plan = policy.TurnPlan(**state["plan"])
@@ -204,6 +219,11 @@ def build_graph(tools: list, checkpointer=None):
                                               today=config.TODAY)
                   + policy.render_plan(plan, memory_text(state))
                   + (policy.CITE_REMINDER if state.get("recite") else ""))
+        if state.get("reuse") and not state.get("rearmed"):
+            # window() drops earlier tool traffic; a follow-up answered from it must see it
+            system += ("\n\nEVIDENCE ALREADY RETURNED EARLIER IN THIS CONVERSATION (answer from it and cite "
+                       "it exactly as shown; if it does not answer the question, say so):\n"
+                       + evidence(state["messages"])[-EVIDENCE_CHARS:])
         # A lookup turn gathers evidence before it may answer: until a tool has run this turn,
         # the model is bound so that it must call one.
         used_tool = any(isinstance(m, ToolMessage) for m in current_turn(state["messages"]))

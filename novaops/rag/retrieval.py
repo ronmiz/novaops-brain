@@ -5,6 +5,8 @@ Lesson 7's pipeline. The access filter is applied INSIDE the k-NN query
 may not see it — a refusal written after the chunk reached the model would
 already be a leak (spec section 12).
 """
+import re
+
 from .. import config, db, llm
 from .store import client
 
@@ -56,6 +58,37 @@ def knn(query: str, caller_id: str, collections: list[str] | None = None,
             client().search(index=config.INDEX_NAME, body=body)["hits"]["hits"]]
 
 
+_FULL_NAME = re.compile(r"\b([A-Z][a-z]+ [A-Z][a-z]+)\b")
+
+
+def name_query(query: str, caller_id: str, collections: list[str] | None = None, k: int = 5) -> dict | None:
+    """Embeddings blur people: "Maya Cohen offer letter" ranked Sara Cohen's and Ben Walker's
+    documents above Maya's own (#31). A full name in the query also gets an exact phrase match
+    on the text, under the SAME permission filter as the k-NN query."""
+    names = _FULL_NAME.findall(query)
+    if not names:
+        return None
+    must = [{"bool": {"should": [{"match_phrase": {"text": n}} for n in names], "minimum_should_match": 1}}]
+    filt = build_filter(caller_id, collections)
+    return {"size": k, "_source": {"excludes": ["vector"]},
+            "query": {"bool": {"must": must, "filter": [filt] if filt else []}}}
+
+
+def candidates(query: str, caller_id: str, collections: list[str] | None = None) -> list[dict]:
+    """k-NN candidates plus exact-name hits, deduplicated by (source, section)."""
+    found = knn(query, caller_id, collections)
+    body = name_query(query, caller_id, collections)
+    if body:
+        found += [hit["_source"] for hit in client().search(index=config.INDEX_NAME, body=body)["hits"]["hits"]]
+    seen, out = set(), []
+    for c in found:
+        key = (c["source"], c["section"], c["text"][:80])
+        if key not in seen:
+            seen.add(key)
+            out.append(c)
+    return out
+
+
 def rerank(query: str, candidates: list[dict]) -> list[tuple[dict, float]]:
     """One Nova call scores every candidate (Lesson 7 reranker.py)."""
     if not candidates:
@@ -94,4 +127,4 @@ def cut(ranked: list[tuple[dict, float]], min_score: float = MIN_SCORE,
 def search(query: str, caller_id: str, collections: list[str] | None = None) -> list[dict]:
     """The function behind the MCP `search_documents` tool. Returns cite-ready hits:
     source, section, doc_date, text, relevance."""
-    return cut(rerank(query, knn(query, caller_id, collections)))
+    return cut(rerank(query, candidates(query, caller_id, collections)))
